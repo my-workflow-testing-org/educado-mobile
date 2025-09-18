@@ -44,11 +44,22 @@ export default function CourseCard({ course, isOnline}) {
 	checkDownload();
 	}, [course.courseId]);
 
+	// Check student progress
+	useEffect(() => {
 	const checkProgress = async () => {
+			try {
 		const progress = await checkProgressCourse(course.courseId);
-		setStudentProgress(progress);
-	}; checkProgress();
-
+				setStudentProgress(progress || 0);
+			} catch (error) {
+				console.error('Error checking progress:', error);
+				setStudentProgress(0);
+				setHasError(true);
+			} finally {
+				setDataLoading(false);
+			}
+		};
+		checkProgress();
+	}, [course.courseId]);
 	useEffect(() => {
 		const fetchImage = async () => {
 			try {
@@ -75,16 +86,41 @@ export default function CourseCard({ course, isOnline}) {
 	const disabledUI = 'opacity-50 bg-projectWhite rounded-lg elevation-[3] m-[3%] mx-[5%] overflow-hidden';
 
 	const layout = downloaded || isOnline ? enabledUI : disabledUI;
+	const isDisabled = layout === disabledUI;
 
-	let isDisabled = layout === disabledUI;
+	// Safe navigation handler
+	const handleNavigation = () => {
+		if (layout === enabledUI && course?.courseId) {
+			try {
+				navigation.navigate('CourseOverview', { course: course });
+			} catch (error) {
+				console.error('Navigation error:', error);
+			}
+		}
+	};
+
+	// Render loading state
+	if (dataLoading) {
+		return (
+			<View className={enabledUI}>
+				<View className="p-[5%] h-[200px] justify-center items-center">
+					<MaterialCommunityIcons 
+						name="loading" 
+						size={24} 
+						color="gray" 
+					/>
+					<Text className="text-gray-500 font-montserrat mt-2">
+						Carregando curso...
+					</Text>
+				</View>
+			</View>
+		);
+	}
 
 	return (
 		<Pressable testID="courseCard"
 			className={layout}
-			onPress={() => layout === enabledUI ?
-				navigation.navigate('CourseOverview', {
-					course: course,
-				}) : null}
+			onPress={handleNavigation}
 		>
 			<View>
 				<ImageBackground source={{uri: coverImage}}>
@@ -134,10 +170,17 @@ export default function CourseCard({ course, isOnline}) {
 }
 
 CourseCard.propTypes = {
-	course: PropTypes.oneOfType([
-		PropTypes.object,
-		PropTypes.array,
-	]),
+	course: PropTypes.shape({
+		courseId: PropTypes.string.isRequired,
+		title: PropTypes.string,
+		category: PropTypes.string,
+		estimatedHours: PropTypes.number,
+	}),
 	isOnline: PropTypes.bool
+};
+
+CourseCard.defaultProps = {
+	course: null,
+	isOnline: false
 };
 
