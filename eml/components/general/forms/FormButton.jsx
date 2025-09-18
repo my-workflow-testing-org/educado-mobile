@@ -25,7 +25,7 @@ export default function FormButton(props) {
 
 	// Put this here for possible custom styling
 	const typeStyles = {
-		primary_custom: 'bg-primary_custom',
+		primary_custom: 'bg-primaryCustom',
 		error: 'bg-error',
 		warning: 'bg-yellow',
 	};
