@@ -32,23 +32,9 @@ export default function WelcomeScreen() {
 						<WelcomeSlider />
 					</View>
 
-					<View className="justify-around">
-
-						<View className="px-6 w-screen">
-							{/* Replace with standard button */}
-							<TouchableOpacity
-							//	className="bg-primaryCustom px-10 py-4 rounded-medium"
-							//	onPress={() => { navigation.navigate('LoginStack', { screen: 'Register' }, {previousScreen: 'Welcome'}); }}
-							>
-								<Text className="text-center font-sans-bold text-body text-projectBlack">
-									Cadastrer
-								</Text>
-
-							</TouchableOpacity>
-						</View>
-
-
-						<View className="px-6 w-screen">
+					<View className="justify-center">
+						
+						<View className="px-6">
 							<TouchableOpacity
 								className="bg-primaryCustom px-12 py-3 rounded-medium"
 								onPress={() => navigation.navigate('LoginStack', { previousScreen: 'Welcome' })}
@@ -59,6 +45,19 @@ export default function WelcomeScreen() {
 							</Text>
 							</TouchableOpacity>
 						</View>
+
+						<View className="mt-[24px] px-6 w-screen">
+							{/* Replace with standard button */}
+							<TouchableOpacity
+							//	className="bg-primaryCustom px-10 py-4 rounded-medium"
+							//	onPress={() => { navigation.navigate('LoginStack', { screen: 'Register' }, {previousScreen: 'Welcome'}); }}
+							>
+								<Text className="text-center font-sans-bold underline text-body text-projectBlack">
+									Cadastrer
+								</Text>
+							</TouchableOpacity>
+						</View>
+
 					</View>
 				</View>
 			</SafeAreaView>
