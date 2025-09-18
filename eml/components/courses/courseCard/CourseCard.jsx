@@ -22,13 +22,27 @@ export default function CourseCard({ course, isOnline}) {
 	const navigation = useNavigation();
 	const [studentProgress, setStudentProgress] = useState(0);
 	const [coverImage, setCoverImage] = useState(null);
+	const [imageLoading, setImageLoading] = useState(true);
+	const [imageError, setImageError] = useState(false);
+	const [dataLoading, setDataLoading] = useState(true);
+	const [hasError, setHasError] = useState(false);
 	const prevCourseId = useRef(null);
 
 
+	// Check if course is downloaded locally
+	useEffect(() => {
 	const checkDownload = async () => {
-		setDownloaded(await checkCourseStoredLocally(course.courseId));
+			try {
+				const isDownloaded = await checkCourseStoredLocally(course.courseId);
+				setDownloaded(isDownloaded);
+			} catch (error) {
+				console.error('Error checking download status:', error);
+				setDownloaded(false);
+				setHasError(true);
+			}
 	};
 	checkDownload();
+	}, [course.courseId]);
 
 	const checkProgress = async () => {
 		const progress = await checkProgressCourse(course.courseId);
