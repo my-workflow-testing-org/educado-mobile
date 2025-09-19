@@ -14,7 +14,7 @@ export default function WelcomeSlider() {
 		<Slick
 			ref={slick}
 			scrollEnabled={true}
-			loop={false}
+			loop={true}
 			index={0}
 			dotColor={projectColors.projectWhite}
 			dotStyle={{ width: 10, height: 10 }}
