@@ -33,7 +33,7 @@ export default function FormButton(props) {
 	return <>
 		<View>
 			<TouchableOpacity
-				className={'px-4 py-4 rounded-medium ' +
+				className={'px-4 py-3 rounded-medium ' +
 					(typeStyles[props.type] ?? typeStyles.primary_custom) +
 					(props.disabled ? ' opacity-50' : '')}
 				style={props.style ?? null}

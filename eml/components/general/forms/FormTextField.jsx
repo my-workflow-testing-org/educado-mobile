@@ -36,8 +36,8 @@ export default function FormTextField(props) {
 			</View>
 			<View className=''>
 				{/* Various properties for text input fields */}
-				<TextInput className={'text-base h-50 br-25 py-1 pl-[10px] bg-projectWhite rounded-lg' +
-          (props.bordered ? ' border-2 border-projectGray' : '') + (props.error ? ' border-2 border-error' : '')}
+				<TextInput className={'text-base w-full py-4 pl-[10px] bg-projectWhite rounded-lg' +
+          (props.bordered ? ' border border-projectGray' : '') + (props.error ? ' border border-error' : '')}
 				placeholder={props.placeholder ?? ''} // Placeholder text to be displayed
 				keyboardType={props.keyboardType ?? 'default'} // Keyboard type (e.g. numeric, email-address, etc.)
 				autoComplete={props.autoComplete ?? 'off'} // Whether to enable auto-completion

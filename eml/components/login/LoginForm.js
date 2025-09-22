@@ -2,14 +2,19 @@ import React, { useState } from 'react';
 import { View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { loginUser } from '../../api/userApi';
+import Text from '../general/Text';
+import ShowAlert from '../general/ShowAlert';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import LoginFigure from '../../assets/images/login-figure.png';
+import { Image } from 'react-native';
+
+// Remove all below. Since they are useless. Except for maybe remove emojis
 import FormTextField from '../general/forms/FormTextField';
 import FormButton from '../general/forms/FormButton';
 import PasswordEye from '../general/forms/PasswordEye';
 import ResetPassword from './ResetPassword';
 import FormFieldAlert from '../general/forms/FormFieldAlert';
 import { removeEmojis } from '../general/Validation';
-import Text from '../general/Text';
-import ShowAlert from '../general/ShowAlert';
 
 
 // Services
@@ -59,21 +64,11 @@ export default function LoginForm() {
 			navigation.navigate('HomeStack');
 		}).catch((error) => {
 			switch (error?.error?.code) {
-			case 'E0004':
-				// No user exists with this email!
-				setEmailAlert('Não existe nenhum usuário com este email!');
-				break;
-
-			case 'E0105':
-				// Password is incorrect!
-				setPasswordAlert('Senha incorreta!');
-				break;
-
 			case 'E0003':
 				// Error connecting to server!
 				ShowAlert('Erro de conexão com o servidor!');
 				break;
-
+				
 				// TODO: What error should we give here instead? Unknown error? 
 			default: // Errors not currently handled with specific alerts
 				ShowAlert('Erro desconhecido!');
@@ -94,69 +89,42 @@ export default function LoginForm() {
 	};
 
 	return (
-		<View>
-			<View className="mb-6">
-				<FormTextField
-					testId="emailInput"
-					placeholder="Insira sua e-mail"
-					onChangeText={(email) => setEmail(email)}
-					label="E-mail"
-					required={true}
-					keyboardType="email-address"
+		<View className='flex flex-col justify-center'>
+			<View className='items-center'>
+				<Image
+					source={LoginFigure}
+					className="mb-4 mt-7"
+					resizeMode="contain"
 				/>
-				<FormFieldAlert testId="emailAlert" label={emailAlert} />
-			</View>
-
-
-			<View className="relative mb-6">
-				<FormTextField
-					testId="passwordInput"
-					placeholder="Insira sua senha" // Type your password
-					value={password}
-					onChangeText={(inputPassword) => {
-						setPassword(removeEmojis(inputPassword, password));
-					}}
-					label="Senha" // Password
-					required={true}
-					secureTextEntry={!showPassword}
-				/>
-				<PasswordEye
-					testId="passwordEye"
-					showPasswordIcon={showPassword}
-					toggleShowPassword={toggleShowPassword}
-				/>
-				<FormFieldAlert testId="passwordAlert" label={passwordAlert} />
-			</View>
-
-			<View>
-				{/* TODO: tilføj onPress til nedenstående; reset password */}
-				<Text
-					className={'text-right underline text-lg text-projectBlack mb-15'}
-					onPress={() => setModalVisible(true)}
-				>
-					{/* reset your password? */}
-          Esqueceu a senha?
+				<View>
+					<Text className="font-montserrat-bold text-2xl text-center  mb-2">
+						Bem-vindo de volta!
+					</Text>
+				</View>
+				
+				<Text className="font-montserrat text-lg w-48 leading-5 text-center mb-6">
+					Por favor, insira o seu número de telefone
 				</Text>
 			</View>
-			{/* Enter */}
-			<FormButton
-				testId="loginButton"
-				onPress={() => login(email, password)}
-				disabled={!(password.length > 0 && email.length > 0)}
-				className='mt-4'
-			>
-        Entrar
-			</FormButton>
-			<View className="pt-10">
-				<ResetPassword
-					className={(!modalVisible ? 'hidden' : '')}
-					modalVisible={modalVisible}
-					onModalClose={closeModal}
-					testId="resetPasswordModal"
-					// Reset password
-					title="Redefinir senha"
-				/>
+
+			<View className="mb-6">
+			<FormTextField
+				testId="passwordInput"
+				placeholder="(XX) XXXXX-XXXX " // Type your password
+				bordered
+				value={password}
+				onChangeText={(inputPassword) => {
+					setPassword(removeEmojis(inputPassword, password));
+				}}
+			/>
 			</View>
+
+
+			{/* TODO: ADD ONPRESS TO BUTTON */}
+			<FormButton>
+				Enviar Código
+			</FormButton>
+
 		</View>
 	);
 }

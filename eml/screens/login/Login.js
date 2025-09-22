@@ -64,25 +64,27 @@ export default function Login() {
 							</View>
 							<View className="mx-6">
 								{/* Login form */}
-								<View className="my-8">
+								<View className="mt-8">
 									<LoginForm />
 								</View>
+								
 								{/* Register button */}
-								<View className="flex-row justify-center">
-									<Text className="text-lg text-projectBlack mr-1">
+								<View className="flex-row justify-center mt-2 w-full px-8">
+									<Text className="text-s text-projectBlack mr-1">
 
 										{/* Dont have an account yet? */}
-										Ainda não tem conta?
+										NÃO POSSUI UMA CONTA?
 									</Text>
 									<Text
 										testId="registerNav"
-										className={'text-lg text-profileCircle underline left-1'}
+										className={'text-s text-profileCircle underline left-1'}
 										onPress={() => navigation.navigate('Register', { previousScreen: 'Login' })}
 									>
 										{/* Sign up now */}
-										Cadastre-se agora
+										CADASTRE-SE AGORA
 									</Text>
 								</View>
+								
 							</View>
 						</View>
 					</TouchableWithoutFeedback>
