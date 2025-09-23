@@ -23,17 +23,11 @@ export default function Login() {
 	const route = useRoute();
 	const previousScreen = route.params?.previousScreen || 'WelcomeStack';
 
-	/**
-   * TODO: Refactor error to use new error handling system
-   * Function for checking if a login token is stored in async local storage (i.e. if the user is already logged in)
-   * If a token is found, the user is redirected to the home screen.
-   * 
-   */
 	const checkLoginToken = async () => {
 		try {
-			const isValid = await StorageService.isLoginTokenValid();
+			const isValid = StorageService.isLoginTokenValid();
 			if (isValid) {
-				StorageService.updateStoredCourses();
+				await StorageService.updateStoredCourses();
 				await AsyncStorage.setItem('loggedIn', 'true');
 				navigation.navigate('HomeStack');
 			} else {

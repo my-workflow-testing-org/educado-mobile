@@ -144,23 +144,20 @@ function CourseStack() {
 
 
 
-export function useWelcomeScreenLogic(loadingTime, onResult) {
+function LoginNavigationLogic(loadingTime, onResult) {
 
 	setTimeout(() => {
 		const fetchData = async () => {
 			try {
-				const value = await AsyncStorage.getItem('hasShownWelcome');
+				const value = await AsyncStorage.getItem('isLoggedIn');
 				let initialRoute = 'WelcomeStack';
-				let isLoading = true;
 
 				if (value === 'true') {
 					initialRoute = 'LoginStack';
-				} else {
-					await AsyncStorage.setItem('hasShownWelcome', 'true');
 				}
 
 				// Pass the results to the callback
-				isLoading = false;
+				let isLoading = false;
 				onResult(initialRoute, isLoading);
 			} catch (error) {
 				console.error('Error retrieving or setting AsyncStorage data:', error);
@@ -203,12 +200,10 @@ export default function App() {
 	}, [fontsLoaded]);
 
 	// Callback function to handle the results
-	const handleResult = (route, loading) => {
-		setInitialRoute(route);
-		setIsLoading(loading);
-	};
-
-	useWelcomeScreenLogic(3000, handleResult);
+	LoginNavigationLogic(3000, (route, loading)=> {
+        setInitialRoute(route);
+        setIsLoading(loading);
+    });
 
 	// ************** Don't touch this code **************
 	if (!fontsLoaded) {
