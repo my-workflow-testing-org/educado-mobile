@@ -206,7 +206,7 @@ export default function LoginForm() {
 
 
                     <FormButton
-                        onPress={login(token)}
+                        onPress={() => login(token)}
                         disabled={token.length < 6}
                     >
                         Accesor Conta
