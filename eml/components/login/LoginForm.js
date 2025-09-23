@@ -81,39 +81,46 @@ export default function LoginForm() {
    * @param {String} email Email user tries to login with
    * @param {String} password Password user tries to login with
    */
-	async function login(email, password) {
+	async function login(token) {
 
-		//Reset alerts
-		setEmailAlert('');
-		setPasswordAlert('');
+        if (token === "123456") {
+            navigation.navigate('HomeStack');
+            
+        }
 
-		//The Object must be hashed before it is sent to backend (before loginUser() is called)
-		//The Input must be conditioned (at least one capital letter, minimum 8 letters and a number etc.)
-		const obj = {
-			email: email,
-			password: password,
-		};
+        await AsyncStorage.setItem('loggedIn', 'true');
+
+		// //Reset alerts
+		// setEmailAlert('');
+		// setPasswordAlert('');
+
+		// //The Object must be hashed before it is sent to backend (before loginUser() is called)
+		// //The Input must be conditioned (at least one capital letter, minimum 8 letters and a number etc.)
+		// const obj = {
+		// 	email: email,
+		// 	password: password,
+		// };
 
 
-		// Await the response from the backend API for login
-		await loginUser(obj).then(async (response) => {
-			// Set login token in AsyncStorage and navigate to home screen
-			await setJWT(response.accessToken);
-			await setUserInfo({ ...response.userInfo });
-			await AsyncStorage.setItem('loggedIn', 'true');
-			navigation.navigate('HomeStack');
-		}).catch((error) => {
-			switch (error?.error?.code) {
-			case 'E0003':
-				// Error connecting to server!
-				ShowAlert('Erro de conexão com o servidor!');
-				break;
+		// // Await the response from the backend API for login
+		// await loginUser(obj).then(async (response) => {
+		// 	// Set login token in AsyncStorage and navigate to home screen
+		// 	await setJWT(response.accessToken);
+		// 	await setUserInfo({ ...response.userInfo });
+		// 	await AsyncStorage.setItem('loggedIn', 'true');
+		// 	navigation.navigate('HomeStack');
+		// }).catch((error) => {
+		// 	switch (error?.error?.code) {
+		// 	case 'E0003':
+		// 		// Error connecting to server!
+		// 		ShowAlert('Erro de conexão com o servidor!');
+		// 		break;
 				
-				// TODO: What error should we give here instead? Unknown error? 
-			default: // Errors not currently handled with specific alerts
-				ShowAlert('Erro desconhecido!');
-			}
-		});
+		// 		// TODO: What error should we give here instead? Unknown error? 
+		// 	default: // Errors not currently handled with specific alerts
+		// 		ShowAlert('Erro desconhecido!');
+		// 	}
+		// });
 	}
 
 
@@ -199,7 +206,7 @@ export default function LoginForm() {
 
 
                     <FormButton
-                        onPress={submitPhoneNumber}
+                        onPress={login(token)}
                         disabled={token.length < 6}
                     >
                         Accesor Conta
