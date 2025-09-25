@@ -8,7 +8,7 @@ import { Platform, Text } from 'react-native';
 import tailwindConfig from '../../tailwind.config';
 
 const Tab = createBottomTabNavigator();
-const colors = tailwindConfig.theme.colors
+const colors = tailwindConfig.theme.colors;
 
 /**
  * This component is used to display the navigation bar at the bottom of the screen.
