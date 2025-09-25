@@ -8,6 +8,7 @@ import { Platform, Text } from 'react-native';
 import tailwindConfig from '../../tailwind.config';
 
 const Tab = createBottomTabNavigator();
+const colors = tailwindConfig.theme.colors
 
 /**
  * This component is used to display the navigation bar at the bottom of the screen.
@@ -20,8 +21,8 @@ export default function NavBar() {
 			testID="navBar" // Make sure you set the testID on the correct element
 			initialRouteName={'Central'}
 			screenOptions={({ route }) => ({
-				tabBarActiveTintColor: tailwindConfig.theme.colors.primary,
-				tabBarInactiveTintColor: tailwindConfig.theme.colors.grayMedium,
+				tabBarActiveTintColor: colors.primary,
+				tabBarInactiveTintColor: colors.grayMedium,
 				tabBarLabel: ({ focused, color }) => (
 					<Text style={{ fontFamily: focused ? 'Montserrat-Bold' : 'Montserrat-Regular', fontSize: 14, color }}>
 						{route.name}
