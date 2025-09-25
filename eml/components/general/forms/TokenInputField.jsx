@@ -1,5 +1,6 @@
     import React, { useState, useRef } from "react";
     import { View, TextInput, StyleSheet, Keyboard } from "react-native";
+import ShowAlert from "../ShowAlert";
 
     export default function TokenInputField({ length = 6, onChange }) {
     const [values, setValues] = useState(Array(length).fill("")); // ["", "", "", "", "", ""]
@@ -16,15 +17,30 @@
             inputs.current[id - 1].focus();
         }
 
-        if (!/^[0-9a-zA-Z]?$/.test(value)) return; // allow only a-z 0-9
-        const newValues = [...values];
+       // if (!/^[0-9a-zA-Z]?$/.test(value)) return; // allow only a-z 0-9
+
+       
+        // Id is index
+        const newValues = [...values];  
         newValues[id] = value;
+
+
+        if(newValues[id].length == 2){
+
+            if(id == length - 1) return;
+        
+            inputs.current[id + 1].focus();
+            newValues[id+1] = newValues[id].charAt(1);
+            newValues[id] = newValues[id].charAt(0);
+        }
+
+
         setValues(newValues);
         onChange?.(newValues.join(""));
 
-        if (value && id < length - 1) {
-            inputs.current[id + 1].focus();
-        }
+      //  if (value && id < length - 1) {
+      //      inputs.current[id + 1].focus();
+      //  }
 
         // hide keyboard when last input is filled
         if (value && id === length - 1) {
@@ -39,9 +55,10 @@
                     key={id}
                     style={styles.input}
                     value={val}
-                    maxLength={1}
+                    maxLength={2}
                     onChangeText={(text) => handleChange(text.toUpperCase(), id)}
                     ref={(el) => (inputs.current[id] = el)}
+                    onKeyPress={(e) => ShowAlert("Test")}
                     keyboardType="visible-password"
                     textAlign="center"
                 />
