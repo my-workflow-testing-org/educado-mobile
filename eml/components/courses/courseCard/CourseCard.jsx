@@ -64,7 +64,7 @@ export default function CourseCard({ course, isOnline}) {
 				
 				</View>
 				<View className="h-[1] bg-disable m-[2%]" />
-				<View className="flex-row flex-wrap items-center justify-start">
+				<View className="flex-col items-start justify-start">
 					<View className="flex-row items-center">
 						<MaterialCommunityIcons size={18} name={determineIcon(course.category)} color={tailwindConfig.theme.colors.graytext}></MaterialCommunityIcons>
 						<Text className="mx-[2.5%] my-[3%]">{determineCategory(course.category)}</Text>
