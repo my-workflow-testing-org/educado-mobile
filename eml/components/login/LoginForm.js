@@ -60,7 +60,7 @@ export default function LoginForm() {
 
     const submitPhoneNumber = (phoneNumber) => {
 
-        const res = { success: Math.random() > 0.5 }; //TODO: call backend and get a real res;
+        const res = { success: true }; //TODO: call backend and get a real res;
 
         if(res.success){
             setSubmittedPhoneNumber(true);
@@ -80,13 +80,13 @@ export default function LoginForm() {
    */
 	async function login(token) {
 
-        const res = { success: Math.random() > 0.5 }; //TODO: call backend and get a real res;
+        const res = { success: true }; //TODO: call backend and get a real res;
 
         if(res.success){
             await AsyncStorage.setItem('isLoggedIn', 'true');
 			navigation.navigate('HomeStack');
         } else {
-            setError(res?.error);
+            setError("por favor, insira um token válido");
         }
 
 		// //The Object must be hashed before it is sent to backend (before loginUser() is called)
@@ -119,7 +119,7 @@ export default function LoginForm() {
 	}
 
     const resendCode = () => {
-         const res = { success: Math.random() > 0.5 }; //TODO: call backend and get a real res;
+         const res = { success: true }; //TODO: call backend and get a real res;
 
         if(res.success){
             // TODO: maybe notify the user that the a new code has been sent?
@@ -127,6 +127,11 @@ export default function LoginForm() {
             setError(res?.error);
         }
     }
+
+    const updateToken = (token) => {
+        setToken(token)
+        setError("");  
+    } 
 
 	return (
 		<View className='flex flex-col justify-center'>
@@ -164,7 +169,7 @@ export default function LoginForm() {
                     />
                 ) : (
                     <TokenInputField
-                        onChange={(tokenValue) => setToken(tokenValue)}
+                        onChange={(tokenValue) => updateToken(tokenValue)}
                         error={error ? true : false}
                     />
                 )}
