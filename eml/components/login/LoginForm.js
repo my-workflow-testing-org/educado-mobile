@@ -59,15 +59,20 @@ export default function LoginForm() {
         }
     };
 
-    const submitPhoneNumber = (phoneNumber) => {
+    const handlePhoneSubmit = () => {
+    
+        if(phoneSubmitted) {
+          void login(token);
+          return;
+        }
 
         const res = { success: true }; //TODO: call backend and get a real res;
 
         if(res.success){
-            setSubmittedPhoneNumber(true);
+            setPhoneSubmitted(true);
             setError('');
         } else {
-            setSubmittedPhoneNumber(false);
+            setPhoneSubmitted(false);
             setError(res?.error);
         }
 
