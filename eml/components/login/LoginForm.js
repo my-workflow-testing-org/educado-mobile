@@ -211,7 +211,7 @@ export default function LoginForm() {
                 <View className="flex-row justify-end mt-4 w-full px-8">
                     <Text 
                         className="text-xs text-projectBlack mr-0"
-                        onPress={resendCode}
+                        onPress={handleResendCode}
                     >
                         REENVIAR CÓDIGO {/* Resend Code */}
                     </Text>
