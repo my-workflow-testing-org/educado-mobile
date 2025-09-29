@@ -119,7 +119,7 @@ export default function LoginForm() {
 		// });
 	}
 
-    const resendCode = () => {
+    const handleResendCode = () => {
          const res = { success: true }; //TODO: call backend and get a real res;
 
         if(res.success){
