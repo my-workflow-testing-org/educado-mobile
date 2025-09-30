@@ -3,45 +3,50 @@ name: Feature request
 about: Suggest an idea for this project
 title: "[US-0000] -"
 labels: enhancement
-assignees: ''
-
+assignees: ""
 ---
 
 # [Short Descriptive Title]
 
-## Description  
+## Description
+
 [Provide a clear and concise description of the issue, user story, or documentation update.]
 
-## User Story  
-**As a** [role/user type], **I want to** [goal], **so that** [benefit].  
+## User Story
 
-### Acceptance Criteria  
-- [ ] [Criterion 1]  
-- [ ] [Criterion 2]  
-- [ ] [Criterion 3]  
+**As a** [role/user type], **I want to** [goal], **so that** [benefit].
 
-### Additional Notes  
-[Provide any additional context, dependencies, or constraints related to the user story.]  
+### Acceptance Criteria
+
+- [ ] [Criterion 1]
+- [ ] [Criterion 2]
+- [ ] [Criterion 3]
+
+### Additional Notes
+
+[Provide any additional context, dependencies, or constraints related to the user story.]
 
 ---
 
-## Documentation Update  
-**Section to Update:** [Specify the documentation file or section that needs changes.]  
+## Documentation Update
+
+**Section to Update:** [Specify the documentation file or section that needs changes.]
 
 **Current Description**  
-[What is currently documented?]  
+[What is currently documented?]
 
 **Proposed Update**  
-[Provide the updated or new content.]  
+[Provide the updated or new content.]
 
 **Reason for Update**  
-[Why is this change necessary?]  
+[Why is this change necessary?]
 
 ---
 
-## ✅ Checklist  
-- [ ] Issue properly labeled (e.g., `bug`, `user story`, `documentation`)  
-- [ ] Assigned to the right team/member  
-- [ ] Linked to relevant Epic or Sprint  
+## ✅ Checklist
+
+- [ ] Issue properly labeled (e.g., `bug`, `user story`, `documentation`)
+- [ ] Assigned to the right team/member
+- [ ] Linked to relevant Epic or Sprint
 
 **Date:** [MM/DD/YYYY]

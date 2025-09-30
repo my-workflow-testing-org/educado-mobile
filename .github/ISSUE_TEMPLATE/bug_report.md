@@ -3,60 +3,66 @@ name: Bug report
 about: Create a report to help us improve
 title: "[BUG-0000] -"
 labels: bug
-assignees: ''
-
+assignees: ""
 ---
 
 # [Short Descriptive Title]
 
-## Description  
+## Description
+
 [Provide a clear and concise description of the issue, user story, or documentation update.]
 
 ---
 
-## 🐞 Bug Report  
-**Issue Summary:**  
-[Brief description of the bug and its impact on the system.]  
+## 🐞 Bug Report
 
-**Steps to Reproduce:**  
-1. [Step 1]  
-2. [Step 2]  
-3. [Step 3]  
+**Issue Summary:**  
+[Brief description of the bug and its impact on the system.]
+
+**Steps to Reproduce:**
+
+1. [Step 1]
+2. [Step 2]
+3. [Step 3]
 
 **Expected Behavior:**  
-[What should happen instead of the bug?]  
+[What should happen instead of the bug?]
 
 **Actual Behavior:**  
-[What is happening instead?]  
+[What is happening instead?]
 
-**Environment:**  
-- **Platform:** [e.g., Web, Mobile]  
-- **OS:** [e.g., Windows, macOS, Linux]  
-- **Browser:** [e.g., Chrome, Firefox]  
-- **Backend:** [e.g., FastAPI, NestJS, Express]  
-- **Database:** [e.g., MongoDB]  
+**Environment:**
+
+- **Platform:** [e.g., Web, Mobile]
+- **OS:** [e.g., Windows, macOS, Linux]
+- **Browser:** [e.g., Chrome, Firefox]
+- **Backend:** [e.g., FastAPI, NestJS, Express]
+- **Database:** [e.g., MongoDB]
 
 **Screenshots (if applicable):**  
-[Attach screenshots or logs here.]  
+[Attach screenshots or logs here.]
 
 ---
-## Documentation Update  
-**Section to Update:** [Specify the documentation file or section that needs changes.]  
+
+## Documentation Update
+
+**Section to Update:** [Specify the documentation file or section that needs changes.]
 
 **Current Description:**  
-[What is currently documented?]  
+[What is currently documented?]
 
 **Proposed Update:**  
-[Provide the updated or new content.]  
+[Provide the updated or new content.]
 
 **Reason for Update:**  
-[Why is this change necessary?]  
+[Why is this change necessary?]
 
 ---
 
-## ✅ Checklist  
-- [ ] Issue properly labeled (e.g., `bug`, `user story`, `documentation`)  
-- [ ] Assigned to the right team/member  
-- [ ] Linked to relevant Epic or Sprint  
+## ✅ Checklist
+
+- [ ] Issue properly labeled (e.g., `bug`, `user story`, `documentation`)
+- [ ] Assigned to the right team/member
+- [ ] Linked to relevant Epic or Sprint
 
 **Date:** [MM/DD/YYYY]

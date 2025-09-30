@@ -20,8 +20,8 @@
 <!-- Referência à user story no backlog -->
 
 | Tema | Épico | Capacidade | Feature | User Story |
-| ---- | ------ | ---------- | ------- | ---------- |
-| TMXX | EPXX   | CXX        | FXX     | USXX       |
+| ---- | ----- | ---------- | ------- | ---------- |
+| TMXX | EPXX  | CXX        | FXX     | USXX       |
 
 ## Checklist
 
