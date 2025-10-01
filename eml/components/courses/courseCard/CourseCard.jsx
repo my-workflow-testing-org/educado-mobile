@@ -54,25 +54,29 @@ export default function CourseCard({ course, isOnline}) {
 			}}
 		>
 			<View>
-				<View className="flex-row items-start justify-between px-[1%] py-[1%]">
+				<View className="flex-row items-start justify-between py-[1%]">
 					<Text className="text-[18px] text-projectBlack flex-1 self-center font-montserrat-semi-bold">
 						{course.title ? course.title : 'Título do curso'}
 					</Text>
 				
 				</View>
-				<View className="h-[1] bg-disable m-[2%]" />
+				<View style={{ height: 16 }} />
+				<View className="h-[1] bg-disable" />
+				<View style={{ height: 16 }} />
 				<View className="flex-col items-start justify-start">
 					<View className="flex-row items-center">
 						<MaterialCommunityIcons size={18} name={determineIcon(course.category)} color={tailwindConfig.theme.colors.graytext}></MaterialCommunityIcons>
-						<Text className="mx-[2.5%] my-[3%]">{determineCategory(course.category)}</Text>
+						<Text className="mx-[4px]">{determineCategory(course.category)}</Text>
 					</View>
+					<View style={{ height: 4 }} />
 					<View className="flex-row items-center">
 						<MaterialCommunityIcons size={18} name="clock" color={tailwindConfig.theme.colors.graytext}></MaterialCommunityIcons>
-						<Text className="mx-[2.5%] my-[3%]">{course.estimatedHours ? formatHours(course.estimatedHours) : 'duração'}</Text>
+						<Text className="mx-[4px]">{course.estimatedHours ? formatHours(course.estimatedHours) : 'duração'}</Text>
 					</View>
 				</View>
+				<View style={{ height: 8 }} />
 				<View className="flex-row items-center">
-					<CustomProgressBar width={56} progress={studentProgress} height={1} />
+					<CustomProgressBar width={74} progress={studentProgress} height={1} />
 					<Pressable className="z-[1]"
 						onPress={() => {layout === enabledUI ?
 							navigation.navigate('Section', {
@@ -82,7 +86,7 @@ export default function CourseCard({ course, isOnline}) {
 					>
 						<MaterialCommunityIcons
 							name="chevron-right"
-							size={18}
+							size={24}
 							color={tailwindConfig.theme.colors.primary}/>
 					</Pressable>
 				</View>

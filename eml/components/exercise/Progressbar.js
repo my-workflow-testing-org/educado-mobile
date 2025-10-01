@@ -29,7 +29,7 @@ const CustomProgressBar = ({ progress, width, height, displayLabel = true }) => 
 	}
 
 	return (
-		<View className='flex-row items-center justify-around'>
+		<View className='flex-row items-center'>
 			<Progress.Bar
 				progress={progress[0] / 100}
 				width={ScreenWidth * (width / 100)}
@@ -40,8 +40,7 @@ const CustomProgressBar = ({ progress, width, height, displayLabel = true }) => 
 				borderRadius={8}
 			></Progress.Bar>
 			{displayLabel && (
-				<Text className='px-5 text-center font-montserrat-bold text-caption-medium text-projectBlack' 
-					style={{ color: tailwindConfig.theme.colors.graytext }}>
+				<Text className='pl-2 text-center text-caption-medium font-montserrat text-greyscaleText_iconBody'>
 					{progress[1]}/{progress[2]}
 				</Text>
 			)}

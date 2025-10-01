@@ -14,6 +14,7 @@ module.exports = {
       projectBlack: '#383838',
       projectGray: '#A1ACB2',
       lightGray: '#f505b9ff',
+      greyscaleText_iconBody:'#28363E',
       grayMedium: '#A1ACB2',
       error: '#FF4949',
       success: '#4AA04A',
