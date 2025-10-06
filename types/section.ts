@@ -1,8 +1,19 @@
+import Component from "@/types/component";
+
 export interface Section {
-  title: any;
-  sectionId: any;
-  parentCourseId: any;
-  description: any;
-  components: any;
-  total: any;
+  sectionId: string;
+  title: string;
+  parentCourseId: string;
+  description: string;
+  components: Component[];
+  total: number;
+}
+
+export interface ApiSection {
+  _id: string;
+  title: string;
+  parentCourse: string;
+  description: string;
+  components: Component[];
+  totalPoints: number;
 }

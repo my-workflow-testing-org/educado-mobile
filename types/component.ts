@@ -3,5 +3,5 @@ export interface Component {
   component: {
     contentType: string;
     title: string;
-  }
+  };
 }

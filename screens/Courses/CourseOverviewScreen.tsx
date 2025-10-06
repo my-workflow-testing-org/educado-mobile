@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, ReactElement } from "react";
 import { Alert, View, TouchableOpacity, Image } from "react-native";
 import Text from "@/components/General/Text";
 import * as StorageService from "@/services/storage-service";
@@ -22,24 +22,24 @@ export interface CourseOverviewScreenProps {
   route: {
     params: {
       course: Course;
-    }
-  }
+    };
+  };
 }
 
-export default function CourseOverviewScreen({ route }: CourseOverviewScreenProps) {
+const CourseOverviewScreen = ({ route }): ReactElement => {
   const { course } = route.params;
   const navigation = useNavigation();
-  const [sections, setSections] = useState<Section[] | null>(null);
+  const [sections, setSections] = useState<null | Section[]>(null);
   const [studentProgress, setStudentProgress] = useState(0);
   const [sectionProgress, setSectionProgress] = useState({});
   const [currentSection, setCurrentSection] = useState(null);
   const [isVisible, setIsVisible] = useState(false);
   const [coverImage, setCoverImage] = useState<string | null>(null);
 
-  async function loadSections(id: string) {
+  const loadSections = async (id: string) => {
     const sectionData = await StorageService.getSectionList(id);
     setSections(sectionData);
-  }
+  };
 
   const checkProgress = async () => {
     const progress = await checkProgressCourse(course.courseId);
@@ -57,9 +57,9 @@ export default function CourseOverviewScreen({ route }: CourseOverviewScreenProp
   useEffect(() => {
     let componentIsMounted = true;
 
-    async function loadData() {
+    const loadData = async () => {
       await loadSections(course.courseId);
-    }
+    };
 
     if (componentIsMounted) {
       loadData();
@@ -272,4 +272,6 @@ export default function CourseOverviewScreen({ route }: CourseOverviewScreenProp
       </View>
     </>
   );
-}
+};
+
+export default CourseOverviewScreen;

@@ -6,6 +6,7 @@ import defaultImage from "../assets/images/defaultImage-base64.json";
 import * as FileSystem from "expo-file-system";
 import jwt from "expo-jwt";
 import Constants from "expo-constants";
+import { ApiSection, Section } from "@/types/section";
 
 const SUB_COURSE_LIST = "@subCourseList";
 const USER_ID = "@userId";
@@ -296,61 +297,36 @@ export const refreshSection = async (section) => {
   }
 };
 
+export const refreshSectionList = (sectionList: ApiSection[]): Section[] => {
+  return sectionList.map<Section>((s) => ({
+    title: s.title,
+    sectionId: s._id,
+    parentCourseId: s.parentCourse,
+    description: s.description,
+    components: s.components,
+    total: s.totalPoints,
+  }));
+};
+
 /**
  * Retrieves a list of sections for a specific course.
  * @param {string} course_id - The ID of the course.
  * @returns {Promise<Array>} A promise that resolves with a list of sections for the course.
  */
-export const getSectionList = async (course_id: string) => {
-  let sectionList = null;
+export const getSectionList = async (course_id: string): Promise<Section[]> => {
   try {
-    if (isOnline) {
-      sectionList = await api.getAllSections(course_id);
-    } else {
-      throw new Error("No internet connection in getSectionList");
-    }
-  } catch (error) {
-    // Use locally stored section if they exist and the DB cannot be reached
-    try {
-      sectionList = JSON.parse(await AsyncStorage.getItem("S" + course_id));
-      throw new Error("JSON parse error in getSectionList" + error);
-    } catch (e) {
-      handleError(e, "getSectionList");
-    }
-  } finally {
+    const sectionList = await api.getAllSections(course_id);
     return await refreshSectionList(sectionList);
+  } catch (e) {
+    handleError(e, "getSectionList");
   }
-};
-
-/**
- * Refreshes the section list with updated data.
- * @param {Array} sectionList - The list of sections to refresh.
- * @returns {Promise<Array>} A promise that resolves with the refreshed section list.
- */
-export const refreshSectionList = async (sectionList) => {
-  let newSectionList = [];
   try {
-    if (sectionList !== null) {
-      for (const section of sectionList) {
-        newSectionList.push({
-          title: section.title,
-          sectionId: section._id,
-          parentCourseId: section.parentCourse,
-          description: section.description,
-          components: section.components,
-          total: section.totalPoints,
-        });
-      }
-    } else {
-      throw new Error(
-        "Error in refreshSectionList: Missing field in sectionList",
-      );
-    }
-  } catch (error) {
-    handleError(error, "refreshSectionList");
-  } finally {
-    //Returns new fitted section list, or empty list if there was no data fetched from DB or Storage,
-    return newSectionList;
+    const raw = (await AsyncStorage.getItem("S" + course_id)) ?? "null";
+    const sectionList = JSON.parse(raw);
+    return await refreshSectionList(sectionList);
+  } catch (e) {
+    handleError(e, "getSectionList");
+    return await refreshSectionList([]);
   }
 };
 
