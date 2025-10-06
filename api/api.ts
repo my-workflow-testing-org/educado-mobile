@@ -1,13 +1,14 @@
 import { backEndClient } from "../axios";
 import { isAxiosError } from "axios";
 import { Buffer } from "buffer";
+import type component from "@/types/component"
 
 const timeoutInMs = 1200;
 
 /**
  * Get components for a specific section
  */
-export const getComponents = async (sectionId: string) => {
+export const getComponents = async (sectionId: string) : Promise<component[]> =>  {
   try {
     const res = await backEndClient.get(
       `/api/courses/sections/${sectionId}/components`,

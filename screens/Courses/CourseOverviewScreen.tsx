@@ -9,27 +9,34 @@ import { useNavigation } from "@react-navigation/native";
 import CustomProgressBar from "@/components/Exercise/CustomProgressBar";
 import SubscriptionCancelButton from "@/components/Section/CancelSubscriptionButton";
 import { unsubscribe } from "@/services/storage-service";
-import {
-  checkProgressCourse,
-  checkProgressSection,
-} from "@/services/utils";
+import { checkProgressCourse, checkProgressSection } from "@/services/utils";
 import ContinueSectionButton from "@/components/Section/ContinueSectionButton";
 import Tooltip from "@/components/Onboarding/Tooltip";
 import ImageNotFound from "@/assets/images/imageNotFound.png";
 import DownloadCourseButton from "@/components/Courses/CourseCard/DownloadCourseButton";
 import { getBucketImage } from "@/api/api";
+import type { Course } from "@/types/course";
+import { Section } from "@/types/section";
 
-export default function CourseOverviewScreen({ route }) {
+export interface CourseOverviewScreenProps {
+  route: {
+    params: {
+      course: Course;
+    }
+  }
+}
+
+export default function CourseOverviewScreen({ route }: CourseOverviewScreenProps) {
   const { course } = route.params;
   const navigation = useNavigation();
-  const [sections, setSections] = useState(null);
+  const [sections, setSections] = useState<Section[] | null>(null);
   const [studentProgress, setStudentProgress] = useState(0);
   const [sectionProgress, setSectionProgress] = useState({});
   const [currentSection, setCurrentSection] = useState(null);
   const [isVisible, setIsVisible] = useState(false);
-  const [coverImage, setCoverImage] = useState(null);
+  const [coverImage, setCoverImage] = useState<string | null>(null);
 
-  async function loadSections(id) {
+  async function loadSections(id: string) {
     const sectionData = await StorageService.getSectionList(id);
     setSections(sectionData);
   }
@@ -39,7 +46,7 @@ export default function CourseOverviewScreen({ route }) {
     setStudentProgress(progress);
   };
 
-  const checkProgressInSection = async (sectionId) => {
+  const checkProgressInSection = async (sectionId: string) => {
     const completed = await checkProgressSection(sectionId);
     setSectionProgress((prevProgress) => ({
       ...prevProgress,
@@ -98,11 +105,7 @@ export default function CourseOverviewScreen({ route }) {
       const fetchImage = async () => {
         try {
           const image = await getBucketImage(course.courseId + "_c");
-          if (typeof image === "string") {
-            setCoverImage(image);
-          } else {
-            throw new Error();
-          }
+          setCoverImage(image);
         } catch (error) {
           console.error(error);
         }
@@ -245,13 +248,18 @@ export default function CourseOverviewScreen({ route }) {
               {/* Section Cards */}
               <View>
                 {sections.map((section, i) => {
-                  const completedComponents = sectionProgress[section.sectionId] || 0;
-                  return <SectionCard
+                  const completedComponents =
+                    sectionProgress[section.sectionId] || 0;
+                  return (
+                    <SectionCard
                       numOfEntries={section.components.length}
                       title={section.title}
-                      icon="chevron-right" key={i}
+                      icon="chevron-right"
+                      key={i}
                       progress={completedComponents}
-                      onPress={() => navigateToSpecifiedSection(section)}></SectionCard>;
+                      onPress={() => navigateToSpecifiedSection(section)}
+                    ></SectionCard>
+                  );
                 })}
               </View>
             </View>

@@ -247,7 +247,7 @@ const refreshCourseList = async (courseList) => {
  * @param {string} courseId - The ID of the sectiom
  * @returns {Promise<Object>} A promise that resolves with the section object.
  */
-export const getSection = async (sectionId) => {
+export const getSection = async (sectionId: string) => {
   let section = null;
   try {
     if (isOnline) {
@@ -301,7 +301,7 @@ export const refreshSection = async (section) => {
  * @param {string} course_id - The ID of the course.
  * @returns {Promise<Array>} A promise that resolves with a list of sections for the course.
  */
-export const getSectionList = async (course_id) => {
+export const getSectionList = async (course_id: string) => {
   let sectionList = null;
   try {
     if (isOnline) {

@@ -1,18 +1,30 @@
 import React, { useState, useEffect } from "react";
 import { View, TouchableOpacity } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { NavigationProp, RouteProp, useNavigation } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import Text from "@/components/General/Text";
 import * as StorageService from "@/services/storage-service";
 import { checkProgressSection } from "@/services/utils";
 import { ScrollView } from "react-native-gesture-handler";
 import PropTypes from "prop-types";
 import SectionCard from "@/components/Section/SectionCard";
+import { Component } from "@/types/component"
+import { Course } from "@/types/course";
+import { Section } from "@/types/section";
 
 
-export default function SectionScreen({ route }) {
+export interface SectionScreenProps {
+  route: {
+    params: {
+      section: Section,
+      course: Course
+    }
+  }
+}
+
+export default function SectionScreen({ route }: SectionScreenProps) {
   const { course, section } = route.params;
-  const [components, setComponents] = useState(null);
+  const [components, setComponents] = useState([]);
   const [completedCompAmount, setCompletedCompAmount] = useState(0);
 
   const navigation = useNavigation();
@@ -50,7 +62,7 @@ export default function SectionScreen({ route }) {
   const navigateBack = () => {
     navigation.goBack();
   };
-  const navigateToComponent = (compIndex) => {
+  const navigateToComponent = (compIndex: number) => {
     navigation.navigate("Components", {
       section: section,
       parsedCourse: course,
@@ -58,7 +70,7 @@ export default function SectionScreen({ route }) {
     });
   };
 
-  const getIcon = (component) => {
+  const getIcon = (component: Component) => {
     return component.type === 'exercise' ? (
       'book-open-blank-variant'
     ) : component.component.contentType === 'text' ? (
@@ -91,7 +103,7 @@ export default function SectionScreen({ route }) {
       {components ? (
         components.length === 0 ? null : (
           <View>
-            {components.map((component, i) => {
+            {components.map((component: Component, i) => {
               const isDisabled = i > completedCompAmount;
               const [progress, amount] = getProgressStatus(i);
               return (

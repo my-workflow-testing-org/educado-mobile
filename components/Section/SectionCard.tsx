@@ -23,8 +23,7 @@ export default function SectionCard({
   disabledIcon?: icons;
   disableProgressNumbers?: boolean;
 }) {
-  disableProgressNumbers =
-    disableProgressNumbers === undefined ? false : disableProgressNumbers;
+  disableProgressNumbers ??= false;
   const isComplete = progress === numOfEntries;
   const inProgress = 0 < progress && progress < numOfEntries;
   const progressText = isComplete
