@@ -1,29 +1,25 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Alert, View, TouchableOpacity, Image } from "react-native";
-import Text from "../../components/General/Text";
-import * as StorageService from "../../services/storage-service";
-import SectionCard from "../../components/Section/SectionCard";
+import Text from "@/components/General/Text";
+import * as StorageService from "@/services/storage-service";
+import SectionCard from "@/components/Section/SectionCard";
 import { ScrollView } from "react-native-gesture-handler";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import CustomProgressBar from "../../components/Exercise/CustomProgressBar";
-import SubscriptionCancelButton from "../../components/Section/CancelSubscriptionButton";
-import { unsubscribe } from "../../services/storage-service";
-import PropTypes from "prop-types";
+import CustomProgressBar from "@/components/Exercise/CustomProgressBar";
+import SubscriptionCancelButton from "@/components/Section/CancelSubscriptionButton";
+import { unsubscribe } from "@/services/storage-service";
 import {
   checkProgressCourse,
   checkProgressSection,
-} from "../../services/utils";
-import ContinueSectionButton from "../../components/Section/ContinueSectionButton";
-import Tooltip from "../../components/Onboarding/Tooltip";
-import ImageNotFound from "../../assets/images/imageNotFound.png";
-import DownloadCourseButton from "../../components/Courses/CourseCard/DownloadCourseButton";
-import { getBucketImage } from "../../api/api";
+} from "@/services/utils";
+import ContinueSectionButton from "@/components/Section/ContinueSectionButton";
+import Tooltip from "@/components/Onboarding/Tooltip";
+import ImageNotFound from "@/assets/images/imageNotFound.png";
+import DownloadCourseButton from "@/components/Courses/CourseCard/DownloadCourseButton";
+import { getBucketImage } from "@/api/api";
 
 export default function CourseOverviewScreen({ route }) {
-  CourseOverviewScreen.propTypes = {
-    route: PropTypes.object,
-  };
   const { course } = route.params;
   const navigation = useNavigation();
   const [sections, setSections] = useState(null);
@@ -249,16 +245,13 @@ export default function CourseOverviewScreen({ route }) {
               {/* Section Cards */}
               <View>
                 {sections.map((section, i) => {
-                  const completedComponents =
-                    sectionProgress[section.sectionId] || 0;
-                  return (
-                    <SectionCard
-                      key={i}
-                      section={section}
+                  const completedComponents = sectionProgress[section.sectionId] || 0;
+                  return <SectionCard
+                      numOfEntries={section.components.length}
+                      title={section.title}
+                      icon="chevron-right" key={i}
                       progress={completedComponents}
-                      onPress={() => navigateToSpecifiedSection(section)}
-                    ></SectionCard>
-                  );
+                      onPress={() => navigateToSpecifiedSection(section)}></SectionCard>;
                 })}
               </View>
             </View>

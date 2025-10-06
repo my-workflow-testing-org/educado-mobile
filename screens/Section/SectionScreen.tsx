@@ -1,12 +1,13 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { View, TouchableOpacity } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import Text from "../../components/General/Text";
-import * as StorageService from "../../services/storage-service";
-import { checkProgressSection } from "../../services/utils";
+import Text from "@/components/General/Text";
+import * as StorageService from "@/services/storage-service";
+import { checkProgressSection } from "@/services/utils";
 import { ScrollView } from "react-native-gesture-handler";
 import PropTypes from "prop-types";
+import SectionCard from "@/components/Section/SectionCard";
 
 export default function SectionScreen({ route }) {
   const { course, section } = route.params;
@@ -37,14 +38,13 @@ export default function SectionScreen({ route }) {
   }, []);
 
   const getProgressStatus = (compIndex) => {
-    if (compIndex < completedCompAmount) {
-      return "Concluído";
-    } else if (compIndex == completedCompAmount) {
-      return "Em progresso";
+    if(compIndex < completedCompAmount) {
+      return [2,2];
     } else {
-      return "Não iniciado";
+      return [0,2];
     }
   };
+
 
   const navigateBack = () => {
     navigation.goBack();
@@ -55,6 +55,14 @@ export default function SectionScreen({ route }) {
       parsedCourse: course,
       parsedComponentIndex: compIndex,
     });
+  };
+
+  const getIcon = (component) => {
+    return component.type === 'exercise' ? (
+      'book-open-blank-variant'
+    ) : component.component.contentType === 'text' ? (
+      'book-edit'
+    ) : 'play-circle';
   };
 
   return (
@@ -84,56 +92,19 @@ export default function SectionScreen({ route }) {
           <View>
             {components.map((component, i) => {
               const isDisabled = i > completedCompAmount;
+              const [progress, amount] = getProgressStatus(i);
               return (
-                <TouchableOpacity
+                <SectionCard
+                  disableProgressNumbers={true}
+                  numOfEntries={amount}
+                  progress={progress}
+                  title={component.component.title}
+                  icon={getIcon(component)}
+                  disabledIcon="lock-outline"
                   key={i}
-                  className={`shadow-opacity-[0.3] elevation-[8] mx-[18] mb-[15] overflow-hidden rounded-lg border-[1px] border-lightGray bg-secondary shadow-lg ${isDisabled ? "opacity-50" : ""}`}
-                  onPress={() => {
-                    navigateToComponent(i);
-                  }}
+                  onPress={() => navigateToComponent(i)}
                   disabled={isDisabled}
-                >
-                  <View className="flex-row items-center justify-between px-[25] py-[15]">
-                    <View>
-                      <Text className="font-montserrat-bold text-[18px]">
-                        {component.component.title}
-                      </Text>
-                      <Text>
-                        {getProgressStatus(i)}
-                        {i < completedCompAmount ? (
-                          <MaterialCommunityIcons
-                            testID={"check-circle"}
-                            name={"check-circle"}
-                            size={16}
-                            color="green"
-                          />
-                        ) : (
-                          ""
-                        )}
-                      </Text>
-                    </View>
-
-                    {component.type === "exercise" ? (
-                      <MaterialCommunityIcons
-                        name="book-open-blank-variant"
-                        size={30}
-                        color="#166276"
-                      />
-                    ) : component.component.contentType === "text" ? (
-                      <MaterialCommunityIcons
-                        name="book-edit"
-                        size={30}
-                        color="#166276"
-                      />
-                    ) : (
-                      <MaterialCommunityIcons
-                        name="play-circle"
-                        size={30}
-                        color="#166276"
-                      />
-                    )}
-                  </View>
-                </TouchableOpacity>
+                />
               );
             })}
           </View>

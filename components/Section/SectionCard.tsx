@@ -1,70 +1,68 @@
-import { View, TouchableOpacity } from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import Text from "../General/Text";
-import PropTypes from "prop-types";
+import React from 'react';
+import { View, TouchableOpacity } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import Text from '@/components/General/Text';
 
 /**
  * A component that displays a section card with collapsible content.
- * @param {Object} section - The section object containing the section data.
  * @param {Number} progress - The progress containing the student's progress.
+ * @param {Number} numOfEntries - How many total entries are there
+ * @param {string} title - Title of the card
  * @param {Function} onPress - The callback function to navigate
+ * @param {boolean} disabled - Is the card disabled
+ * @param {string} icon - Non disabled icon
+ * @param {string} disabledIcon
+ * @param {boolean} disableProgressNumbers - Disable the progression numbers
  * @returns {JSX.Element} - The SectionCard component.
  */
-export default function SectionCard({ section, progress, onPress }) {
-  const isComplete = progress === section.components.length;
-  const inProgress = 0 < progress && progress < section.components.length;
-  const progressText = isComplete
-    ? "Concluído"
-    : inProgress
-      ? "Em progresso"
-      : "Não iniciado";
-  const progressTextColor = isComplete ? "text-success" : "text-projectBlack";
+export default function SectionCard({ numOfEntries, title, progress, onPress, disabled, icon, disabledIcon, disableProgressNumbers }) {
+  disableProgressNumbers = disableProgressNumbers === undefined ? false : disableProgressNumbers;
+  const isComplete = progress === numOfEntries ;
+  const inProgress = 0 < progress && progress < numOfEntries;
+  const progressText = isComplete ? 'Concluído' : inProgress ? 'Em progresso' : 'Não iniciado';
+  const progressTextColor = isComplete ? 'text-success' : 'text-projectBlack';
+  disabledIcon = disabledIcon ? disabledIcon : 'lock-outline';
+
 
   return (
     <View>
       <TouchableOpacity
-        className="shadow-opacity-[0.3] elevation-[8] mx-[18] mb-[15] overflow-hidden rounded-lg border-[1px] border-lightGray bg-secondary shadow-lg"
+        className={`bg-secondary rounded-lg box-shadow-lg shadow-opacity-[1] mb-[15] mx-[18] overflow-hidden elevation-[8] ${disabled ? 'bg-bgLockedLesson' : ''}`}
         onPress={onPress}
+        disabled={disabled}
       >
         <View className="flex-row items-center justify-between px-[25] py-[15]">
           <View>
-            <Text className="mb-2 font-montserrat-bold text-[16px] text-projectBlack">
-              {section.title}
+            <Text className="text-[16px] font-montserrat-bold text-projectBlack mb-2">
+              {title}
             </Text>
 
             <View className="flex-row items-center">
-              <Text
-                className={`font-montserrat text-[14px] ${progressTextColor}`}
-              >
-                {/* progress */}
-                {progress}/{section.components.length} {progressText}
+              <Text className={`text-[14px] font-montserrat ${progressTextColor}`}>
+                { disableProgressNumbers ? '' : progress + '/' +numOfEntries}
+                {' ' + progressText}
               </Text>
-              <View className="ml-2">
-                {isComplete && (
-                  <MaterialCommunityIcons
-                    testID={"check-circle"}
-                    name={"check-circle"}
-                    size={14}
-                    color="green"
-                  />
-                )}
-              </View>
             </View>
           </View>
-          <MaterialCommunityIcons
-            testID="chevron-right"
-            name="chevron-right"
-            size={25}
-            color="gray"
-          />
+          { disabled ? (
+            <MaterialCommunityIcons
+              testID="chevron-right"
+              name={disabledIcon}
+              size={25}
+              color="gray"
+            />
+          ) : (
+            <MaterialCommunityIcons
+              testID="chevron-right"
+              name={icon}
+              size={25}
+              color="gray"
+            />
+          )
+          }
         </View>
       </TouchableOpacity>
+
     </View>
   );
 }
-
-SectionCard.propTypes = {
-  section: PropTypes.object,
-  progress: PropTypes.number,
-  onPress: PropTypes.func,
-};
