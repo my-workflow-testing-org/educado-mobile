@@ -1,10 +1,9 @@
-import React from "react";
 import { View, TouchableOpacity } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Text from "@/components/General/Text";
-type icons = keyof typeof MaterialCommunityIcons.glyphMap;
+type Icons = keyof typeof MaterialCommunityIcons.glyphMap;
 
-export default function SectionCard({
+const SectionCard = ({
   numOfEntries,
   title,
   progress,
@@ -18,11 +17,11 @@ export default function SectionCard({
   title: string;
   progress: number;
   onPress: () => void;
-  icon: icons;
+  icon: Icons;
   disabled?: boolean;
-  disabledIcon?: icons;
+  disabledIcon?: Icons;
   disableProgressNumbers?: boolean;
-}) {
+}) => {
   disableProgressNumbers ??= false;
   const isComplete = progress === numOfEntries;
   const inProgress = 0 < progress && progress < numOfEntries;
@@ -75,4 +74,6 @@ export default function SectionCard({
       </TouchableOpacity>
     </View>
   );
-}
+};
+
+export default SectionCard;

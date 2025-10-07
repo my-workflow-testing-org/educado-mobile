@@ -1,8 +1,8 @@
-import { backEndClient } from "../axios";
+import { backEndClient } from "@/axios";
 import { isAxiosError } from "axios";
 import { Buffer } from "buffer";
-import type { Component } from "@/types/component"
-import type { Section } from "@/types/section"
+import type { Component } from "@/types/component";
+import type { Section } from "@/types/section";
 import type { Course } from "@/types/course";
 
 const timeoutInMs = 1200;
@@ -10,7 +10,9 @@ const timeoutInMs = 1200;
 /**
  * Get components for a specific section
  */
-export const getComponents = async (sectionId: string) : Promise<Component[]> =>  {
+export const getComponents = async (
+  sectionId: string,
+): Promise<Component[]> => {
   try {
     const res = await backEndClient.get(
       `/api/courses/sections/${sectionId}/components`,
@@ -94,7 +96,10 @@ export const getAllSections = async (courseId: string): Promise<Section[]> => {
 /**
  * Get a specific section. Same as @see {@link getSectionById}
  */
-export const getSection = async (courseId: string, sectionId: string): Promise<Section> => {
+export const getSection = async (
+  courseId: string,
+  sectionId: string,
+): Promise<Section> => {
   try {
     const res = await backEndClient.get(
       `/api/courses/${courseId}/sections/${sectionId}`,

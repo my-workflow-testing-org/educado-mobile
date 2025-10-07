@@ -1,4 +1,5 @@
-import React, { useState, useEffect, ReactElement } from "react";
+import { useState, useEffect } from "react";
+import type { ReactElement } from "react";
 import { Alert, View, TouchableOpacity, Image } from "react-native";
 import Text from "@/components/General/Text";
 import * as StorageService from "@/services/storage-service";
@@ -26,23 +27,22 @@ export interface CourseOverviewScreenProps {
   };
 }
 
-const CourseOverviewScreen = ({ route }: CourseOverviewScreenProps): ReactElement => {
+const CourseOverviewScreen = ({
+  route,
+}: CourseOverviewScreenProps): ReactElement => {
   const { course } = route.params;
   const navigation = useNavigation();
   const [sections, setSections] = useState<null | Section[]>(null);
   const [studentProgress, setStudentProgress] = useState(0);
-  const [sectionProgress, setSectionProgress] = useState<{[key: string]: number}>({});
+  const [sectionProgress, setSectionProgress] = useState<{
+    [key: string]: number;
+  }>({});
   const [currentSection, setCurrentSection] = useState<Section | null>(null);
   const [coverImage, setCoverImage] = useState<string | null>(null);
 
   const loadSections = async (id: string) => {
     const sectionData = await StorageService.getSectionList(id);
     setSections(sectionData);
-  };
-
-  const checkProgress = async () => {
-    const progress = await checkProgressCourse(course.courseId);
-    setStudentProgress(progress);
   };
 
   const checkProgressInSection = async (sectionId: string) => {
@@ -67,7 +67,7 @@ const CourseOverviewScreen = ({ route }: CourseOverviewScreenProps): ReactElemen
     return () => {
       componentIsMounted = false;
     };
-  }, []);
+  }, [course.courseId]);
 
   useEffect(() => {
     if (sections) {
@@ -88,6 +88,11 @@ const CourseOverviewScreen = ({ route }: CourseOverviewScreenProps): ReactElemen
   }, [sectionProgress, sections]);
 
   useEffect(() => {
+    const checkProgress = async () => {
+      const progress = await checkProgressCourse(course.courseId);
+      setStudentProgress(progress);
+    };
+
     const update = navigation.addListener("focus", () => {
       checkProgress();
       if (sections) {
@@ -97,7 +102,7 @@ const CourseOverviewScreen = ({ route }: CourseOverviewScreenProps): ReactElemen
       }
     });
     return update;
-  }, [navigation]);
+  }, [course.courseId, navigation, sections]);
 
   useEffect(() => {
     if (!coverImage && course) {
@@ -111,7 +116,7 @@ const CourseOverviewScreen = ({ route }: CourseOverviewScreenProps): ReactElemen
       };
       fetchImage();
     }
-  }, [course]);
+  }, [course, coverImage]);
 
   const unsubAlert = () =>
     Alert.alert("Cancelar subscrição", "Tem certeza?", [
