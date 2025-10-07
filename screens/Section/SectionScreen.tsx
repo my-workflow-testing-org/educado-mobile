@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+import type { ReactElement } from "react";
 import { View, TouchableOpacity } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
@@ -6,40 +7,38 @@ import Text from "@/components/General/Text";
 import * as StorageService from "@/services/storage-service";
 import { checkProgressSection } from "@/services/utils";
 import { ScrollView } from "react-native-gesture-handler";
-import PropTypes from "prop-types";
 import SectionCard from "@/components/Section/SectionCard";
-import { Component } from "@/types/component"
+import { Component } from "@/types/component";
 import { Course } from "@/types/course";
 import { Section } from "@/types/section";
-
 
 export interface SectionScreenProps {
   route: {
     params: {
-      section: Section,
-      course: Course
-    }
-  }
+      section: Section;
+      course: Course;
+    };
+  };
 }
 
-export default function SectionScreen({ route }: SectionScreenProps) {
+const SectionScreen = ({ route }: SectionScreenProps): ReactElement => {
   const { course, section } = route.params;
   const [components, setComponents] = useState([]);
   const [completedCompAmount, setCompletedCompAmount] = useState(0);
 
   const navigation = useNavigation();
-  async function loadComponents(id: string) {
+  const loadComponents = async (id: string) => {
     const componentsData = await StorageService.getComponentList(id);
     setComponents(componentsData);
-  }
+  };
 
   useEffect(() => {
     let componentIsMounted = true;
 
-    async function loadData() {
+    const loadData = async () => {
       await loadComponents(section.sectionId);
       setCompletedCompAmount(await checkProgressSection(section.sectionId));
-    }
+    };
 
     if (componentIsMounted) {
       loadData();
@@ -48,20 +47,20 @@ export default function SectionScreen({ route }: SectionScreenProps) {
     return () => {
       componentIsMounted = false;
     };
-  }, []);
+  }, [section.sectionId]);
 
   const getProgressStatus = (compIndex: number) => {
-    if(compIndex < completedCompAmount) {
-      return [2,2];
+    if (compIndex < completedCompAmount) {
+      return [2, 2];
     } else {
-      return [0,2];
+      return [0, 2];
     }
   };
-
 
   const navigateBack = () => {
     navigation.goBack();
   };
+
   const navigateToComponent = (compIndex: number) => {
     navigation.navigate("Components", {
       section: section,
@@ -71,11 +70,11 @@ export default function SectionScreen({ route }: SectionScreenProps) {
   };
 
   const getIcon = (component: Component) => {
-    return component.type === 'exercise' ? (
-      'book-open-blank-variant'
-    ) : component.component.contentType === 'text' ? (
-      'book-edit'
-    ) : 'play-circle';
+    return component.type === "exercise"
+      ? "book-open-blank-variant"
+      : component.component.contentType === "text"
+        ? "book-edit"
+        : "play-circle";
   };
 
   return (
@@ -91,7 +90,7 @@ export default function SectionScreen({ route }: SectionScreenProps) {
         <View className="flex-none items-center justify-center py-6">
           <Text className="font-montserrat text-[20px]">{course.title}</Text>
         </View>
-        <View className="flex-inital py-2">
+        <View className="flex-initial py-2">
           <Text className="font-montserrat-bold text-[28px]">
             {section.title}
           </Text>
@@ -125,13 +124,6 @@ export default function SectionScreen({ route }: SectionScreenProps) {
       ) : null}
     </ScrollView>
   );
-}
-
-SectionScreen.propTypes = {
-  route: PropTypes.shape({
-    params: PropTypes.shape({
-      section: PropTypes.object.isRequired,
-      course: PropTypes.object.isRequired,
-    }).isRequired,
-  }).isRequired,
 };
+
+export default SectionScreen;
