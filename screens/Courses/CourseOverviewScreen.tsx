@@ -18,6 +18,7 @@ import DownloadCourseButton from "@/components/Courses/CourseCard/DownloadCourse
 import { getBucketImage } from "@/api/api";
 import type { Course } from "@/types/course";
 import type { Section } from "@/types/section";
+import { Shadow } from "react-native-shadow-2";
 
 export interface CourseOverviewScreenProps {
   route: {
@@ -182,49 +183,53 @@ const CourseOverviewScreen = ({
                 <Image className="h-full max-w-full" source={ImageNotFound} />
               )}
             </View>
-            <View className="mt-[-10%] flex w-[293px] rounded-xl bg-projectWhite p-[14px]">
-              <View className="flex flex-row justify-between">
-                {/* Course Title */}
-                <Text className="line-height-[29px] max-w-[80%] font-montserrat-bold text-[24px]">
-                  {course.title}
-                </Text>
-                {/* TODO: Button to download course should be implemented */}
-                <DownloadCourseButton course={course} disabled={true} />
-              </View>
-              {/* Progress Bar */}
-              <View className="flex h-6 justify-center rounded-sm border-y-[1px] border-lightGray">
-                <CustomProgressBar
-                  width={63}
-                  progress={studentProgress}
-                  height={1}
-                  displayLabel={false}
-                ></CustomProgressBar>
-              </View>
+            <View className="mt-[-10%]">
+              <Shadow startColor="#28363E14" distance={6} offset={[0, 3]}>
+                <View className="flex w-[293px] bg-projectWhite p-[14px]" style={{borderRadius:10, transform: [{scale: 1.02}]}}>
+                  <View className="flex flex-row justify-between">
+                    {/* Course Title */}
+                    <Text className="line-height-[29px] max-w-[80%] font-montserrat-bold text-[24px]">
+                      {course.title}
+                    </Text>
+                    {/* TODO: Button to download course should be implemented */}
+                    <DownloadCourseButton course={course} disabled={true} />
+                  </View>
+                  {/* Progress Bar */}
+                  <View className="flex h-6 justify-center rounded-sm border-y-[1px] border-lightGray">
+                    <CustomProgressBar
+                      width={63}
+                      progress={studentProgress}
+                      height={1}
+                      displayLabel={false}
+                    ></CustomProgressBar>
+                  </View>
 
-              <View className="flex w-full flex-row items-center justify-between">
-                <View className="flex flex-row">
-                  <MaterialCommunityIcons
-                    name="crown-circle"
-                    size={20}
-                    color="orange"
-                  />
-                  {/* TODO: Points should be implemented */}
-                  <Text>?? pontos</Text>
+                  <View className="flex w-full flex-row items-center justify-between">
+                    <View className="flex flex-row">
+                      <MaterialCommunityIcons
+                        name="crown-circle"
+                        size={20}
+                        color="orange"
+                      />
+                      {/* TODO: Points should be implemented */}
+                      <Text>?? pontos</Text>
+                    </View>
+                    <MaterialCommunityIcons
+                      name="circle-small"
+                      size={30}
+                      color="gray"
+                    />
+                    <View className="flex flex-row">
+                      <MaterialCommunityIcons
+                        name="lightning-bolt"
+                        size={20}
+                        color="orange"
+                      />
+                      <Text>{studentProgress}% concluído</Text>
+                    </View>
+                  </View>
                 </View>
-                <MaterialCommunityIcons
-                  name="circle-small"
-                  size={30}
-                  color="gray"
-                />
-                <View className="flex flex-row">
-                  <MaterialCommunityIcons
-                    name="lightning-bolt"
-                    size={20}
-                    color="orange"
-                  />
-                  <Text>{studentProgress}% concluído</Text>
-                </View>
-              </View>
+              </Shadow>
             </View>
           </View>
         </View>
@@ -235,7 +240,7 @@ const CourseOverviewScreen = ({
         {/* Conditionally render the sections if they exist */}
         {sections ? (
           sections.length === 0 ? null : (
-            <View className="flex-[1] flex-col bg-secondary">
+            <View className="flex-[1] flex-col">
               <Tooltip
                 position={{
                   top: -30,
@@ -271,11 +276,8 @@ const CourseOverviewScreen = ({
             </View>
           )
         ) : null}
-      </ScrollView>
-      <View className="bg-secondary">
-        {/* Unsubscribe Button */}
         <SubscriptionCancelButton onPress={unsubAlert} />
-      </View>
+      </ScrollView>
     </>
   );
 };
