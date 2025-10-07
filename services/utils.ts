@@ -297,7 +297,7 @@ export async function checkProgressCourse(courseId) {
 }
 
 // Returns the students progress of a section
-export async function checkProgressSection(sectionId: string) {
+export async function checkProgressSection(sectionId) {
   const student = await StorageService.getStudentInfo();
   const section = await StorageService.getSection(sectionId);
 

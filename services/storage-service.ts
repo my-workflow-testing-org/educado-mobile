@@ -1,12 +1,13 @@
-import * as api from "../api/api";
-import * as userApi from "../api/user-api";
+import * as api from "@/api/api";
+import * as userApi from "@/api/user-api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { NetworkStatusService } from "./network-status-service";
-import defaultImage from "../assets/images/defaultImage-base64.json";
+import { NetworkStatusService } from "@/services/network-status-service";
+import defaultImage from "@/assets/images/defaultImage-base64.json";
 import * as FileSystem from "expo-file-system";
 import jwt from "expo-jwt";
 import Constants from "expo-constants";
 import { ApiSection, Section } from "@/types/section";
+import { StudentInfo } from "@/types/student"
 
 const SUB_COURSE_LIST = "@subCourseList";
 const USER_ID = "@userId";
@@ -21,9 +22,9 @@ let isOnline = true;
  * Updates the network status.
  * @param {boolean} networkStatus - The current network status.
  */
-const updateNetworkStatus = (networkStatus) => {
+const updateNetworkStatus = (networkStatus: boolean) => {
   isOnline = networkStatus;
-};
+}
 
 NetworkStatusService.getInstance().addObserver({ update: updateNetworkStatus });
 
@@ -31,9 +32,9 @@ NetworkStatusService.getInstance().addObserver({ update: updateNetworkStatus });
 
 /**
  * Retrieves the login token from AsyncStorage.
- * @returns {Promise<Boolean>} A promise that resolves with the a true or false value.
+ * @returns a promise of the existing token, that can be a string or null if it does not exist.
  */
-export const getLoginToken = async () => {
+export const getLoginToken = async (): Promise<string | null> => {
   return await AsyncStorage.getItem(LOGIN_TOKEN);
 };
 
@@ -41,7 +42,7 @@ export const getLoginToken = async () => {
  * Check if login token is valid.
  * @returns {boolean} Returns a boolean indicating whether the token is valid.
  */
-export const isLoginTokenValid = async () => {
+export const isLoginTokenValid = async (): Promise<boolean> => {
   const token = await getLoginToken();
   try {
     if (token === null) {
@@ -49,6 +50,7 @@ export const isLoginTokenValid = async () => {
     }
 
     // Access JWT_SECRET
+    // @ts-expect-error The possible return values are handled below.
     const jwtSecret = Constants.expoConfig.extra.JWT_SECRET;
 
     const decodedToken = jwt.decode(token, jwtSecret);
@@ -62,9 +64,8 @@ export const isLoginTokenValid = async () => {
     const currentTime = Math.floor(Date.now() / 1000) + 60 * 60 * 3; // Add 3 hours to make sure session do not expire while in use
 
     // Check if the expiration time (exp) is in the future
-    if (decodedToken.exp > currentTime) {
-      return true; // return true if valid time
-    }
+    return decodedToken.exp > currentTime;
+
   } catch (error) {
     console.log(error);
     // An error occurred during decoding or validation
@@ -77,16 +78,15 @@ export const isLoginTokenValid = async () => {
  * Retrieves and stores student information for a given user ID.
  * @param userId - The user ID to retrieve student information for.
  */
-export const setStudentInfo = async (userId) => {
+export const setStudentInfo = async (userId: string) => {
   if (isOnline) {
     try {
       const fetchedStudentInfo = await userApi.getStudentInfo(userId);
       if (fetchedStudentInfo.profilePhoto) {
         try {
-          const photo = await api.getBucketImage(
+          fetchedStudentInfo.photo = await api.getBucketImage(
             fetchedStudentInfo.profilePhoto,
           );
-          fetchedStudentInfo.photo = photo;
         } catch (error) {
           fetchedStudentInfo.photo = null;
           console.log(`Failed to fetch photo. Proceeding without it: ${error}`);
@@ -95,7 +95,8 @@ export const setStudentInfo = async (userId) => {
       await updateStudentInfo(fetchedStudentInfo);
       await AsyncStorage.setItem(STUDENT_ID, fetchedStudentInfo._id); // needs to be seperate
     } catch (error) {
-      throw new Error("API error in getStudentInfo:", error);
+      const errorToThrow = error instanceof Error ? error : new Error(String(error));
+      throw new Error(`API error in getStudentInfo: ${errorToThrow.message}`);
     }
   } else {
     throw new Error("No internet connection in getStudentInfo");
@@ -106,7 +107,7 @@ export const setStudentInfo = async (userId) => {
  * Retrieves student information from AsyncStorage.
  * @returns {Promise<Object>} A promise that resolves with the fetched student information.
  */
-export const getStudentInfo = async () => {
+export const getStudentInfo = async (): Promise<StudentInfo> => {
   return JSON.parse(await AsyncStorage.getItem(STUDENT_INFO));
 };
 

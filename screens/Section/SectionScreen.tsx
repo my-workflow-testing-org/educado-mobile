@@ -62,6 +62,7 @@ const SectionScreen = ({ route }: SectionScreenProps): ReactElement => {
   };
 
   const navigateToComponent = (compIndex: number) => {
+    // @ts-ignore This type error gets fixed when moving to app router
     navigation.navigate("Components", {
       section: section,
       parsedCourse: course,

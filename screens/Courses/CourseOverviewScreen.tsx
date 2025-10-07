@@ -16,7 +16,7 @@ import ImageNotFound from "@/assets/images/imageNotFound.png";
 import DownloadCourseButton from "@/components/Courses/CourseCard/DownloadCourseButton";
 import { getBucketImage } from "@/api/api";
 import type { Course } from "@/types/course";
-import { Section } from "@/types/section";
+import type { Section } from "@/types/section";
 
 export interface CourseOverviewScreenProps {
   route: {
@@ -26,14 +26,13 @@ export interface CourseOverviewScreenProps {
   };
 }
 
-const CourseOverviewScreen = ({ route }): ReactElement => {
+const CourseOverviewScreen = ({ route }: CourseOverviewScreenProps): ReactElement => {
   const { course } = route.params;
   const navigation = useNavigation();
   const [sections, setSections] = useState<null | Section[]>(null);
   const [studentProgress, setStudentProgress] = useState(0);
-  const [sectionProgress, setSectionProgress] = useState({});
-  const [currentSection, setCurrentSection] = useState(null);
-  const [isVisible, setIsVisible] = useState(false);
+  const [sectionProgress, setSectionProgress] = useState<{[key: string]: number}>({});
+  const [currentSection, setCurrentSection] = useState<Section | null>(null);
   const [coverImage, setCoverImage] = useState<string | null>(null);
 
   const loadSections = async (id: string) => {
@@ -84,7 +83,7 @@ const CourseOverviewScreen = ({ route }): ReactElement => {
         const completedComponents = sectionProgress[section.sectionId] || 0;
         return completedComponents < section.components.length;
       });
-      setCurrentSection(incompleteSection);
+      setCurrentSection(incompleteSection || null);
     }
   }, [sectionProgress, sections]);
 
@@ -125,6 +124,7 @@ const CourseOverviewScreen = ({ route }): ReactElement => {
         onPress: () => {
           unsubscribe(course.courseId);
           setTimeout(() => {
+            // @ts-expect-error Fixed when moved to app router
             navigation.navigate("Meus cursos");
           }, 300);
         },
@@ -133,13 +133,15 @@ const CourseOverviewScreen = ({ route }): ReactElement => {
 
   const navigateToCurrentSection = () => {
     if (currentSection) {
+      // @ts-expect-error Fixed when moved to app router
       navigation.navigate("Components", {
         section: currentSection,
         parsedCourse: course,
       });
     }
   };
-  const navigateToSpecifiedSection = (section) => {
+  const navigateToSpecifiedSection = (section: Section) => {
+    // @ts-expect-error Fixed when moved to app router
     navigation.navigate("Section", {
       course: course,
       section: section,
@@ -151,6 +153,7 @@ const CourseOverviewScreen = ({ route }): ReactElement => {
       {/* Back Button */}
       <TouchableOpacity
         className="absolute left-5 top-10 z-10 pr-3"
+        // @ts-expect-error Fixed when moved to app router
         onPress={() => navigation.navigate("Meus cursos")}
       >
         <MaterialCommunityIcons
@@ -166,12 +169,12 @@ const CourseOverviewScreen = ({ route }): ReactElement => {
             <View className="flex w-full items-center justify-between">
               {coverImage ? (
                 <Image
-                  class="h-full max-w-full"
+                  className="h-full max-w-full"
                   source={{ uri: coverImage }}
                   style={{ width: "100%", height: 296, resizeMode: "cover" }}
                 />
               ) : (
-                <Image class="h-full max-w-full" source={ImageNotFound} />
+                <Image className="h-full max-w-full" source={ImageNotFound} />
               )}
             </View>
             <View className="mt-[-10%] flex w-[293px] rounded-xl bg-projectWhite p-[14px]">
@@ -229,14 +232,12 @@ const CourseOverviewScreen = ({ route }): ReactElement => {
           sections.length === 0 ? null : (
             <View className="flex-[1] flex-col bg-secondary">
               <Tooltip
-                isVisible={isVisible}
                 position={{
                   top: -30,
                   left: 70,
                   right: 30,
                   bottom: 24,
                 }}
-                setIsVisible={setIsVisible}
                 text={
                   "Essa é a página do seu curso. É aqui que você vai acessar as aulas e acompanhar seu progresso."
                 }

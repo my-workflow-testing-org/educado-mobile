@@ -1,14 +1,16 @@
 import { backEndClient } from "../axios";
 import { isAxiosError } from "axios";
 import { Buffer } from "buffer";
-import type component from "@/types/component"
+import type { Component } from "@/types/component"
+import type { Section } from "@/types/section"
+import type { Course } from "@/types/course";
 
 const timeoutInMs = 1200;
 
 /**
  * Get components for a specific section
  */
-export const getComponents = async (sectionId: string) : Promise<component[]> =>  {
+export const getComponents = async (sectionId: string) : Promise<Component[]> =>  {
   try {
     const res = await backEndClient.get(
       `/api/courses/sections/${sectionId}/components`,
@@ -23,7 +25,7 @@ export const getComponents = async (sectionId: string) : Promise<component[]> =>
   }
 };
 
-export const getSectionById = async (sectionId: string) => {
+export const getSectionById = async (sectionId: string): Promise<Section> => {
   try {
     const res = await backEndClient.get(`/api/sections/${sectionId}`);
     return res.data;
@@ -39,7 +41,7 @@ export const getSectionById = async (sectionId: string) => {
 /**
  * Get a specific course
  */
-export const getCourse = async (courseId: string) => {
+export const getCourse = async (courseId: string): Promise<Course> => {
   try {
     const res = await backEndClient.get(`/api/courses/${courseId}`, {
       timeout: timeoutInMs,
@@ -58,7 +60,7 @@ export const getCourse = async (courseId: string) => {
 /**
  * Get all courses
  */
-export const getCourses = async () => {
+export const getCourses = async (): Promise<Course[]> => {
   try {
     const res = await backEndClient.get("/api/courses");
     return res.data;
@@ -74,7 +76,7 @@ export const getCourses = async () => {
 /**
  * Get all sections for a specific course
  */
-export const getAllSections = async (courseId: string) => {
+export const getAllSections = async (courseId: string): Promise<Section[]> => {
   try {
     const res = await backEndClient.get(`/api/courses/${courseId}/sections`, {
       timeout: timeoutInMs,
@@ -92,7 +94,7 @@ export const getAllSections = async (courseId: string) => {
 /**
  * Get a specific section. Same as @see {@link getSectionById}
  */
-export const getSection = async (courseId: string, sectionId: string) => {
+export const getSection = async (courseId: string, sectionId: string): Promise<Section> => {
   try {
     const res = await backEndClient.get(
       `/api/courses/${courseId}/sections/${sectionId}`,
