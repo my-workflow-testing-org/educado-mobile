@@ -37,6 +37,32 @@ import ShowAlert from "../../components/General/ShowAlert";
 import errorSwitch from "../../components/General/error-switch";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
+import { TextInput } from "react-native";
+
+const ProfileInput = ({ label, required, error, testId, ...props }) => (
+  <View className="mb-8">
+    {}
+    <Text className="mb-1 ml-[10px] text-[18px] font-bold leading-[23.4px] text-[#28363E]">
+      {label}
+      {required ? <Text className="text-[#CC2B2B]">*</Text> : null}
+    </Text>
+
+    {}
+    <TextInput
+      accessibilityLabel={testId}
+      placeholderTextColor="#8FA0AA"
+      className={`h-[59px] w-[326px] self-center rounded-[8px] border bg-[#FDFEFF] px-[16px] py-[10px] text-[16px] text-[#28363E] ${
+        error ? "border-[#CC2B2B]" : "border-[#C1CFD7]"
+      }`}
+      {...props}
+    />
+
+    {}
+    {!!error && (
+      <Text className="mt-1 text-[14px] text-[#CC2B2B]">{error}</Text>
+    )}
+  </View>
+);
 
 /**
  * Edit profile screen
@@ -215,39 +241,48 @@ export default function EditProfileScreen() {
     <SafeAreaView className="bg-secondary">
       <View className="h-full">
         <View>
-          <View className="relative mx-4 mb-6 mt-12">
+          <View className="relative mx-4 mb-6 mt-12 flex flex-row items-center justify-center">
             {/* Back button */}
-            <BackButton onPress={() => navigation.navigate("ProfileHome")} />
+            <BackButton
+              onPress={() => navigation.navigate("ProfileHome")}
+              className="absolute left-0"
+            />
 
             {/* Title */}
-            <Text className="font-sans-bold w-full text-center text-xl">
-              Editar perfil
+            <Text className="-ml-40 font-sans text-[20px] leading-[26px] text-[#141B1F]">
+              Editar Perfil
             </Text>
           </View>
 
-          <View className="flex w-screen flex-row justify-evenly px-6">
+          <View className="flex flex-row items-center justify-center gap-[30px] px-[30px] py-[30px]">
             {/* Profile image */}
             {photo ? (
               <Image
                 source={{ uri: photo }}
-                className="h-24 w-24 rounded-full"
+                className="h-[80px] w-[80px] rounded-[60px] border-[3px] border-[#FDFEFF] bg-[#D8EFF3]"
               />
             ) : (
-              <ProfileNameCircle
-                firstName={fetchedFirstName}
-                lastName={fetchedLastName}
-              />
+              <View className="h-[80px] w-[80px] items-center justify-center overflow-hidden rounded-[60px] bg-[#D8EFF3]">
+                <ProfileNameCircle
+                  firstName={fetchedFirstName}
+                  lastName={fetchedLastName}
+                  className="border-[3px] border-[#FDFEFF] bg-[#D8EFF3]"
+                />
+              </View>
             )}
             {/* Edit image */}
-            <View className="flex flex-col items-center justify-evenly">
-              <FormButton
-                className="py-2"
+            <View className="flex flex-col items-center justify-center gap-[8px]">
+              <TouchableOpacity
+                className="h-[40px] w-[180px] items-center justify-center self-center rounded-[8px] border-[2px] border-[#35A1B1] bg-[#FDFEFF]"
                 onPress={() => navigation.navigate("Camera")}
               >
-                Trocar imagem
-              </FormButton>
+                <Text className="font-sans text-[16px] font-bold text-[#28363E]">
+                  Trocar Imagem
+                </Text>
+              </TouchableOpacity>
+
               <TouchableOpacity onPress={removeImage}>
-                <Text className="text-primary_custom underline">
+                <Text className="text-center text-[18px] leading-[22px] text-[#166276] underline">
                   Remover imagem
                 </Text>
               </TouchableOpacity>
@@ -256,67 +291,67 @@ export default function EditProfileScreen() {
         </View>
 
         <View className="flex w-screen flex-col px-8 pt-8">
-          <View className="mb-8">
-            <FormTextField
-              label="Nome"
-              required={true}
-              placeholder="Insira sua nome"
-              value={firstName}
-              onChangeText={(firstName) => {
-                setFirstName(firstName);
-                validateName(firstName);
-              }}
-              testId="firstName"
-            ></FormTextField>
-            <FormFieldAlert label={firstNameAlert} testId="firstNameAlert" />
-          </View>
-          <View className="mb-8">
-            <FormTextField
-              label="Sobrenome"
-              required={true}
-              placeholder="Insira sua sobrenome"
-              value={lastName}
-              onChangeText={(lastName) => {
-                setLastName(lastName);
-                validateName(lastName);
-              }}
-              testId="lastName"
-            ></FormTextField>
-            <FormFieldAlert label={lastNameAlert} testId="lastNameAlert" />
-          </View>
-          <View className="mb-12">
-            <FormTextField
-              label="E-mail"
-              required={true}
-              placeholder="Insira sua e-mail"
-              value={email}
-              keyboardType="email-address"
-              onChangeText={async (email) => {
-                setEmail(email);
-                validateEmail(email);
-              }}
-              testId="email"
-            ></FormTextField>
-            <FormFieldAlert label={emailAlert} testId="emailAlert" />
-          </View>
+          <ProfileInput
+            label="Nome"
+            required
+            testId="firstName"
+            placeholder="Insira sua nome"
+            value={firstName}
+            onChangeText={(v) => {
+              setFirstName(v);
+              validateName(v);
+            }}
+            autoCapitalize="words"
+            error={firstNameAlert}
+          />
+          <ProfileInput
+            label="Sobrenome"
+            required
+            testId="lastName"
+            placeholder="Insira sua sobrenome"
+            value={lastName}
+            onChangeText={(v) => {
+              setLastName(v);
+              validateName(v);
+            }}
+            autoCapitalize="words"
+            error={lastNameAlert}
+          />
+          <ProfileInput
+            label="E-mail"
+            required
+            testId="email"
+            placeholder="Insira sua e-mail"
+            keyboardType="email-address"
+            autoCapitalize="none"
+            value={email}
+            onChangeText={(v) => {
+              setEmail(v);
+              validateEmail(v);
+            }}
+            error={emailAlert}
+          />
+        </View>
 
-          {/* Change password */}
-          <ChangePasswordModal />
+        <View className="pt-12">
+          <FormButton
+            className={`h-[50px] w-[326px] items-center justify-center self-center rounded-[8px] ${
+              !validateInput() ? "bg-[#A0C1C7]" : "bg-primary_custom"
+            }`}
+            onPress={saveUserInfo}
+            disabled={!validateInput()}
+            style={{ opacity: 1 }}
+          >
+            Salvar alterações
+          </FormButton>
 
-          <View className="flex flex-row items-center justify-between pt-12">
-            <Text
-              className="text-sm text-primary_custom underline"
-              onPress={() => deleteAccountAlert()}
-            >
-              Excluir minha conta
-            </Text>
-            <FormButton
-              onPress={() => saveUserInfo()}
-              disabled={!validateInput()}
-            >
-              Salvar
-            </FormButton>
-          </View>
+          <Text
+            className="mt-4 text-center font-sans-bold text-base underline"
+            style={{ color: "red" }}
+            onPress={deleteAccountAlert}
+          >
+            Excluir minha conta
+          </Text>
         </View>
       </View>
     </SafeAreaView>

@@ -16,8 +16,12 @@ export default function ProfileNameCircle(props) {
   };
 
   return (
-    <View className="aspect-square grid h-24 w-24 items-center justify-center rounded-full bg-profileCircle">
-      <Text className="bg-white mt-2 text-center text-5xl font-bold text-projectWhite">
+    <View
+      className={`aspect-square h-24 w-24 items-center justify-center rounded-full ${props.className ?? ""}`}
+    >
+      <Text
+        className={`mt-2 text-center text-5xl font-bold text-projectWhite ${props.textClassName ?? ""}`}
+      >
         {props.firstName.charAt(0).toUpperCase()}
         {props.lastName.charAt(0).toUpperCase()}
       </Text>
