@@ -36,10 +36,15 @@ const SectionCard = ({
 
   return (
     <View className="mx-[18] mb-[20]">
-      <Shadow startColor="#28363E14" distance={6} offset={[0, 3]} style={{width: '100%'}}>
+      <Shadow
+        startColor="#28363E14"
+        distance={6}
+        offset={[0, 3]}
+        style={{ width: "100%" }}
+      >
         <TouchableOpacity
-          className={`bg-secondary  ${disabled ? "bg-bgLockedLesson" : ""}` }
-          style={{borderRadius:10, transform: [{scale: 1.02}]}}
+          className={`bg-secondary ${disabled ? "bg-bgLockedLesson" : ""}`}
+          style={{ borderRadius: 10, transform: [{ scale: 1.02 }] }}
           onPress={onPress}
           disabled={disabled}
         >

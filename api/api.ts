@@ -27,7 +27,9 @@ export const getComponents = async (
   }
 };
 
-export const getSectionById = async (sectionId: string): Promise<ApiSection> => {
+export const getSectionById = async (
+  sectionId: string,
+): Promise<ApiSection> => {
   try {
     const res = await backEndClient.get(`/api/sections/${sectionId}`);
     return res.data;
@@ -78,7 +80,9 @@ export const getCourses = async (): Promise<ApiCourse[]> => {
 /**
  * Get all sections for a specific course
  */
-export const getAllSections = async (courseId: string): Promise<ApiSection[]> => {
+export const getAllSections = async (
+  courseId: string,
+): Promise<ApiSection[]> => {
   try {
     const res = await backEndClient.get(`/api/courses/${courseId}/sections`, {
       timeout: timeoutInMs,
@@ -135,7 +139,9 @@ export const getLecturesInSection = async (sectionId: string) => {
 /**
  * Get user subscriptions
  */
-export const getSubscriptions = async (userId: string): Promise<ApiCourse[]> => {
+export const getSubscriptions = async (
+  userId: string,
+): Promise<ApiCourse[]> => {
   try {
     // maybe not best practise to pass user ID as request query
     // but this is the only format where it works
