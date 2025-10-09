@@ -31,7 +31,11 @@ const SectionCard = ({
     : inProgress
       ? "Em progresso"
       : "Não iniciado";
-  const progressTextColor = isComplete ? "text-success" : "text-projectBlack";
+  const progressTextColor = isComplete 
+    ? "text-success" 
+    : disabled 
+      ? "text-greyscaleTexticonDisabled" 
+      : "text-greyscaleTexticonSubtitle";
   disabledIcon = disabledIcon ? disabledIcon : "lock-outline";
 
   return (
@@ -44,22 +48,22 @@ const SectionCard = ({
       >
         <TouchableOpacity
           className={`bg-secondary ${disabled ? "bg-disabled" : ""}`}
-          style={{ borderRadius: 10, transform: [{ scale: 1.02 }] }}
+          style={{ borderRadius: 15, transform: [{ scale: 1.02 }] }}
           onPress={onPress}
           disabled={disabled}
         >
-          <View className="flex-row items-center justify-between px-[25] py-[15]">
+          <View className="flex-row items-center justify-between px-[25] py-[15]"> 
             <View>
-              <Text className="mb-2 font-montserrat-bold text-[16px] text-projectBlack">
-                {title}
-              </Text>
+              <Text className="mb-2 font-montserrat text-[18px] text-greyscaleTexticonBody">
+                {title} 
+              </Text> 
 
               <View className="flex-row items-center">
                 <Text
-                  className={`font-montserrat text-[14px] ${progressTextColor}`}
+                  className={`font-montserrat text-[16px] ${progressTextColor}`}
                 >
-                  {disableProgressNumbers ? "" : progress + "/" + numOfEntries}
-                  {" " + progressText}
+                  {disableProgressNumbers ? "" : progress + "/" + numOfEntries + " "}
+                  {progressText}
                 </Text>
               </View>
             </View>
@@ -68,14 +72,14 @@ const SectionCard = ({
                 testID="chevron-right"
                 name={disabledIcon}
                 size={25}
-                color="gray"
+                color="gray" //grayscale primary caption
               />
             ) : (
               <MaterialCommunityIcons
                 testID="chevron-right"
                 name={icon}
                 size={25}
-                color="gray"
+                color="gray" // greyscale primary subtle
               />
             )}
           </View>

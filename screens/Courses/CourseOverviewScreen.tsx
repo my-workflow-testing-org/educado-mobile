@@ -8,10 +8,10 @@ import { ScrollView } from "react-native-gesture-handler";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import CustomProgressBar from "@/components/Exercise/CustomProgressBar";
-import SubscriptionCancelButton from "@/components/Section/CancelSubscriptionButton";
+import { SubscriptionCancelButton } from "@/components/Section/CancelSubscriptionButton";
 import { unsubscribe } from "@/services/storage-service";
 import { checkProgressCourse, checkProgressSection } from "@/services/utils";
-import ContinueSectionButton from "@/components/Section/ContinueSectionButton";
+import { ContinueSectionButton } from "@/components/Section/ContinueSectionButton";
 import Tooltip from "@/components/Onboarding/Tooltip";
 import ImageNotFound from "@/assets/images/imageNotFound.png";
 import DownloadCourseButton from "@/components/Courses/CourseCard/DownloadCourseButton";
@@ -186,18 +186,18 @@ const CourseOverviewScreen = ({
               <Shadow startColor="#28363E14" distance={6} offset={[0, 3]}>
                 <View
                   className="flex w-[293px] bg-secondary p-[14px]"
-                  style={{ borderRadius: 10, transform: [{ scale: 1.02 }] }}
+                  style={{ borderRadius: 15, transform: [{ scale: 1.02 }] }}
                 >
                   <View className="flex flex-row justify-between">
                     {/* Course Title */}
-                    <Text className="line-height-[29px] max-w-[80%] font-montserrat-bold text-[24px]">
+                    <Text className="h-[48px] line-height-[29px] max-w-[80%] font-montserrat text-[24px]">
                       {course.title}
                     </Text>
                     {/* TODO: Button to download course should be implemented */}
                     <DownloadCourseButton course={course} disabled={true} />
                   </View>
                   {/* Progress Bar */}
-                  <View className="flex h-6 justify-center rounded-sm border-y-[1px] border-lightGray">
+                  <View className="flex h-[32px] justify-center rounded-sm border-y-[1px] border-lightGray">
                     <CustomProgressBar
                       width={63}
                       progress={studentProgress}
@@ -214,20 +214,15 @@ const CourseOverviewScreen = ({
                         color="orange"
                       />
                       {/* TODO: Points should be implemented */}
-                      <Text>?? pontos</Text>
+                      <Text className="text-[14px]">?? pontos</Text>
                     </View>
-                    <MaterialCommunityIcons
-                      name="circle-small"
-                      size={30}
-                      color="gray"
-                    />
                     <View className="flex flex-row">
                       <MaterialCommunityIcons
                         name="lightning-bolt"
                         size={20}
                         color="orange"
                       />
-                      <Text>{studentProgress}% concluído</Text>
+                      <Text className="text-[14px]">{studentProgress}% concluído</Text> 
                     </View>
                   </View>
                 </View>

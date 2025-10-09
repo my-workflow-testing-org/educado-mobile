@@ -24,12 +24,16 @@ export const colors = {
   profileCircle: "#166276",
   pointsText: "#C1A146",
   pointsCoin: "#AD872D",
-  progressBar: "#166276",
-  progressBarUnFilled: "#E4E4E4", // This stands more out from the background, but Figma = #E4F2F5
+  progressBar: "#35A1B1",
+  progressBarUnFilled: "#D8EFF3",
   badgesGreen: "#8CC43B",
   badgesPurple: "#C383F7",
   badgesBlue: "#54ADF1",
   unselectedStar: "#CBCAB8",
+  greyscaleTexticonBody:     "#28363E",
+  greyscaleTexticonSubtitle: "#4E6879",
+  greyscaleTexticonDisabled: "#809CAD",
+  greyscaleTexticonCaption:  "#628397",
 } as const;
 
 export type ColorName = keyof typeof colors;

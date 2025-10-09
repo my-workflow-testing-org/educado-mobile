@@ -18,10 +18,10 @@ const SubscriptionCancelButton = ({
         onPress={onPress}
         uppercase={false}
       >
-        <Text className="underline font-montserrat text-[14px]">Retirar curso</Text>
+        <Text className="underline font-montserrat-bold text-[16px]">Retirar curso</Text>
       </Button>
     </View>
   );
 };
 
-export default SubscriptionCancelButton;
+export { SubscriptionCancelButton };

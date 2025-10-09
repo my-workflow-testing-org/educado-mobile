@@ -92,7 +92,7 @@ const SectionScreen = ({ route }: SectionScreenProps): ReactElement => {
           <Text className="font-montserrat text-[20px]">{course.title}</Text>
         </View>
         <View className="flex-initial py-2">
-          <Text className="font-montserrat-bold text-[28px]">
+          <Text className="font-montserrat-bold text-[18px]">
             {section.title}
           </Text>
           <Text className="border-b-[1px] border-lightGray font-montserrat text-[16px]">
