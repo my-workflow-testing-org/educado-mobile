@@ -363,19 +363,12 @@ export const getSubCourseList = async (): Promise<Course[] | null> => {
     );
   }
 
-  try {
-    return await refreshSubCourseList(userId);
-  } catch (error) {
-    // Check if the course list already exists in AsyncStorage
-    const courseList = await AsyncStorage.getItem(SUB_COURSE_LIST)
-    if (courseList !== null) {
-      return JSON.parse(courseList);
-    }
-    handleError(error, "getSubCourseList");
-  }
-  return null
+  const apiCourses = await fetchWithFallback(api.getSubscriptions,[userId], SUB_COURSE_LIST);
+  await AsyncStorage.setItem(SUB_COURSE_LIST, JSON.stringify(apiCourses));
+  return mapApiCoursesToCourses(apiCourses);
 };
 
+// TODO: Remove refreshSubCourseList here and from tests
 /**
  * Refreshes the subscribed course list for a user.
  * @param {string} userId - The user ID.
