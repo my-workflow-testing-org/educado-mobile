@@ -7,7 +7,7 @@ import * as FileSystem from "expo-file-system";
 import jwt from "expo-jwt";
 import Constants from "expo-constants";
 import { ApiSection, Section } from "@/types/section";
-import { StudentInfo } from "@/types/student"
+import { StudentInfo } from "@/types/student";
 import { ApiCourse, Course } from "@/types/course";
 import { UserInfo } from "@/types/user";
 
@@ -26,17 +26,17 @@ let isOnline = true;
  */
 const updateNetworkStatus = (networkStatus: boolean) => {
   isOnline = networkStatus;
-}
+};
 
 NetworkStatusService.getInstance().addObserver({ update: updateNetworkStatus });
 
 const getLocalItem = async <T>(id: string): Promise<T> => {
-  const res = await AsyncStorage.getItem(id)
+  const res = await AsyncStorage.getItem(id);
   if (res === null) {
     throw new Error("Could not retrieve item");
   }
   return JSON.parse(res);
-}
+};
 
 type Fetcher<T, A extends unknown[]> = (...args: A) => Promise<T>;
 /**
@@ -49,7 +49,6 @@ const fetchWithFallback = async <T, A extends unknown[]>(
   args: A, // Spreads the arguments here
   localId: string,
 ): Promise<T> => {
-
   if (isOnline) {
     try {
       return await onlineFetcher(...args);
@@ -59,7 +58,7 @@ const fetchWithFallback = async <T, A extends unknown[]>(
   }
 
   return await getLocalItem(localId);
-}
+};
 
 /** LOGIN TOKEN **/
 
@@ -98,7 +97,6 @@ export const isLoginTokenValid = async (): Promise<boolean> => {
 
     // Check if the expiration time (exp) is in the future
     return decodedToken.exp > currentTime;
-
   } catch (error) {
     console.log(error);
     // An error occurred during decoding or validation
@@ -128,7 +126,8 @@ export const setStudentInfo = async (userId: string) => {
       await updateStudentInfo(fetchedStudentInfo);
       await AsyncStorage.setItem(STUDENT_ID, fetchedStudentInfo._id); // needs to be seperate
     } catch (error) {
-      const errorToThrow = error instanceof Error ? error : new Error(String(error));
+      const errorToThrow =
+        error instanceof Error ? error : new Error(String(error));
       throw new Error(`API error in getStudentInfo: ${errorToThrow.message}`);
     }
   } else {
@@ -141,8 +140,7 @@ export const setStudentInfo = async (userId: string) => {
  * @returns {Promise<Object>} A promise that resolves with the fetched student information.
  */
 export const getStudentInfo = async (): Promise<StudentInfo> => {
-  return await getLocalItem<StudentInfo>(STUDENT_INFO)
-
+  return await getLocalItem<StudentInfo>(STUDENT_INFO);
 };
 
 export const getStudentProfilePhoto = async () => {
@@ -157,7 +155,8 @@ export const updateStudentInfo = async (studentInfo: StudentInfo) => {
 // Increment studyStreak and update lastStudyDate
 export const updateLocalStudyStreak = async (newStudyDate: Date) => {
   // Retrieve current studentInfo
-  const studentInfo: StudentInfo = await getLocalItem<StudentInfo>(STUDENT_INFO)
+  const studentInfo: StudentInfo =
+    await getLocalItem<StudentInfo>(STUDENT_INFO);
 
   if (studentInfo) {
     studentInfo.studyStreak += 1;
@@ -175,7 +174,7 @@ export const updateLocalStudyStreak = async (newStudyDate: Date) => {
  * @returns {Promise<Object>} A promise that resolves with the fetched user information.
  */
 export const getUserInfo = async (): Promise<UserInfo> => {
-  return getLocalItem<UserInfo>(USER_INFO)
+  return getLocalItem<UserInfo>(USER_INFO);
 };
 
 /**
@@ -218,7 +217,7 @@ export const getUserId = async (): Promise<string | null> => {
  * @returns {Promise<Array>} A promise that resolves with a list of courses.
  */
 export const getCourseList = async (): Promise<Course[]> => {
-  return mapApiCoursesToCourses(await api.getCourses()?? []) ;
+  return mapApiCoursesToCourses((await api.getCourses()) ?? []);
 };
 
 /**
@@ -243,12 +242,11 @@ const mapApiCoursesToCourses = (courseList: ApiCourse[]): Course[] => {
   }));
 };
 
-
 /** SECTIONS **/
 
 /**
  * Retrieves a sections for a specific course.
-**/
+ **/
 export const getSection = async (sectionId: string) => {
   const apiSection = await fetchWithFallback(
     api.getSectionById,
@@ -258,15 +256,14 @@ export const getSection = async (sectionId: string) => {
   return mapApiSectionToSection(apiSection);
 };
 
-
-
-
 /**
  * Maps from the ApiSection type to Section.
  */
-export const mapApiSectionToSection = (section: ApiSection | null): Section | null => {
+export const mapApiSectionToSection = (
+  section: ApiSection | null,
+): Section | null => {
   if (section === null) {
-    return null
+    return null;
   }
 
   return {
@@ -279,7 +276,9 @@ export const mapApiSectionToSection = (section: ApiSection | null): Section | nu
   };
 };
 
-export const mapApiSectionListToSectionList = (sectionList: ApiSection[]): Section[] => {
+export const mapApiSectionListToSectionList = (
+  sectionList: ApiSection[],
+): Section[] => {
   return sectionList.map<Section>((s) => ({
     title: s.title,
     sectionId: s._id,
@@ -296,7 +295,11 @@ export const mapApiSectionListToSectionList = (sectionList: ApiSection[]): Secti
  * @returns {Promise<Array>} A promise that resolves with a list of sections for the course.
  */
 export const getSectionList = async (course_id: string) => {
-  const apiSections = await fetchWithFallback(api.getAllSections, [course_id], "S"+course_id);
+  const apiSections = await fetchWithFallback(
+    api.getAllSections,
+    [course_id],
+    "S" + course_id,
+  );
   return mapApiSectionListToSectionList(apiSections);
 };
 
@@ -307,14 +310,22 @@ export const getSectionList = async (course_id: string) => {
  */
 // get all components for specific section
 export const getComponentList = async (sectionId: string) => {
-  return await fetchWithFallback(api.getComponents, [sectionId], "C"+sectionId)
+  return await fetchWithFallback(
+    api.getComponents,
+    [sectionId],
+    "C" + sectionId,
+  );
 };
 
 /**
  * Fetches an image for a lecture.
  **/
 export const fetchLectureImage = async (imageID: string, lectureID: string) => {
-  return await fetchWithFallback(api.getBucketImage, [imageID], "I" + lectureID);
+  return await fetchWithFallback(
+    api.getBucketImage,
+    [imageID],
+    "I" + lectureID,
+  );
 };
 
 /**
@@ -358,7 +369,11 @@ export const getSubCourseList = async (): Promise<Course[] | null> => {
     );
   }
 
-  const apiCourses = await fetchWithFallback(api.getSubscriptions,[userId], SUB_COURSE_LIST);
+  const apiCourses = await fetchWithFallback(
+    api.getSubscriptions,
+    [userId],
+    SUB_COURSE_LIST,
+  );
   await AsyncStorage.setItem(SUB_COURSE_LIST, JSON.stringify(apiCourses));
   return mapApiCoursesToCourses(apiCourses);
 };
@@ -369,7 +384,9 @@ export const getSubCourseList = async (): Promise<Course[] | null> => {
  * @param {string} userId - The user ID.
  * @returns {Promise<Array>} A promise that resolves with the refreshed subscribed course list.
  */
-export const refreshSubCourseList = async (userId: string): Promise<Course[]> => {
+export const refreshSubCourseList = async (
+  userId: string,
+): Promise<Course[]> => {
   return await api
     .getSubscriptions(userId)
     .then(async (list) => {
@@ -377,6 +394,8 @@ export const refreshSubCourseList = async (userId: string): Promise<Course[]> =>
       for (const course of list) {
         // Make new list with required members
         newCourseList.push({
+          feedbackOptions: "",
+          topFeedbackOptions: "",
           title: course.title,
           courseId: course._id,
           description: course.description,
@@ -397,16 +416,14 @@ export const refreshSubCourseList = async (userId: string): Promise<Course[]> =>
       return newCourseList;
     })
     .catch((error) => {
-      throw new Error(error)
+      throw new Error(error);
     });
 };
 
 /**
  * Subscribes a user to a course.
- * @param {string} courseId - The ID of the course to subscribe to.
- * @returns {Promise<Object>} A promise that resolves with the subscription result.
  */
-export const subscribe = async (courseId) => {
+export const subscribe = async (courseId: string) => {
   // get the logged-in user id from async storage
   const userId = await AsyncStorage.getItem(USER_ID);
 
@@ -421,33 +438,27 @@ export const subscribe = async (courseId) => {
   }
 };
 
-export const addCourseToStudent = async (courseId) => {
+export const addCourseToStudent = async (courseId: string) => {
   const userId = await AsyncStorage.getItem(USER_ID);
   const loginToken = await getLoginToken();
 
-  try {
-    const student = await userApi.addCourseToStudent(
-      userId,
-      courseId,
-      loginToken,
-    );
-    if (!student) {
-      throw new Error("Student not found");
-    }
-
-    await updateStudentInfo(student);
-  } catch (e) {
-    handleError(e, "addCourseToStudent");
+  const student = await userApi.addCourseToStudent(
+    userId,
+    courseId,
+    loginToken,
+  );
+  if (!student) {
+    throw new Error("Student not found");
   }
+
+  await updateStudentInfo(student);
 };
 
 // unsubscribe to a course
 /**
  * Unsubscribes a user from a course.
- * @param {string} courseId - The ID of the course to unsubscribe from.
- * @returns {Promise<Object>} A promise that resolves with the unsubscription result.
  */
-export const unsubscribe = async (courseId) => {
+export const unsubscribe = async (courseId: string) => {
   // get the logged-in user id from async storage
   const userId = await AsyncStorage.getItem(USER_ID);
 
@@ -457,7 +468,7 @@ export const unsubscribe = async (courseId) => {
 
   try {
     if ((await AsyncStorage.getItem(courseId)) !== null) {
-      deleteLocallyStoredCourse(courseId);
+      await deleteLocallyStoredCourse(courseId);
     }
     return await api.unSubscribeToCourse(userId, courseId);
   } catch (error) {
@@ -474,30 +485,37 @@ export const makeDirectory = async () => {
   });
 };
 
-/**
- * Stores a course locally
- * @param {String} courseID - A string with the ID of the course to be stored
- * @returns {Promise<boolean>} A promise that resolves with `true` if the course was stored successfully.
- */
-
-export const getAllCoursesLocally = async () => {
+export const getAllCoursesLocally = async (): Promise<Course[]> => {
   let courseList = [];
-  try {
-    const keys = await AsyncStorage.getAllKeys();
-    for (let key of keys) {
-      if (!key.includes(await AsyncStorage.getItem(USER_ID))) continue;
-      courseList.push(JSON.parse(await AsyncStorage.getItem(key)));
+
+  const keys = await AsyncStorage.getAllKeys();
+  const userId = await AsyncStorage.getItem(USER_ID);
+
+  if (userId === null) {
+    throw new Error("Cannot fetch user id from async storage");
+  }
+
+  for (const key of keys) {
+    if (key.includes(userId)) {
+      const course = await AsyncStorage.getItem(key);
+
+      if (course === null) {
+        throw new Error("Cannot fetch course from async storage");
+      }
+
+      courseList.push(JSON.parse(course));
     }
-  } catch (error) {
-    if (error?.response?.data == null) {
-      throw new Error(error);
-    }
-    throw new Error(error.response.data);
   }
   return courseList;
 };
 
-export const storeCourseLocally = async (courseID) => {
+/**
+ * Stores a course locally
+ */
+
+export const storeCourseLocally = async (
+  courseID: string,
+): Promise<boolean> => {
   let success = true;
   if (!isOnline) {
     return false;
