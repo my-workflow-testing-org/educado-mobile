@@ -185,7 +185,7 @@ const CourseOverviewScreen = ({
             <View className="mt-[-10%]">
               <Shadow startColor="#28363E14" distance={6} offset={[0, 3]}>
                 <View
-                  className="flex w-[293px] bg-projectWhite p-[14px]"
+                  className="flex w-[293px] bg-secondary p-[14px]"
                   style={{ borderRadius: 10, transform: [{ scale: 1.02 }] }}
                 >
                   <View className="flex flex-row justify-between">
