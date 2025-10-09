@@ -175,12 +175,11 @@ const CourseOverviewScreen = ({
             <View className="flex w-full items-center justify-between">
               {coverImage ? (
                 <Image
-                  className="h-full max-w-full"
                   source={{ uri: coverImage }}
                   style={{ width: "100%", height: 296, resizeMode: "cover" }}
                 />
               ) : (
-                <Image className="h-full max-w-full" source={ImageNotFound} />
+                <Image source={ImageNotFound} />
               )}
             </View>
             <View className="mt-[-10%]">
