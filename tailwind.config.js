@@ -42,6 +42,7 @@ module.exports = {
       badgesPurple: "#C383F7",
       badgesBlue: "#54ADF1",
       unselectedStar: "#CBCAB8",
+      semitransBG: "rgba(0,0,0,0.31)",
     },
     fontFamily: {
       montserrat: ["Montserrat-Regular"],
