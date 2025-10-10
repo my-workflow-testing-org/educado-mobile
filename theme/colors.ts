@@ -1,4 +1,119 @@
 export const colors = {
+  // **********************
+  // ***** Gray Scale *****
+  // **********************
+  // Surface
+  surfaceSubtleGrayscale: "#FDFEFF",
+  surfaceDefaultGrayscale: "#EBF0F2",
+  surfaceDisabledGrayscale: "#C1CFD7",
+
+  // Border
+  borderDefaultGrayscale: "#809CAD",
+  borderDisabledGrayscale: "#9FB4C1",
+  borderDarkerGrayscale: "#3A4E5A",
+
+  // Text
+  textTitleGrayscale: "#141B1F",
+  textBodyGrayscale: "#28363E",
+  textSubtitleGrayscale: "#4E6879",
+  textCaptionGrayscale: "#628397",
+  textNegativeGrayscale: "#FDFEFF",
+  textDisabledGrayscale: "#C1CFD7",
+
+  // ******************
+  // ***** Cyan *******
+  // ******************
+  // Surface
+  surfaceSubtleCyan: "#FAFEFF",
+  surfaceLighterCyan: "#D8EFF3",
+  surfaceDefaultCyan: "#35A1B1",
+  surfaceDarkerCyan: "#35A1B1",
+  // Border
+  borderSubtleCyan: "#D8EFF3",
+  borderLighterCyan: "#D8EFF3",
+  borderDefaultCyan: "#D8EFF3",
+  borderDarkerCyan: "#246670",
+
+  // Text
+  textLabelCyan: "#246670",
+
+  // ******************
+  // ***** green ******
+  // ******************
+  // Surface
+  surfaceSubtleGreen: "#E6FAC8",
+  surfaceLighterGreen: "#C6F27E",
+  surfaceDefaultGreen: "#70A31F",
+  surfaceDarkerGreen: "#3A5313",
+
+  // Border
+  borderSubtleGreen: "#E6FAC8",
+  borderLighterGreen: "#C6F27E",
+  borderDefaultGreen: "#70A31F",
+  borderDarkerGreen: "#3A5313",
+
+  // Text
+  textLabelGreen: "#3A5313",
+
+  // ******************
+  // ***** Red ********
+  // ******************
+  // Surface
+  surfaceSubtleRed: "#FFDECC",
+  surfaceLighterRed: "#F28985",
+  surfaceDefaultRed: "#D62B25",
+  surfaceDarkerRed: "#600000",
+
+  // Border
+  borderSubtleRed: "#FFDECC",
+  borderLighterRed: "#F28985",
+  borderDefaultRed: "#D62B25",
+  borderDarkerRed: "#600000",
+
+  // Text
+  textLabelRed: "#600000",
+
+  // ******************
+  // ***** Purple *****
+  // ******************
+  // Surface
+  surfaceSubtlePurple: "#E4CCFF",
+  surfaceLighterPurple: "#C091F2",
+  surfaceDefaultPurple: "#8956BF",
+  surfaceDarkerPurple: "#2F0E53",
+
+  // Border
+  borderSubtlePurple: "#E4CCFF",
+  borderLighterPurple: "#C091F2",
+  borderDefaultPurple: "#8956BF",
+  borderDarkerPurple: "#2F0E53",
+
+  // Text
+  textLabelPurple: "#2F0E53",
+
+  // *******************
+  // ***** Magenta *****
+  // *******************
+  // Surface
+  surfaceSubtleMagenta: "#FFFAFE",
+  surfaceLighterMagenta: "#F3D8ED",
+  surfaceDefaultMagenta: "#BD3DA2",
+  surfaceDarkerMagenta: "#70245F",
+
+  // Border
+  borderSubtleMagenta: "#F3D8ED",
+  borderLighterMagenta: "#D887C7",
+  borderDefaultMagenta: "#BD3DA2",
+  borderDarkerMagenta: "#70245F",
+
+  // Text
+  textLabelMagenta: "#70245F",
+
+  // ******************
+  // ***** Others *****
+  // ******************
+  surfaceYellow: "#F1CC4F",
+
   bgprimary_custom: "#166276",
   bgPrimary: "#C9E5EC",
   primary_custom: "#166276",
