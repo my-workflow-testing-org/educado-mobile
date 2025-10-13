@@ -72,6 +72,7 @@
             git
             curl
             jq
+            watchman
           ];
 
           env = [
@@ -257,8 +258,7 @@
                 # Run emulator natively (android-nixpkgs provides ARM64 emulator)
                 # Explicitly set environment variables for the emulator process
                 ANDROID_HOME="$ANDROID_HOME" ANDROID_SDK_ROOT="$ANDROID_SDK_ROOT" emulator -avd "$AVD_NAME" \
-                  -no-audio \
-                  -gpu swiftshader_indirect \
+                  -gpu auto \
                   -camera-back webcam0 \
                   -camera-front webcam0 \
                   > "$LOG_FILE" 2>&1 &
@@ -290,10 +290,12 @@
               name = "stop-emulator";
               help = "Stop Android emulator";
               command = ''
-                echo "🛑 Stopping Android emulator..."
-                pkill -f emulator || echo "No emulator process found"
-                sleep 2
-                echo "✅ Emulator stopped"
+                if adb emu kill 2>/dev/null; then
+                  echo "🛑 Emulator stopped via ADB"
+                else
+                  echo "🛑 Force killing emulator process..."
+                  pkill -9 -f "emulator.*avd" || echo "ℹ️  No emulator running"
+                fi
               '';
             }
             {
@@ -322,8 +324,8 @@
             clear
             echo -e "''${BOLD}''${CYAN}╔══════════════════════════════════════════════════════════════════════════════╗''${NC}"
             echo -e "''${BOLD}''${CYAN}║''${NC}                                                                              ''${BOLD}''${CYAN}║''${NC}"
-            echo -e "''${BOLD}''${CYAN}║''${NC}  ''${BOLD}''${WHITE}🚀 Educado Mobile Development Environment''${NC}                                    ''${BOLD}''${CYAN}║''${NC}"
-            echo -e "''${BOLD}''${CYAN}║''${NC}  ''${YELLOW}React Native • Expo • Android • Nix''${NC}                                        ''${BOLD}''${CYAN}║''${NC}"
+            echo -e "''${BOLD}''${CYAN}║''${NC}    ''${BOLD}''${WHITE}🚀 Educado Mobile Development Environment''${NC}                                 ''${BOLD}''${CYAN}║''${NC}"
+            echo -e "''${BOLD}''${CYAN}║''${NC}        ''${YELLOW}React Native • Expo • Android • Nix''${NC}                                   ''${BOLD}''${CYAN}║''${NC}"
             echo -e "''${BOLD}''${CYAN}║''${NC}                                                                              ''${BOLD}''${CYAN}║''${NC}"
             echo -e "''${BOLD}''${CYAN}╚══════════════════════════════════════════════════════════════════════════════╝''${NC}"
             echo ""
