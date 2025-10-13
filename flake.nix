@@ -8,77 +8,99 @@
 
   outputs = { self, nixpkgs, nixpkgs-node18 }:
     let
-      supportedSystems = [ "aarch64-darwin" ];
+      supportedSystems = [ "aarch64-darwin" "x86_64-darwin" ]; # Add Intel Mac support
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
-      pkgsFor = system: nixpkgs.legacyPackages.${system}.extend (self: super: {
+      
+      pkgsWithUnfree = system: (import nixpkgs {
+        system = system;
+        config.allowUnfree = true;
+        config.android_sdk.accept_license = true;
+      }).extend (self: super: {
         nodejs_18 = nixpkgs-node18.legacyPackages.${system}.nodejs_18;
       });
+      
+      # Extract common Android config to reduce duplication
+      androidPlatformVersion = "34";
+      androidBuildToolsVersion = "34.0.0";
+      androidAbi = "arm64-v8a";
+      androidSystemImageType = "google_apis_playstore";
     in
     {
       packages = forAllSystems (system:
         let
-          pkgs = pkgsFor system;
-        in {
-          android-emulator = pkgs.androidenv.emulateApp {
-            name = "emulate-MyAndroidApp";
-            platformVersion = "34";
-            abiVersion = "arm64-v8a";
-            systemImageType = "google_apis_playstore";
+          pkgs = pkgsWithUnfree system;
+          
+          # Create the Android SDK separately
+          androidComposition = pkgs.androidenv.composeAndroidPackages {
+            platformVersions = [ androidPlatformVersion ];
+            buildToolsVersions = [ androidBuildToolsVersion ];
+            includeEmulator = true;
+            includeSystemImages = true;
+            systemImageTypes = [ androidSystemImageType ];
+            abiVersions = [ androidAbi ];
           };
+          
+          androidEmulatorPkg = pkgs.androidenv.emulateApp {
+            name = "educado-android-emulator"; # More descriptive name
+            platformVersion = androidPlatformVersion;
+            abiVersion = androidAbi;
+            systemImageType = androidSystemImageType;
+          };
+        in {
+          android-emulator = androidEmulatorPkg;
+          android-sdk = androidComposition.androidsdk;
+
+          start-emulator = pkgs.writeShellScriptBin "start-emulator" ''
+            ${androidEmulatorPkg}/bin/run-test-emulator > /tmp/emulator.log 2>&1 &
+            echo "🚀 Emulator starting in background..."
+            echo "📋 Check status: adb devices"
+            echo "📄 View logs: tail -f /tmp/emulator.log"
+          '';
+          
+          # Add a stop-emulator command for convenience
+          stop-emulator = pkgs.writeShellScriptBin "stop-emulator" ''
+            adb emu kill 2>/dev/null || pkill -9 qemu-system 2>/dev/null || echo "No emulator running"
+            echo "🛑 Emulator stopped"
+          '';
         });
 
       devShells = forAllSystems (system:
         let
-          pkgs = pkgsFor system;
-          
-          # Configure Android SDK with the packages you need
-          androidComposition = pkgs.androidenv.composeAndroidPackages {
-            platformVersions = [ "34" ];
-            buildToolsVersions = [ "34.0.0" "33.0.1" ];
-            includeNDK = true;
-            ndkVersions = [ "25.1.8937393" ];
-            cmakeVersions = [ "3.22.1" ];
-            includeEmulator = false;
-            includeSystemImages = false;
-            includeSources = false;
-          };
-          
+          pkgs = pkgsWithUnfree system;
+          androidSdk = self.packages.${system}.android-sdk;
         in {
           default = pkgs.mkShell {
             buildInputs = [
-              self.packages.${system}.android-emulator
+              self.packages.${system}.start-emulator
+              self.packages.${system}.stop-emulator
               pkgs.nodejs_18
               pkgs.jdk17
-              androidComposition.androidsdk
+              androidSdk
+              # Add helpful tools
+              pkgs.watchman # React Native file watching
             ];
             
             shellHook = ''
               echo "🚀 Educado Mobile Development Environment"
-              echo "📱 Android emulator: ${self.packages.${system}.android-emulator}"
               echo "📦 Node.js: $(node --version)"
+              echo "☕ Java: $(java -version 2>&1 | head -n 1)"
               echo ""
               
-              # Set Android environment variables to the Nix-provided SDK
-              export ANDROID_HOME="${androidComposition.androidsdk}/libexec/android-sdk"
-              export ANDROID_SDK_ROOT=$ANDROID_HOME
-              export PATH=$PATH:$ANDROID_HOME/platform-tools
-              export PATH=$PATH:$ANDROID_HOME/build-tools/34.0.0
-              export PATH=$PATH:$ANDROID_HOME/build-tools/33.0.1
+              # Use the composed Android SDK
+              export ANDROID_HOME="${androidSdk}/libexec/android-sdk"
+              export ANDROID_SDK_ROOT="$ANDROID_HOME"
+              
+              # Prepend to PATH (cleaner than multiple appends)
+              export PATH="$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/${androidBuildToolsVersion}:$PATH"
               
               echo "🔧 Android SDK: $ANDROID_HOME"
-              echo "🔧 Platform 34: $ANDROID_HOME/platforms/android-34"
-              echo "🔧 Build Tools: 34.0.0, 33.0.1"
-              echo "🔧 NDK: $ANDROID_HOME/ndk/25.1.8937393"
-              echo "🔧 CMake: $ANDROID_HOME/cmake/3.22.1"
-              echo "🔧 ADB: $ANDROID_HOME/platform-tools/adb"
+              echo "🔧 ADB: $(which adb)"
               echo ""
-              echo "To start your app:"
-              echo "  npm start"
-              echo ""
-              echo "To run on Android:"
-              echo "  npm run android"
-              echo ""
-              echo "Make sure your Android emulator is running first!"
+              echo "📱 Commands:"
+              echo "  start-emulator  - Start Android emulator"
+              echo "  stop-emulator   - Stop Android emulator"
+              echo "  npm start       - Start Metro bundler"
+              echo "  npm run android - Build and run on Android"
             '';
           };
         });
