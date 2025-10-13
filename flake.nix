@@ -101,6 +101,21 @@
                 AVD_NAME="educado-avd"
                 AVD_DIR="''${ANDROID_AVD_HOME:-$HOME/.android/avd}"
                 
+                # Detect system architecture
+                ARCH=$(uname -m)
+                case "$ARCH" in
+                  "arm64"|"aarch64")
+                    ABI="arm64-v8a"
+                    ;;
+                  "x86_64")
+                    ABI="x86_64"
+                    ;;
+                  *)
+                    echo "❌ Unsupported architecture: $ARCH"
+                    exit 1
+                    ;;
+                esac
+                
                 # Create AVD directory if it doesn't exist
                 mkdir -p "$AVD_DIR"
                 
@@ -117,14 +132,14 @@
                 echo "🔧 Android SDK: $ANDROID_HOME"
                 echo "📱 Creating AVD with configuration:"
                 echo "   Platform: Android 34"
-                echo "   ABI: arm64-v8a"
+                echo "   ABI: $ABI"
                 echo "   System Image: google_apis_playstore"
                 echo "   Hardware: pixel_6"
                 echo "   RAM: 4096MB"
                 
                 avdmanager create avd \
                   --name "$AVD_NAME" \
-                  --package "system-images;android-34;google_apis_playstore;arm64-v8a" \
+                  --package "system-images;android-34;google_apis_playstore;$ABI" \
                   --device "pixel_6" \
                   --force
                 
@@ -222,7 +237,20 @@
                 mkdir -p "$(dirname "$LOG_FILE")"
                 
                 echo "🚀 Starting AVD: $AVD_NAME"
-                echo "📱 ABI: arm64-v8a"
+                # Detect system architecture for display
+                ARCH=$(uname -m)
+                case "$ARCH" in
+                  "arm64"|"aarch64")
+                    ABI="arm64-v8a"
+                    ;;
+                  "x86_64")
+                    ABI="x86_64"
+                    ;;
+                  *)
+                    ABI="unknown"
+                    ;;
+                esac
+                echo "📱 ABI: $ABI"
                 echo "📄 Logs: $LOG_FILE"
                 
                 # Start emulator with AVD
@@ -279,26 +307,63 @@
           ];
 
           bash.extra = ''
-            echo "🚀 Welcome to Educado Mobile Development Environment!"
+            # Colors
+            RED="\033[0;31m"
+            GREEN="\033[0;32m"
+            YELLOW="\033[1;33m"
+            BLUE="\033[0;34m"
+            PURPLE="\033[0;35m"
+            CYAN="\033[0;36m"
+            WHITE="\033[1;37m"
+            BOLD="\033[1m"
+            NC="\033[0m" # No Color
+            
+            # Clear screen and show header
+            clear
+            echo -e "''${BOLD}''${CYAN}╔══════════════════════════════════════════════════════════════════════════════╗''${NC}"
+            echo -e "''${BOLD}''${CYAN}║''${NC}                                                                              ''${BOLD}''${CYAN}║''${NC}"
+            echo -e "''${BOLD}''${CYAN}║''${NC}  ''${BOLD}''${WHITE}🚀 Educado Mobile Development Environment''${NC}                                    ''${BOLD}''${CYAN}║''${NC}"
+            echo -e "''${BOLD}''${CYAN}║''${NC}  ''${YELLOW}React Native • Expo • Android • Nix''${NC}                                        ''${BOLD}''${CYAN}║''${NC}"
+            echo -e "''${BOLD}''${CYAN}║''${NC}                                                                              ''${BOLD}''${CYAN}║''${NC}"
+            echo -e "''${BOLD}''${CYAN}╚══════════════════════════════════════════════════════════════════════════════╝''${NC}"
             echo ""
-            echo "📦 Node.js: $(node --version)"
-            echo "☕ Java: $(java -version 2>&1 | head -n 1)"
-            echo "🔧 Android SDK: $ANDROID_HOME"
-            echo "🔧 Java Home: $JAVA_HOME"
-            echo "🔧 ADB: $(which adb)"
+            
+            # Environment info
+            echo -e "''${BOLD}''${GREEN}📋 Environment Status:''${NC}"
+            echo -e "  ''${BLUE}📦 Node.js:''${NC} $(node --version)"
+            echo -e "  ''${BLUE}☕ Java:''${NC} $(java -version 2>&1 | head -n 1)"
+            echo -e "  ''${BLUE}🔧 Android SDK:''${NC} $ANDROID_HOME"
+            echo -e "  ''${BLUE}🔧 ADB:''${NC} $(which adb)"
             echo ""
-            echo "📱 AVD Commands:"
-            echo "  create-avd        - Create Android Virtual Device"
-            echo "  list-avds         - List available AVDs"
-            echo "  delete-avd        - Delete an AVD"
-            echo "  start-emulator    - Start Android emulator with AVD"
-            echo "  stop-emulator     - Stop Android emulator"
-            echo "  emulator-status   - Check connected devices"
+            
+            # AVD Commands
+            echo -e "''${BOLD}''${PURPLE}📱 Android Virtual Device Commands:''${NC}"
+            echo -e "  ''${GREEN}create-avd''${NC}        ''${YELLOW}→''${NC} Create Android Virtual Device"
+            echo -e "  ''${GREEN}list-avds''${NC}         ''${YELLOW}→''${NC} List available AVDs"
+            echo -e "  ''${GREEN}delete-avd''${NC}        ''${YELLOW}→''${NC} Delete an AVD"
+            echo -e "  ''${GREEN}start-emulator''${NC}    ''${YELLOW}→''${NC} Start Android emulator with AVD"
+            echo -e "  ''${GREEN}stop-emulator''${NC}     ''${YELLOW}→''${NC} Stop Android emulator"
+            echo -e "  ''${GREEN}emulator-status''${NC}   ''${YELLOW}→''${NC} Check connected devices"
             echo ""
-            echo "🚀 Development Commands:"
-            echo "  npm start         - Start Metro bundler"
-            echo "  npm run android   - Build and run on Android"
-            echo "  npx expo run:android - Run with Expo"
+            
+            # Development Commands
+            echo -e "''${BOLD}''${CYAN}🚀 Development Commands:''${NC}"
+            echo -e "  ''${GREEN}npm start''${NC}              ''${YELLOW}→''${NC} Start Metro bundler"
+            echo -e "  ''${GREEN}npm run android''${NC}        ''${YELLOW}→''${NC} Build and run on Android"
+            echo -e "  ''${GREEN}npx expo run:android''${NC}   ''${YELLOW}→''${NC} Run with Expo"
+            echo ""
+            
+            # Quick start guide
+            echo -e "''${BOLD}''${YELLOW}⚡ Quick Start:''${NC}"
+            echo -e "  1. ''${GREEN}create-avd''${NC}     # Create your Android Virtual Device"
+            echo -e "  2. ''${GREEN}start-emulator''${NC} # Start the emulator"
+            echo -e "  3. ''${GREEN}npx expo run:android''${NC} # Build and run your app"
+            echo ""
+            
+            # Footer
+            echo -e "''${BOLD}''${WHITE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━''${NC}"
+            echo -e "''${CYAN}💡 Tip:''${NC} Use ''${GREEN}emulator-status''${NC} to check if your device is connected"
+            echo -e "''${CYAN}🔧 Debug:''${NC} Check emulator logs with ''${GREEN}tail -f ~/.cache/educado-emulator.log''${NC}"
           '';
         };
       }
