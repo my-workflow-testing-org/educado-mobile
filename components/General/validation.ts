@@ -40,7 +40,7 @@ export const validateEmail = (email: string) => {
   const emailPattern = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
 
   if (!emailPattern.test(email)) {
-    return "E-mail inválido"; // Email invalid
+    return "EMAIL INVÁLIDO"; // Email invalid
   }
 
   // Passed all checks, email is valid

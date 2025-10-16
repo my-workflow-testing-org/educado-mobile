@@ -1,6 +1,5 @@
 import { View } from "react-native";
-import Text from "../Text";
-import PropTypes from "prop-types";
+import Text from "@/components/General/Text";
 
 /**
  * Component for showing an alert below a form field
@@ -9,10 +8,10 @@ import PropTypes from "prop-types";
  * - success: Boolean
  * @returns {React.Element} JSX element for showing alerts
  */
-export default function FormFieldAlert(props) {
+export default function FormFieldAlert(props: { label: string; success: boolean }) {
   return (
     <View className="flex-row items-center">
-      {props.success ? (
+      {props.success? (
         <Text className="mx-2 text-base text-success">{props.label}</Text>
       ) : (
         <Text className="mx-2 text-base text-error">{props.label}</Text>
@@ -20,8 +19,3 @@ export default function FormFieldAlert(props) {
     </View>
   );
 }
-
-FormFieldAlert.propTypes = {
-  label: PropTypes.string,
-  success: PropTypes.bool,
-};

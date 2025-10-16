@@ -37,7 +37,7 @@ export default function RegisterForm() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const [emailAlert, setEmailAlert] = useState("");
+  const [emailAlert, setEmailAlert] = useState<string>("");
   const [nameAlert, setNameAlert] = useState("");
   const [isAllInputValid, setIsAllInputValid] = useState(false);
   const [confirmPasswordAlert, setConfirmPasswordAlert] = useState("");
@@ -74,7 +74,7 @@ export default function RegisterForm() {
 
   useEffect(() => {
     checkIfPasswordsMatch(password, confirmPassword);
-  }, [confirmPassword]);
+  }, [confirmPassword, password]);
 
   useEffect(() => {
     let validationError = "";
@@ -220,9 +220,9 @@ export default function RegisterForm() {
   }
 
   return (
-    <View>
+    <View className="flex flex-col h-[78vh] mb-2">
       <AlertNotificationRoot>
-        <View className="mb-6">
+        <View className="flex-none mb-2">
           <FormTextField
             label="Nome" // first name
             name={"Nome"}
@@ -235,24 +235,9 @@ export default function RegisterForm() {
             }}
           />
         </View>
-        <View className="mb-6">
+        <View className="flex-none mb-2">
           <FormTextField
-            label="Sobrenome" // Last name
-            name={"Sobrenome"}
-            value={lastName}
-            testId="lastNameInput"
-            placeholder="Sobrenome"
-            required={true}
-            onChangeText={(lastName) => {
-              setLastName(lastName);
-            }}
-          />
-          <FormFieldAlert label={nameAlert} />
-        </View>
-        <View className="mb-6">
-          <FormTextField
-            className="mb-6"
-            label="E-mail"
+            label="Email"
             name={"E-mail"}
             testId="emailInput"
             value={email}
@@ -264,10 +249,11 @@ export default function RegisterForm() {
               validateEmail(email);
             }}
           />
-          <FormFieldAlert label={emailAlert} testId="emailAlert" />
+          {/*Only render if there is error, otherwise there will be an empty area for nothing.*/}
+          {emailAlert ? <FormFieldAlert label={emailAlert} testId="emailAlert" />: <></>}
         </View>
-        <View className="mb-6">
-          <View className="relative">
+        <View className="flex-none">
+          <View>
             <FormTextField
               label="Senha" //Password
               name={"Senha"}
@@ -334,7 +320,7 @@ export default function RegisterForm() {
             </View>
           </View>
         </View>
-        <View className="mb-2">
+        <View className="flex-none">
           <View className="relative">
             <FormTextField
               label="Confirmar senha" // Confirm password
@@ -358,7 +344,7 @@ export default function RegisterForm() {
           <FormFieldAlert label={confirmPasswordAlert} />
         </View>
         {/* Register */}
-        <View className="bg-primary my-2">
+        <View className="bg-primary flex-none mt-auto">
           <FormButton
             onPress={() => register(firstName, lastName, email, password)}
             testId="registerButton"
