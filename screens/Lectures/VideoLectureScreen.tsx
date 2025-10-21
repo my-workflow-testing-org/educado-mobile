@@ -1,9 +1,6 @@
 import { useState, useEffect, useRef } from "react";
-import { View, Pressable, TouchableOpacity, Alert, Text } from "react-native";
-import VideoActions from "@/components/Lectures/VideoActions";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import CustomExpoVideoPlayer from "@/components/Lectures/CustomExpoVideoPlayer";
-import ReactSliderProgress from "@/screens/Lectures/ReactSliderProgress";
+import { View, TouchableOpacity, Alert, Text } from "react-native";
+import { Video, ResizeMode } from 'expo-av';
 import PropTypes from "prop-types";
 import { Icon } from "@rneui/themed";
 import { useNavigation } from "@react-navigation/native";
@@ -11,7 +8,6 @@ import { completeComponent, handleLastComponent } from "@/services/utils";
 import { getVideoURL } from "@/services/storage-service";
 import { Lecture} from "@/types/lecture";
 import { Course } from "@/types/course";
-import { AVPlaybackStatus } from "expo-av";
 
 interface VideoLectureScreenProps {
   lectureObject: Lecture;
@@ -29,42 +25,30 @@ const VideoLectureScreen = ({
   handleStudyStreak,
 } : VideoLectureScreenProps)  => {
   const navigation = useNavigation();
-  const videoRef = useRef(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [positionMillis, setPositionMillis] = useState(0);
-  const [durationMillis, setDurationMillis] = useState(0);
-  const [isMuted, setIsMuted] = useState(false);
   const [videoUrl, setVideoUrl] = useState<null | string>(null);
-  const [showPlayPauseIcon, setShowPlayPauseIcon] = useState(false);
-  const [currentResolution, setCurrentResolution] = useState("360");
-  const [allResolutions] = useState(["1080", "720", "480", "360"]);
+  const [currentResolution, setCurrentResolution] = useState("1080");
 
   // Fetch video URL based on current resolution
   useEffect(() => {
-    const fetchVideoUrl = async () => {
-      try {
-        const url = await getVideoURL(lectureObject.content, currentResolution);
-        if (!url) {
-          throw new Error("Video URL is null");
-        }
-        setVideoUrl(url);
-      } catch (error) {
-        console.error("Error fetching video URL:", error);
-        Alert.alert(
-          "Error",
-          "Failed to load the video. Please try again later.",
-          [{ text: "OK" }],
-        );
-        setVideoUrl(null);
-      }
+    const fetchVideoUrl = () => {
+      getVideoURL(lectureObject.content, currentResolution)
+        .then((url) => {
+          // Check if URL is a video
+          return fetch(url, { method: 'HEAD' }).then((response) => {
+            const contentType: string | null = response.headers.get('content-type');
+            if (!contentType || contentType.indexOf('video/') !== 0) {
+              throw new Error("Invalid URL: " + url);
+            }
+            setVideoUrl(url);
+          });
+        })
+        .catch((error) => {
+          console.error(error);
+          setVideoUrl(null);
+        });
     };
     fetchVideoUrl();
   }, [lectureObject.content, currentResolution]);
-
-  const onStatusUpdate = (status) => {
-    setPositionMillis(status.positionMillis || 0);
-    setDurationMillis(status.durationMillis || 0);
-  };
 
   const handleContinuePress = async () => {
     if (isLastSlide) {
@@ -89,34 +73,27 @@ const VideoLectureScreen = ({
     }
   };
 
-  const handleResolutionChange = (newRes) => {
-    setCurrentResolution(newRes);
-  };
-
-  const togglePlayPause = () => {
-    setIsPlaying((prev) => !prev);
-    setShowPlayPauseIcon(true);
-    // Hide the icon after 500ms
-    setTimeout(() => setShowPlayPauseIcon(false), 500);
-  };
-
-  const toggleMute = () => {
-    setIsMuted((prev) => !prev);
-  };
-
   return (
-    <View className="w-full flex-1">
-      <View className="relative w-full flex-1 bg-projectBlack">
-        {/* Video Player */}
-        <View className="w-full flex-1 bg-projectBlack">
+    <View className="flex-1 pt-20">
+      {/* Course info */}
+      <View className="mt-5 flex-col items-center">
+        <Text className="font-sans text-base text-projectGray">
+          Nome do curso: {courseObject.title}
+        </Text>
+        <Text className="font-sans-bold text-lg text-projectBlack">
+          {lectureObject.title}
+        </Text>
+      </View>
+
+      {/* Video Player */}
+      <View className="flex-1 p-8">
+        <View className="rounded-lg overflow-hidden" style={{ aspectRatio: 7/10 }}>
           {videoUrl ? (
-            <CustomExpoVideoPlayer
-              videoUrl={videoUrl}
-              ref={videoRef}
-              isPlaying={isPlaying}
-              isMuted={isMuted}
-              onStatusUpdate={onStatusUpdate}
-              style={{ flex: 1, width: "100%" }}
+            <Video
+              source={{ uri: videoUrl }}
+              shouldPlay={true}
+              resizeMode={ResizeMode.COVER}
+              style={{ width: '100%', height: '100%' }}
             />
           ) : (
             <View className="flex-1 items-center justify-center">
@@ -124,86 +101,27 @@ const VideoLectureScreen = ({
             </View>
           )}
         </View>
+      </View>
 
-        {/* Overlay Controls */}
-        <View className="absolute h-full w-full p-5">
-          {/* Continue Button */}
-          <View className="w-ful lpx-6 mb-8">
-            <TouchableOpacity
-              className="flex-row items-center justify-center rounded-medium bg-primary_custom px-10 py-4"
-              onPress={handleContinuePress}
-            >
-              <View className="flex-row items-center">
-                <Text className="font-sans-bold text-center text-body text-projectWhite">
-                  Continuar
-                </Text>
-                <Icon
-                  name="chevron-right"
-                  type="material"
-                  size={24}
-                  color="white"
-                  style={{ marginLeft: 8 }}
-                />
-              </View>
-            </TouchableOpacity>
-          </View>
-
-          {/* Lecture Information */}
-          <View className="justify-left w-full flex-col items-start">
-            <View className="w-full flex-row items-end justify-between">
-              <View className="flex-col">
-                <Text className="text-base text-projectWhite opacity-80">
-                  Nome do curso: {courseObject.title}
-                </Text>
-                <Text className="text-lg text-projectWhite">
-                  {lectureObject.title}
-                </Text>
-              </View>
-              <VideoActions
-                isPlaying={isPlaying}
-                isMuted={isMuted}
-                onVolumeClick={toggleMute}
-                onPlayClick={togglePlayPause}
-                currentResolution={currentResolution}
-                allResolutions={allResolutions}
-                onResolutionChange={handleResolutionChange}
-              />
-            </View>
-
-            <View className="h-3" />
-
-            {/* Video Progress Bar */}
-            <ReactSliderProgress
-              elapsedMs={positionMillis}
-              totalMs={durationMillis}
-              videoRef={videoRef}
-            />
-          </View>
-        </View>
-
-        {/* Pressable Areas for Play/Pause */}
-        <Pressable
-          className="absolute bottom-[50%] left-0 right-0 top-[12%]"
-          onPress={togglePlayPause}
-        />
-        <Pressable
-          className="absolute bottom-[22%] left-0 right-[20%] top-[24%]"
-          onPress={togglePlayPause}
-        />
-
-        {/* Play/Pause Icon */}
-        {showPlayPauseIcon && (
-          <View
-            className="absolute bottom-0 left-0 right-0 top-0 flex-row items-center justify-center"
-            pointerEvents="none"
-          >
-            <MaterialCommunityIcons
-              name={isPlaying ? "pause" : "play"}
-              size={50}
+      {/* Continue button */}
+      <View className="w-100 mb-8 px-6">
+        <TouchableOpacity
+          className="flex-row items-center justify-center rounded-medium bg-primary_custom px-10 py-4"
+          onPress={handleContinuePress}
+        >
+          <View className="flex-row items-center">
+            <Text className="font-sans-bold text-center text-body text-projectWhite">
+              Continuar
+            </Text>
+            <Icon
+              name="chevron-right"
+              type="material"
+              size={24}
               color="white"
+              style={{ marginLeft: 8 }}
             />
           </View>
-        )}
+        </TouchableOpacity>
       </View>
     </View>
   );
