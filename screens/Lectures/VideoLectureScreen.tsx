@@ -54,7 +54,9 @@ const VideoLectureScreen = ({
     if (isLastSlide) {
       try {
         handleStudyStreak();
+        // @ts-expect-error lectureObject type mismatch, not fixed because it's to be deleted
         await completeComponent(lectureObject, courseObject.courseId, true);
+        // @ts-expect-error lectureObject type mismatch, not fixed because it's to be deleted
         await handleLastComponent(lectureObject, courseObject, navigation);
       } catch (error) {
         console.error("Error completing the course:", error);
