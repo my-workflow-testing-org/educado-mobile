@@ -28,6 +28,7 @@ const RegistrationScreen = () => {
 
   useEffect(() => {
     void checkLoginToken();
+    // eslint-disable-next-line
   }, []);
 
   return (
