@@ -15,10 +15,10 @@ import ShowAlert from "@/components/General/ShowAlert";
 import DialogNotification from "@/components/General/DialogNotification";
 
 interface EnterNewPasswordScreenProps {
-  hideModal: () => void
-  resetState: () => void
-  email: string
-  token: string
+  hideModal: () => void;
+  resetState: () => void;
+  email: string;
+  token: string;
 }
 
 interface ApiError {
@@ -32,7 +32,9 @@ interface ApiError {
  * Component for entering a new password in the resetPassword modal
  * @param {Object} props not used in this component as of now
  */
-export default function EnterNewPasswordScreen(props: EnterNewPasswordScreenProps) {
+export default function EnterNewPasswordScreen(
+  props: EnterNewPasswordScreenProps,
+) {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [newPassword, setNewPassword] = useState("");
@@ -54,7 +56,10 @@ export default function EnterNewPasswordScreen(props: EnterNewPasswordScreenProp
    * @param {Function} setShowPasswordFunction function for handling password visibility state
    * @param {boolean} shouldShowPassword boolean state for visibility of password
    */
-  const toggleShowPassword = (setShowPasswordFunction: (shouldShowPassword: boolean) => void, shouldShowPassword: boolean) => {
+  const toggleShowPassword = (
+    setShowPasswordFunction: (shouldShowPassword: boolean) => void,
+    shouldShowPassword: boolean,
+  ) => {
     setShowPasswordFunction(!shouldShowPassword);
   };
 
@@ -88,7 +93,11 @@ export default function EnterNewPasswordScreen(props: EnterNewPasswordScreenProp
    * @param {String} newPassword
    * @returns
    */
-   const changePassword = async (email: string, token: string, newPassword: string) => {
+  const changePassword = async (
+    email: string,
+    token: string,
+    newPassword: string,
+  ) => {
     if (!validateInput()) {
       return;
     }
@@ -107,8 +116,9 @@ export default function EnterNewPasswordScreen(props: EnterNewPasswordScreenProp
         props.resetState();
       }, 2500);
     } catch (error: unknown) {
-      const objectError = typeof error === "object" && error !== null && "error" in error;
-      if (!(objectError)) {
+      const objectError =
+        typeof error === "object" && error !== null && "error" in error;
+      if (!objectError) {
         return;
       }
       const apiError = error as ApiError;
@@ -135,7 +145,7 @@ export default function EnterNewPasswordScreen(props: EnterNewPasswordScreenProp
           break;
       }
     }
-  }
+  };
 
   // Function to validate the input
   const validateInput = () => {
@@ -216,15 +226,14 @@ export default function EnterNewPasswordScreen(props: EnterNewPasswordScreenProp
           ) : null}
         </View>
       </View>
-      <FormFieldAlert label={passwordAlert}  success={passwordAlert === ""}/>
+      <FormFieldAlert label={passwordAlert} success={passwordAlert === ""} />
       <View className="mt-[24px]">
         <FormTextField
           placeholder="••••••••" // Confirm your password
           bordered={true}
           onChangeText={(confirmPassword) => {
-              setConfirmPassword(removeEmojis(confirmPassword));
-            }
-          }
+            setConfirmPassword(removeEmojis(confirmPassword));
+          }}
           label="Confirmar nova senha" // Confirm new password
           required={true}
           secureTextEntry={!showConfirmPassword}
@@ -234,9 +243,8 @@ export default function EnterNewPasswordScreen(props: EnterNewPasswordScreenProp
         <PasswordEye
           showPasswordIcon={!showConfirmPassword}
           toggleShowPassword={() => {
-              toggleShowPassword(setShowConfirmPassword, showConfirmPassword);
-            }
-          }
+            toggleShowPassword(setShowConfirmPassword, showConfirmPassword);
+          }}
         />
       </View>
       <View className="mb-10">

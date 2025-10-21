@@ -20,10 +20,7 @@ export default function WelcomeScreen() {
       <SafeAreaView>
         <View className="flex flex-col items-center justify-center">
           <View className="mb-[20%] flex pt-[30%]">
-            <Image
-              source={logo}
-              className="h-[25.54] w-[175.88]"
-            />
+            <Image source={logo} className="h-[25.54] w-[175.88]" />
           </View>
 
           <View className="mb-[15%] flex w-screen flex-row items-center justify-center">
@@ -36,7 +33,8 @@ export default function WelcomeScreen() {
                 onPress={() => {
                   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                   // @ts-expect-error
-                  navigation.navigate("LoginStack",
+                  navigation.navigate(
+                    "LoginStack",
                     { screen: "Login" },
                     { previousScreen: "Welcome" },
                   );
@@ -48,14 +46,18 @@ export default function WelcomeScreen() {
 
             <View className="flex-row justify-center">
               <Text
-                className={"text-h4-sm-bold text-textSubtitleGrayscale underline"}
-                onPress={() => {
-                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                    // @ts-expect-error
-                    navigation.navigate("LoginStack",
-                    { screen: "Register" },
-                    { previousScreen: "Welcome" }); }
+                className={
+                  "text-textSubtitleGrayscale underline text-h4-sm-bold"
                 }
+                onPress={() => {
+                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                  // @ts-expect-error
+                  navigation.navigate(
+                    "LoginStack",
+                    { screen: "Register" },
+                    { previousScreen: "Welcome" },
+                  );
+                }}
               >
                 {/* Register */}
                 Cadastrar

@@ -13,9 +13,9 @@ import { ReactNode } from "react";
 
 interface EducadoModalProps {
   children: ReactNode;
-  modalVisible: boolean,
-  closeModal: () => void,
-  title: string
+  modalVisible: boolean;
+  closeModal: () => void;
+  title: string;
 }
 
 /**
@@ -36,17 +36,17 @@ const EducadoModal = (props: EducadoModalProps) => {
       <TouchableWithoutFeedback onPress={props.closeModal}>
         <View className="flex-1 justify-end bg-modalOpacityBlue">
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <View className="bg-surfaceSubtleCyan h-[90%] rounded-t-3xl pt-10">
+            <View className="h-[90%] rounded-t-3xl bg-surfaceSubtleCyan pt-10">
               <AlertNotificationRoot>
-              <KeyboardAwareScrollView>
-                <View className="flex flex-row items-center justify-between px-[10%] mb-4">
-                  <Text className="text-h2-sm-regular">{props.title}</Text>
-                  <Pressable onPress={props.closeModal}>
-                    <Entypo name="chevron-down" size={24} />
-                  </Pressable>
-                </View>
-                {props.children}
-              </KeyboardAwareScrollView>
+                <KeyboardAwareScrollView>
+                  <View className="mb-4 flex flex-row items-center justify-between px-[10%]">
+                    <Text className="text-h2-sm-regular">{props.title}</Text>
+                    <Pressable onPress={props.closeModal}>
+                      <Entypo name="chevron-down" size={24} />
+                    </Pressable>
+                  </View>
+                  {props.children}
+                </KeyboardAwareScrollView>
               </AlertNotificationRoot>
             </View>
           </TouchableWithoutFeedback>

@@ -9,10 +9,14 @@ import { View, Text } from "react-native";
 const FormFieldAlert = (props: { label: string; success: boolean }) => {
   return (
     <View className="flex-row items-center">
-      {props.success? (
-        <Text className="text-footnote-regular-caps text-surfaceDefaultGreen">{props.label}</Text>
+      {props.success ? (
+        <Text className="text-surfaceDefaultGreen text-footnote-regular-caps">
+          {props.label}
+        </Text>
       ) : (
-        <Text className="text-footnote-regular-caps text-textLabelRed">{props.label}</Text>
+        <Text className="text-textLabelRed text-footnote-regular-caps">
+          {props.label}
+        </Text>
       )}
     </View>
   );

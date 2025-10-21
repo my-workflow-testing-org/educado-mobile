@@ -66,18 +66,21 @@ const Login = () => {
                 </View>
                 {/* Register button */}
                 <View className="flex-col items-center">
-                  <Text className="mr-1 text-h4-sm-regular text-textSubtitleGrayscale">
+                  <Text className="mr-1 text-textSubtitleGrayscale text-h4-sm-regular">
                     {/* Dont have an account yet? */}
                     Ainda não tem conta?
                   </Text>
                   <Text
-                    className={"left-1 text-h4-sm-regular text-textTitleGrayscale underline"}
+                    className={
+                      "left-1 text-textTitleGrayscale underline text-h4-sm-regular"
+                    }
                     onPress={() => {
                       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                       // @ts-expect-error
-                      navigation.navigate("Register", { previousScreen: "Login",}
-                      )}
-                    }
+                      navigation.navigate("Register", {
+                        previousScreen: "Login",
+                      });
+                    }}
                   >
                     {/* Sign up now */}
                     Cadastre-se agora

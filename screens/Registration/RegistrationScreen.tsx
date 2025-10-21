@@ -10,7 +10,6 @@ import * as StorageService from "@/services/storage-service";
 const RegistrationScreen = () => {
   const navigation = useNavigation();
 
-
   const checkLoginToken = async () => {
     try {
       const isValid = await StorageService.isLoginTokenValid();
@@ -31,7 +30,6 @@ const RegistrationScreen = () => {
     void checkLoginToken();
   }, []);
 
-
   return (
     <SafeAreaView className="flex-1 justify-start bg-surfaceSubtleCyan">
       <KeyboardAwareScrollView
@@ -49,20 +47,21 @@ const RegistrationScreen = () => {
                 <RegisterForm />
               </View>
               <View className="flex-row items-end justify-center">
-                <Text className="text-h4-sm-regular text-textBodyGrayscale">
+                <Text className="text-textBodyGrayscale text-h4-sm-regular">
                   {/* Already have an account? */}
                   Já possui conta?
                 </Text>
                 <Text
                   className={
-                    "left-1 text-h4-sm-regular text-textCaptionGrayscale underline"
+                    "left-1 text-textCaptionGrayscale underline text-h4-sm-regular"
                   }
                   onPress={() => {
-                      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                      // @ts-expect-error
-                      navigation.navigate("Login", { previousScreen: "Register", });
-                    }
-                  }
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-expect-error
+                    navigation.navigate("Login", {
+                      previousScreen: "Register",
+                    });
+                  }}
                 >
                   {/* Log in now */}
                   Entre agora

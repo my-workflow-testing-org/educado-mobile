@@ -20,7 +20,7 @@ import DialogNotification from "@/components/General/DialogNotification";
 import { AlertNotificationRoot } from "react-native-alert-notification";
 import { colors } from "@/theme/colors";
 import { setUserInfo, setJWT } from "@/services/storage-service";
-import {UserInfo} from "@/types/user";
+import { UserInfo } from "@/types/user";
 
 /**
  * Component for registering a new account in the system, used in the register screen
@@ -40,11 +40,14 @@ const RegisterForm = () => {
 
   // State variable to track password visibility
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] =
+    useState<boolean>(false);
 
   // Password Constraint variables
-  const [passwordContainsLetter, setPasswordContainsLetter] = useState<boolean>(false);
-  const [passwordLengthValid, setPasswordLengthValid] = useState<boolean>(false);
+  const [passwordContainsLetter, setPasswordContainsLetter] =
+    useState<boolean>(false);
+  const [passwordLengthValid, setPasswordLengthValid] =
+    useState<boolean>(false);
 
   useEffect(() => {
     // Clear input and alerts on first render
@@ -102,7 +105,15 @@ const RegisterForm = () => {
       confirmPasswordAlert === "";
 
     setIsAllInputValid(validationPassed);
-  }, [nameAlert, emailAlert, passwordLengthValid, passwordContainsLetter, confirmPasswordAlert, name, email]);
+  }, [
+    nameAlert,
+    emailAlert,
+    passwordLengthValid,
+    passwordContainsLetter,
+    confirmPasswordAlert,
+    name,
+    email,
+  ]);
 
   // Functions to toggle password visibility states
   const toggleShowPassword = (): void => {
@@ -113,7 +124,10 @@ const RegisterForm = () => {
     setShowConfirmPassword(!showConfirmPassword);
   };
 
-  const checkIfPasswordsMatch = (password: string, confirmPassword: string): void => {
+  const checkIfPasswordsMatch = (
+    password: string,
+    confirmPassword: string,
+  ): void => {
     if (password === confirmPassword) {
       setConfirmPasswordAlert("");
     } else {
@@ -139,17 +153,19 @@ const RegisterForm = () => {
 
     try {
       registerUser(obj)
-        .then(async (response: {baseUser: {_id: string, user: UserInfo}}) => {
-          // Save user info in storage
-          // TODO: Refactor backend to get the same response as on login
-          const userInfo: UserInfo = {
-            id: response.baseUser._id,
-            firstName: response.baseUser.user.firstName,
-            lastName: response.baseUser.user.lastName,
-            email: response.baseUser.user.email
-          };
-          await setUserInfo(userInfo);
-        })
+        .then(
+          async (response: { baseUser: { _id: string; user: UserInfo } }) => {
+            // Save user info in storage
+            // TODO: Refactor backend to get the same response as on login
+            const userInfo: UserInfo = {
+              id: response.baseUser._id,
+              firstName: response.baseUser.user.firstName,
+              lastName: response.baseUser.user.lastName,
+              email: response.baseUser.user.email,
+            };
+            await setUserInfo(userInfo);
+          },
+        )
         .then(async () => {
           // logs in the user, if no errors occur, navigates to home screen and sets token
           await loginFromRegister(obj);
@@ -168,10 +184,13 @@ const RegisterForm = () => {
    *  email: String
    *  password: String
    */
-  const loginFromRegister = async (obj: {email: string, password: string}) => {
+  const loginFromRegister = async (obj: {
+    email: string;
+    password: string;
+  }) => {
     try {
       await loginUser(obj)
-        .then( async (response: {accessToken: string}) => {
+        .then(async (response: { accessToken: string }) => {
           await setJWT(response.accessToken);
           DialogNotification("success", "Usuário cadastrado! Cantando em...");
           setTimeout(() => {
@@ -271,7 +290,7 @@ const RegisterForm = () => {
               ) : null}
             </View>
           </View>
-          <View className="h-6 flex-row justify-start mb-6">
+          <View className="mb-6 h-6 flex-row justify-start">
             <Text
               className={
                 "text-sm" +
@@ -296,7 +315,7 @@ const RegisterForm = () => {
             </View>
           </View>
         </View>
-        <View className="flex-none mb-2">
+        <View className="mb-2 flex-none">
           <View className="relative">
             <FormTextField
               label="Confirmar senha" // Confirm password
@@ -316,7 +335,8 @@ const RegisterForm = () => {
             />
           </View>
           <FormFieldAlert
-            label={confirmPasswordAlert} success={confirmPasswordAlert === ""}
+            label={confirmPasswordAlert}
+            success={confirmPasswordAlert === ""}
           />
         </View>
         {/* Register */}
@@ -333,6 +353,6 @@ const RegisterForm = () => {
       </AlertNotificationRoot>
     </View>
   );
-}
+};
 
 export default RegisterForm;

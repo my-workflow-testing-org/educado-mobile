@@ -48,7 +48,7 @@ const LoginForm = () => {
 
     // Await the response from the backend API for login
     await loginUser(obj)
-      .then(async (response: {accessToken: string, userInfo: UserInfo}) => {
+      .then(async (response: { accessToken: string; userInfo: UserInfo }) => {
         // Set login token in AsyncStorage and navigate to home screen
         await setJWT(response.accessToken);
         await setUserInfo({ ...response.userInfo });
@@ -58,8 +58,9 @@ const LoginForm = () => {
         navigation.navigate("HomeStack");
       })
       .catch((error: unknown) => {
-        const objectError = typeof error === "object" && error !== null && "error" in error;
-        if (!(objectError)) {
+        const objectError =
+          typeof error === "object" && error !== null && "error" in error;
+        if (!objectError) {
           return;
         }
         const apiError = error as ApiError;
@@ -135,7 +136,9 @@ const LoginForm = () => {
 
       <View>
         <Text
-          className={"text-textSubtitleGrayscale mb-20 text-right text-h4-sm-regular underline"}
+          className={
+            "mb-20 text-right text-textSubtitleGrayscale underline text-h4-sm-regular"
+          }
           onPress={() => {
             setModalVisible(true);
           }}

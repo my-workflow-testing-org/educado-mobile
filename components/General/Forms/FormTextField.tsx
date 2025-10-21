@@ -51,7 +51,7 @@ const FormTextField = (props: PropTypes) => {
       <View className="flex flex-row">
         {/* Text size above input fields on login and registration */}
         <Text className={"ml-2 text-body-regular"}>{props.label ?? ""}</Text>
-        <Text className={"ml-1 text-body-regular text-surfaceDefaultRed"}>
+        <Text className={"ml-1 text-surfaceDefaultRed text-body-regular"}>
           {props.required ? "*" : ""}
         </Text>
       </View>

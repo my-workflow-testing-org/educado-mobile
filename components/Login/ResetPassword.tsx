@@ -14,9 +14,9 @@ import ToastNotification from "@/components/General/ToastNotification";
 import ShowAlert from "@/components/General/ShowAlert";
 
 interface ResetPasswordProps {
-  modalVisible: boolean,
-  onModalClose:  () => void,
-  title: string,
+  modalVisible: boolean;
+  onModalClose: () => void;
+  title: string;
 }
 
 interface ApiError {
@@ -80,8 +80,9 @@ const ResetPassword = (props: ResetPasswordProps) => {
         ToastNotification("success", "E-mail enviado!"); //email sent!
       })
       .catch((error: unknown) => {
-        const objectError = typeof error === "object" && error !== null && "error" in error;
-        if (!(objectError)) {
+        const objectError =
+          typeof error === "object" && error !== null && "error" in error;
+        if (!objectError) {
           return;
         }
         const apiError = error as ApiError;
@@ -131,8 +132,9 @@ const ResetPassword = (props: ResetPasswordProps) => {
         setCodeEntered(true);
       })
       .catch((error: unknown) => {
-        const objectError = typeof error === "object" && error !== null && "error" in error;
-        if (!(objectError)) {
+        const objectError =
+          typeof error === "object" && error !== null && "error" in error;
+        if (!objectError) {
           return;
         }
         const apiError = error as ApiError;
@@ -225,7 +227,10 @@ const ResetPassword = (props: ResetPasswordProps) => {
                     value={token}
                     error={tokenAlert !== ""}
                   />
-                  <FormFieldAlert success={tokenAlert === ""} label={tokenAlert} />
+                  <FormFieldAlert
+                    success={tokenAlert === ""}
+                    label={tokenAlert}
+                  />
                   {/* Continue button */}
                   <View className="mb-[24px] mt-[40px]">
                     <FormButton
