@@ -17,7 +17,7 @@ const RegistrationScreen = () => {
       if (isValid) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-expect-error
-        navigation.navigate("HomeStack");
+        navigation.navigate("Login");
       }
     } catch (error: unknown) {
       const tokenError: string = error as string;
@@ -42,7 +42,7 @@ const RegistrationScreen = () => {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View>
             <View className="mt-10">
-              <LogoBackButton navigationPlace={"HomeStack"} />
+              <LogoBackButton navigationPlace={"Login"} />
             </View>
             <View className="mx-6">
               <View className="mt-8">

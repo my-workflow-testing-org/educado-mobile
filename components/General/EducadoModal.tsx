@@ -40,7 +40,7 @@ const EducadoModal = (props: EducadoModalProps) => {
               <AlertNotificationRoot>
               <KeyboardAwareScrollView>
                 <View className="flex flex-row items-center justify-between px-[10%] mb-4">
-                  <Text className="text-h2-sm-bold">{props.title}</Text>
+                  <Text className="text-h2-sm-regular">{props.title}</Text>
                   <Pressable onPress={props.closeModal}>
                     <Entypo name="chevron-down" size={24} />
                   </Pressable>
