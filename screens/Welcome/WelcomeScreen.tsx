@@ -33,8 +33,7 @@ export default function WelcomeScreen() {
                 onPress={() => {
                   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                   // @ts-expect-error
-                  navigation.navigate(
-                    "LoginStack",
+                  navigation.navigate("LoginStack",
                     { screen: "Login" },
                     { previousScreen: "Welcome" },
                   );
@@ -52,8 +51,7 @@ export default function WelcomeScreen() {
                 onPress={() => {
                   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                   // @ts-expect-error
-                  navigation.navigate(
-                    "LoginStack",
+                  navigation.navigate("LoginStack",
                     { screen: "Register" },
                     { previousScreen: "Welcome" },
                   );
