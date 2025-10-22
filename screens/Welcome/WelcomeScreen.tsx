@@ -31,9 +31,10 @@ export default function WelcomeScreen() {
             <View className="w-screen px-6">
               <FormButton
                 onPress={() => {
-                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                  // @ts-expect-error
-                  navigation.navigate("LoginStack",
+                  navigation.navigate(
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-expect-error
+                    "LoginStack",
                     { screen: "Login" },
                     { previousScreen: "Welcome" },
                   );
@@ -49,9 +50,10 @@ export default function WelcomeScreen() {
                   "text-textSubtitleGrayscale underline text-h4-sm-bold"
                 }
                 onPress={() => {
-                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                  // @ts-expect-error
-                  navigation.navigate("LoginStack",
+                  navigation.navigate(
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-expect-error
+                    "LoginStack",
                     { screen: "Register" },
                     { previousScreen: "Welcome" },
                   );
