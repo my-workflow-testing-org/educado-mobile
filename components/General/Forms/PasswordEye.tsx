@@ -1,4 +1,4 @@
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { Pressable } from "react-native";
 
 interface PasswordEyeProps {
@@ -17,7 +17,7 @@ const PasswordEye = ({
 }: PasswordEyeProps) => {
   return (
     <Pressable onPress={toggleShowPassword}>
-      <MaterialCommunityIcons
+      <Ionicons
         name={showPasswordIcon ? "eye-off" : "eye"}
         size={24}
         color="gray"
