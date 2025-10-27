@@ -129,7 +129,11 @@ export const RegisterForm = () => {
   /**
    * Function for registering a new user in the database
    */
-  const register = async (name: string, email: string, password: string): Promise<void> => {
+  const register = async (
+    name: string,
+    email: string,
+    password: string,
+  ): Promise<void> => {
     if (!isAllInputValid) {
       return;
     }
@@ -155,8 +159,7 @@ export const RegisterForm = () => {
       };
 
       await setUserInfo(userInfo);
-
-    } catch(error: unknown) {
+    } catch (error: unknown) {
       if (isAxiosError(error)) {
         throw error.response?.data;
       }

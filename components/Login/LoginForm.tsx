@@ -144,10 +144,7 @@ const LoginForm = () => {
         Entrar
       </FormButton>
       <View className="">
-        <ResetPassword
-          modalVisible={modalVisible}
-          onModalClose={closeModal}
-        />
+        <ResetPassword modalVisible={modalVisible} onModalClose={closeModal} />
       </View>
     </View>
   );

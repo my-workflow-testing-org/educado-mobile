@@ -7,16 +7,19 @@ interface FormButtonTypes {
   style?: object[];
 }
 
-const FormButton = ({children, disabled, onPress, style }: FormButtonTypes) => {
+const FormButton = ({
+  children,
+  disabled,
+  onPress,
+  style,
+}: FormButtonTypes) => {
   return (
     <>
       <View>
         <TouchableOpacity
           className={
             "rounded-xl px-4 py-3 " +
-            (disabled
-              ? "bg-surfaceDisabledGrayscale"
-              : "bg-surfaceDefaultCyan")
+            (disabled ? "bg-surfaceDisabledGrayscale" : "bg-surfaceDefaultCyan")
           }
           style={style ?? null}
           onPress={onPress}

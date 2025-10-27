@@ -26,13 +26,14 @@ interface EducadoModalProps {
  * - title: String for modal title
  * @returns
  */
-export const EducadoModal = ({children, modalVisible, closeModal, title}: EducadoModalProps) => {
+export const EducadoModal = ({
+  children,
+  modalVisible,
+  closeModal,
+  title,
+}: EducadoModalProps) => {
   return (
-    <Modal
-      visible={modalVisible}
-      animationType="slide"
-      transparent={true}
-    >
+    <Modal visible={modalVisible} animationType="slide" transparent={true}>
       <TouchableWithoutFeedback onPress={closeModal}>
         <View className="flex-1 justify-end bg-modalOpacityBlue">
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

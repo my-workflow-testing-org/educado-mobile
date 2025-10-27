@@ -33,7 +33,10 @@ interface ApiError {
  * - modalVisible: Boolean to show if modal should be visible
  * - onModalClose: Function to do when modal closes
  */
-export const ResetPassword = ({ modalVisible, onModalClose }: ResetPasswordProps) => {
+export const ResetPassword = ({
+  modalVisible,
+  onModalClose,
+}: ResetPasswordProps) => {
   const emailAlertMessage = "Email não localizado";
   const [email, setEmail] = useState("");
   const [token, setToken] = useState("");
@@ -69,13 +72,12 @@ export const ResetPassword = ({ modalVisible, onModalClose }: ResetPasswordProps
 
     setEmailError(false);
 
-
     setButtonLoading(true);
 
     try {
       await sendResetPasswordEmail({ email });
     } catch (error: unknown) {
-      if(isAxiosError(error)) {
+      if (isAxiosError(error)) {
         throw error.response?.data;
       }
       const apiError = error as ApiError;
@@ -126,7 +128,7 @@ export const ResetPassword = ({ modalVisible, onModalClose }: ResetPasswordProps
     try {
       await validateResetPasswordCode(obj);
     } catch (error: unknown) {
-      if(isAxiosError(error)) {
+      if (isAxiosError(error)) {
         throw error.response?.data;
       }
 

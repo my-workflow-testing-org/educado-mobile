@@ -32,7 +32,12 @@ interface ApiError {
  * Component for entering a new password in the resetPassword modal
  * @param {Object} props not used in this component as of now
  */
-const EnterNewPasswordScreen = ( {hideModal, resetState, email, token}: EnterNewPasswordScreenProps) => {
+const EnterNewPasswordScreen = ({
+  hideModal,
+  resetState,
+  email,
+  token,
+}: EnterNewPasswordScreenProps) => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
@@ -235,6 +240,6 @@ const EnterNewPasswordScreen = ( {hideModal, resetState, email, token}: EnterNew
       </FormButton>
     </View>
   );
-}
+};
 
 export default EnterNewPasswordScreen;

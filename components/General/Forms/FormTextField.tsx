@@ -1,9 +1,4 @@
-import {
-  View,
-  TextInput,
-  KeyboardTypeOptions,
-  Text,
-} from "react-native";
+import { View, TextInput, KeyboardTypeOptions, Text } from "react-native";
 import PasswordEye from "@/components/General/Forms/PasswordEye";
 import { useState } from "react";
 
@@ -61,7 +56,7 @@ const FormTextField = ({
   placeholder,
   value,
   required,
-  showPasswordEye
+  showPasswordEye,
 }: FormTextFieldProp) => {
   const [showPassword, setShowPassword] = useState(showPasswordEye ?? false);
 
@@ -74,11 +69,7 @@ const FormTextField = ({
           {required ? "*" : ""}
         </Text>
         {(showPasswordEye ?? false) ? (
-          <View
-            className={
-              "absolute top-12 right-[15] z-10 ml-auto"
-            }
-          >
+          <View className={"absolute right-[15] top-12 z-10 ml-auto"}>
             <PasswordEye
               showPasswordIcon={showPassword}
               toggleShowPassword={() => {
@@ -87,18 +78,18 @@ const FormTextField = ({
             />
           </View>
         ) : null}
-      {/* Various properties for text input fields */}
-      <TextInput
-        className={`w-full rounded-lg bg-surfaceSubtleGrayscale py-4 pl-[10px] text-subtitle-regular ${
-          bordered && !error ? "border border-projectGray" : ""
-        } ${error ? "border border-b-borderDefaultRed bg-surfaceSubtleRed" : ""}`}
-        placeholder={placeholder ?? ""} // Placeholder text to be displayed
-        keyboardType={keyboardType} // Keyboard type (e.g. numeric, email-address, etc.)
-        autoComplete={autoComplete} // Whether to enable auto-completion
-        secureTextEntry={showPassword} // Whether to mask the input (for passwords, etc.)
-        onChangeText={(value) => onChangeText?.(value)} // Callback function to be called when the text changes
-        value={value} // Value of the input
-      />
+        {/* Various properties for text input fields */}
+        <TextInput
+          className={`w-full rounded-lg bg-surfaceSubtleGrayscale py-4 pl-[10px] text-subtitle-regular ${
+            bordered && !error ? "border border-projectGray" : ""
+          } ${error ? "border border-b-borderDefaultRed bg-surfaceSubtleRed" : ""}`}
+          placeholder={placeholder ?? ""} // Placeholder text to be displayed
+          keyboardType={keyboardType} // Keyboard type (e.g. numeric, email-address, etc.)
+          autoComplete={autoComplete} // Whether to enable auto-completion
+          secureTextEntry={showPassword} // Whether to mask the input (for passwords, etc.)
+          onChangeText={(value) => onChangeText?.(value)} // Callback function to be called when the text changes
+          value={value} // Value of the input
+        />
       </View>
     </View>
   );
