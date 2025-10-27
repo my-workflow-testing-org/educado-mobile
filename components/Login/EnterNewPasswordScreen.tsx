@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { View, Text } from "react-native";
 import FormTextField from "@/components/General/Forms/FormTextField";
 import FormButton from "@/components/General/Forms/FormButton";
-import PasswordEye from "@/components/General/Forms/PasswordEye";
 import { enterNewPassword } from "@/api/user-api";
 import FormFieldAlert from "@/components/General/Forms/FormFieldAlert";
 import {
@@ -11,8 +10,9 @@ import {
   validatePasswordLength,
 } from "@/components/General/validation";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import ShowAlert from "@/components/General/ShowAlert";
 import DialogNotification from "@/components/General/DialogNotification";
+import { isAxiosError } from "axios";
+import ShowAlert from "@/components/General/ShowAlert";
 
 interface EnterNewPasswordScreenProps {
   hideModal: () => void;
@@ -32,11 +32,7 @@ interface ApiError {
  * Component for entering a new password in the resetPassword modal
  * @param {Object} props not used in this component as of now
  */
-export default function EnterNewPasswordScreen(
-  props: EnterNewPasswordScreenProps,
-) {
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+const EnterNewPasswordScreen = ( {hideModal, resetState, email, token}: EnterNewPasswordScreenProps) => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
@@ -50,18 +46,6 @@ export default function EnterNewPasswordScreen(
 
   let isPasswordsEmpty;
   let passwordRequirements;
-
-  /**
-   * Function to toggle the password visibility state
-   * @param {Function} setShowPasswordFunction function for handling password visibility state
-   * @param {boolean} shouldShowPassword boolean state for visibility of password
-   */
-  const toggleShowPassword = (
-    setShowPasswordFunction: (shouldShowPassword: boolean) => void,
-    shouldShowPassword: boolean,
-  ) => {
-    setShowPasswordFunction(!shouldShowPassword);
-  };
 
   const checkIfPasswordsMatch = (password: string, confirmPassword: string) => {
     if (password === confirmPassword) {
@@ -112,15 +96,14 @@ export default function EnterNewPasswordScreen(
       await enterNewPassword(obj);
       DialogNotification("success", "A senha foi alterada.");
       setTimeout(() => {
-        props.hideModal();
-        props.resetState();
+        hideModal();
+        resetState();
       }, 2500);
-    } catch (error: unknown) {
-      const objectError =
-        typeof error === "object" && error !== null && "error" in error;
-      if (!objectError) {
-        return;
+    } catch (error) {
+      if (isAxiosError(error)) {
+        throw error.response?.data;
       }
+
       const apiError = error as ApiError;
       switch (apiError.error.code) {
         case "E0401":
@@ -170,19 +153,12 @@ export default function EnterNewPasswordScreen(
           label="Nova senha"
           required={true}
           bordered={true}
-          secureTextEntry={!showPassword}
-          passwordGuidelines={true}
           value={newPassword}
           error={
             newPassword !== "" &&
             !(passwordContainsLetter && passwordLengthValid)
           }
-        />
-        <PasswordEye
-          showPasswordIcon={!showPassword}
-          toggleShowPassword={() => {
-            toggleShowPassword(setShowPassword, showPassword);
-          }}
+          showPasswordEye={true}
         />
       </View>
       <View className="mt-1 h-6 flex-row justify-start">
@@ -236,15 +212,9 @@ export default function EnterNewPasswordScreen(
           }}
           label="Confirmar nova senha" // Confirm new password
           required={true}
-          secureTextEntry={!showConfirmPassword}
           value={confirmPassword}
           error={confirmPasswordAlert !== ""}
-        />
-        <PasswordEye
-          showPasswordIcon={!showConfirmPassword}
-          toggleShowPassword={() => {
-            toggleShowPassword(setShowConfirmPassword, showConfirmPassword);
-          }}
+          showPasswordEye={true}
         />
       </View>
       <View className="mb-10">
@@ -257,7 +227,7 @@ export default function EnterNewPasswordScreen(
       {/* Enter button */}
       <FormButton
         onPress={() => {
-          void changePassword(props.email, props.token, newPassword);
+          void changePassword(email, token, newPassword);
         }}
         disabled={!validateInput()}
       >
@@ -266,3 +236,5 @@ export default function EnterNewPasswordScreen(
     </View>
   );
 }
+
+export default EnterNewPasswordScreen;

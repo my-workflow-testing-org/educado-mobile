@@ -2,7 +2,7 @@ import { View, Text } from "react-native";
 import { useState } from "react";
 import FormTextField from "@/components/General/Forms/FormTextField";
 import FormButton from "@/components/General/Forms/FormButton";
-import EducadoModal from "@/components/General/EducadoModal";
+import { EducadoModal } from "@/components/General/EducadoModal";
 import EnterNewPasswordScreen from "@/components/Login/EnterNewPasswordScreen";
 import {
   sendResetPasswordEmail,
@@ -12,11 +12,11 @@ import FormFieldAlert from "@/components/General/Forms/FormFieldAlert";
 import { validateEmail } from "@/components/General/validation";
 import ToastNotification from "@/components/General/ToastNotification";
 import ShowAlert from "@/components/General/ShowAlert";
+import { isAxiosError } from "axios";
 
 interface ResetPasswordProps {
   modalVisible: boolean;
   onModalClose: () => void;
-  title: string;
 }
 
 interface ApiError {
@@ -33,7 +33,7 @@ interface ApiError {
  * - modalVisible: Boolean to show if modal should be visible
  * - onModalClose: Function to do when modal closes
  */
-const ResetPassword = (props: ResetPasswordProps) => {
+export const ResetPassword = ({ modalVisible, onModalClose }: ResetPasswordProps) => {
   const emailAlertMessage = "Email não localizado";
   const [email, setEmail] = useState("");
   const [token, setToken] = useState("");
@@ -69,49 +69,45 @@ const ResetPassword = (props: ResetPasswordProps) => {
 
     setEmailError(false);
 
-    const obj = {
-      email,
-    };
 
     setButtonLoading(true);
-    await sendResetPasswordEmail(obj)
-      .then(() => {
-        setEmailSent(true);
-        ToastNotification("success", "E-mail enviado!"); //email sent!
-      })
-      .catch((error: unknown) => {
-        const objectError =
-          typeof error === "object" && error !== null && "error" in error;
-        if (!objectError) {
-          return;
-        }
-        const apiError = error as ApiError;
-        switch (apiError.error.code) {
-          case "E0401":
-            // No user exists with this email!
-            displayErrorAlert(emailAlertMessage, false);
-            setEmailError(true);
-            break;
 
-          case "E0406":
-            // Too many resend attempts!
-            displayErrorAlert(
-              "Muitas tentativas de reenvio! Espere 5 minutos...",
-              false,
-            );
-            break;
+    try {
+      await sendResetPasswordEmail({ email });
+    } catch (error: unknown) {
+      if(isAxiosError(error)) {
+        throw error.response?.data;
+      }
+      const apiError = error as ApiError;
+      switch (apiError.error.code) {
+        case "E0401":
+          // No user exists with this email!
+          displayErrorAlert(emailAlertMessage, false);
+          setEmailError(true);
+          break;
 
-          case "E0004":
-            // User not found!
-            displayErrorAlert("Usuário não encontrado!", false);
-            break;
+        case "E0406":
+          // Too many resend attempts!
+          displayErrorAlert(
+            "Muitas tentativas de reenvio! Espere 5 minutos...",
+            false,
+          );
+          break;
 
-          // TODO: What error should we give here instead? Unknown error?
-          default:
-            // Errors not currently handled with specific alerts
-            displayErrorAlert("Erro desconhecido!", false);
-        }
-      });
+        case "E0004":
+          // User not found!
+          displayErrorAlert("Usuário não encontrado!", false);
+          break;
+
+        // TODO: What error should we give here instead? Unknown error?
+        default:
+          // Errors not currently handled with specific alerts
+          displayErrorAlert("Erro desconhecido!", false);
+      }
+    } finally {
+      setEmailSent(true);
+      ToastNotification("success", "E-mail enviado!"); //email sent!
+    }
     setButtonLoading(false);
   };
 
@@ -127,40 +123,39 @@ const ResetPassword = (props: ResetPasswordProps) => {
       token,
     };
 
-    await validateResetPasswordCode(obj)
-      .then(() => {
-        setCodeEntered(true);
-      })
-      .catch((error: unknown) => {
-        const objectError =
-          typeof error === "object" && error !== null && "error" in error;
-        if (!objectError) {
-          return;
-        }
-        const apiError = error as ApiError;
-        switch (apiError.error.code) {
-          case "E0401":
-            // No user exists with this email!
-            displayErrorAlert(emailAlertMessage, false);
-            setEmailError(true);
-            break;
+    try {
+      await validateResetPasswordCode(obj);
+    } catch (error: unknown) {
+      if(isAxiosError(error)) {
+        throw error.response?.data;
+      }
 
-          case "E0404":
-            // Code expired!
-            setTokenAlert("Código expirado!");
-            break;
+      const apiError = error as ApiError;
+      switch (apiError.error.code) {
+        case "E0401":
+          // No user exists with this email!
+          displayErrorAlert(emailAlertMessage, false);
+          setEmailError(true);
+          break;
 
-          case "E0405":
-            // Incorrect code!
-            setTokenAlert("Código inválido");
-            break;
+        case "E0404":
+          // Code expired!
+          setTokenAlert("Código expirado!");
+          break;
 
-          default:
-            // Errors not currently handled with specific alerts
-            ShowAlert("Erro desconhecido!");
-            console.log(error);
-        }
-      });
+        case "E0405":
+          // Incorrect code!
+          setTokenAlert("Código inválido");
+          break;
+
+        default:
+          // Errors not currently handled with specific alerts
+          ShowAlert("Erro desconhecido!");
+          console.log(error);
+      }
+    } finally {
+      setCodeEntered(true);
+    }
   };
 
   //resets the state of the reset password modal
@@ -179,8 +174,8 @@ const ResetPassword = (props: ResetPasswordProps) => {
 
   return (
     <EducadoModal
-      modalVisible={props.modalVisible}
-      closeModal={props.onModalClose}
+      modalVisible={modalVisible}
+      closeModal={onModalClose}
       title="Redefinição de senha"
     >
       <View className="my-8 px-10">
@@ -277,7 +272,7 @@ const ResetPassword = (props: ResetPasswordProps) => {
           <EnterNewPasswordScreen
             email={email}
             token={token}
-            hideModal={props.onModalClose}
+            hideModal={onModalClose}
             resetState={resetState}
           />
         )}
@@ -285,5 +280,3 @@ const ResetPassword = (props: ResetPasswordProps) => {
     </EducadoModal>
   );
 };
-
-export default ResetPassword;

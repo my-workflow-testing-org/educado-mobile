@@ -11,17 +11,18 @@ interface PasswordEyeProps {
  * - showPasswordIcon: Boolean
  * - toggleShowPassword: Function
  */
-export default function PasswordEye(props: PasswordEyeProps) {
+const PasswordEye = ({ showPasswordIcon, toggleShowPassword }: PasswordEyeProps) => {
   return (
     <Pressable
-      className="absolute right-0 top-9 p-3"
-      onPress={props.toggleShowPassword}
+      onPress={toggleShowPassword}
     >
       <MaterialCommunityIcons
-        name={props.showPasswordIcon ? "eye-off" : "eye"}
+        name={showPasswordIcon ? "eye-off" : "eye"}
         size={24}
         color="gray"
       />
     </Pressable>
   );
 }
+
+export default PasswordEye;

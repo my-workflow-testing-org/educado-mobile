@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { View, TouchableWithoutFeedback, Keyboard, Text } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import RegisterForm from "@/components/Login/RegisterForm";
+import { RegisterForm } from "@/components/Login/RegisterForm";
 import { SafeAreaView } from "react-native-safe-area-context";
 import LogoBackButton from "@/components/Login/LogoBackButton";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";

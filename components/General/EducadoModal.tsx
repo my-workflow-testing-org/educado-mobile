@@ -26,26 +26,26 @@ interface EducadoModalProps {
  * - title: String for modal title
  * @returns
  */
-const EducadoModal = (props: EducadoModalProps) => {
+export const EducadoModal = ({children, modalVisible, closeModal, title}: EducadoModalProps) => {
   return (
     <Modal
-      visible={props.modalVisible}
+      visible={modalVisible}
       animationType="slide"
       transparent={true}
     >
-      <TouchableWithoutFeedback onPress={props.closeModal}>
+      <TouchableWithoutFeedback onPress={closeModal}>
         <View className="flex-1 justify-end bg-modalOpacityBlue">
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View className="h-[90%] rounded-t-3xl bg-surfaceSubtleCyan pt-10">
               <AlertNotificationRoot>
                 <KeyboardAwareScrollView>
                   <View className="mb-4 flex flex-row items-center justify-between px-[10%]">
-                    <Text className="text-h2-sm-regular">{props.title}</Text>
-                    <Pressable onPress={props.closeModal}>
+                    <Text className="text-h2-sm-regular">{title}</Text>
+                    <Pressable onPress={closeModal}>
                       <Entypo name="chevron-down" size={24} />
                     </Pressable>
                   </View>
-                  {props.children}
+                  {children}
                 </KeyboardAwareScrollView>
               </AlertNotificationRoot>
             </View>
@@ -55,5 +55,3 @@ const EducadoModal = (props: EducadoModalProps) => {
     </Modal>
   );
 };
-
-export default EducadoModal;

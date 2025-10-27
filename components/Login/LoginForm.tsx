@@ -4,8 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import { loginUser } from "@/api/user-api";
 import FormTextField from "@/components/General/Forms/FormTextField";
 import FormButton from "@/components/General/Forms/FormButton";
-import PasswordEye from "@/components/General/Forms/PasswordEye";
-import ResetPassword from "@/components/Login/ResetPassword";
+import { ResetPassword } from "@/components/Login/ResetPassword";
 import FormFieldAlert from "@/components/General/Forms/FormFieldAlert";
 import { removeEmojis } from "@/components/General/validation";
 import ShowAlert from "@/components/General/ShowAlert";
@@ -14,6 +13,7 @@ import { UserInfo } from "@/types/user";
 // Services
 import { setUserInfo, setJWT } from "@/services/storage-service";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { isAxiosError } from "axios";
 
 interface ApiError {
   error: {
@@ -31,8 +31,6 @@ const LoginForm = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [passwordAlert, setPasswordAlert] = useState("");
   const [emailAlert, setEmailAlert] = useState("");
-  // State variable to track password visibility
-  const [showPassword, setShowPassword] = useState(false);
 
   const login = async (email: string, password: string): Promise<void> => {
     //Reset alerts
@@ -58,10 +56,8 @@ const LoginForm = () => {
         navigation.navigate("HomeStack");
       })
       .catch((error: unknown) => {
-        const objectError =
-          typeof error === "object" && error !== null && "error" in error;
-        if (!objectError) {
-          return;
+        if (isAxiosError(error)) {
+          throw error.response?.data;
         }
         const apiError = error as ApiError;
         switch (apiError.error.code) {
@@ -92,11 +88,6 @@ const LoginForm = () => {
     setModalVisible(false);
   };
 
-  // Function to toggle the password visibility state
-  const toggleShowPassword = () => {
-    setShowPassword(!showPassword);
-  };
-
   return (
     <View>
       <View className="mb-1">
@@ -123,13 +114,9 @@ const LoginForm = () => {
           }}
           label="Senha" // Password
           required={false}
-          secureTextEntry={!showPassword}
           bordered={true}
           error={passwordAlert !== ""}
-        />
-        <PasswordEye
-          showPasswordIcon={showPassword}
-          toggleShowPassword={toggleShowPassword}
+          showPasswordEye={true}
         />
         <FormFieldAlert success={passwordAlert === ""} label={passwordAlert} />
       </View>
@@ -160,8 +147,6 @@ const LoginForm = () => {
         <ResetPassword
           modalVisible={modalVisible}
           onModalClose={closeModal}
-          // Reset password
-          title={"Redefinir senha"}
         />
       </View>
     </View>

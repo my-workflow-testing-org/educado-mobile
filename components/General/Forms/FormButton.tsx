@@ -1,36 +1,36 @@
 import { View, Text, TouchableOpacity } from "react-native";
 
-interface PropTypes {
+interface FormButtonTypes {
   children: string;
   disabled?: boolean;
   onPress?: () => void;
   style?: object[];
 }
 
-const FormButton = (props: PropTypes) => {
+const FormButton = ({children, disabled, onPress, style }: FormButtonTypes) => {
   return (
     <>
       <View>
         <TouchableOpacity
           className={
             "rounded-xl px-4 py-3 " +
-            (props.disabled
+            (disabled
               ? "bg-surfaceDisabledGrayscale"
               : "bg-surfaceDefaultCyan")
           }
-          style={props.style ?? null}
-          onPress={props.onPress}
-          disabled={props.disabled}
+          style={style ?? null}
+          onPress={onPress}
+          disabled={disabled}
         >
           <Text
             className={
               "text-center text-body-bold " +
-              (props.disabled
+              (disabled
                 ? "text-greyscaleTexticonDisabled"
                 : "text-textNegativeGrayscale")
             }
           >
-            {props.children}
+            {children}
           </Text>
         </TouchableOpacity>
       </View>

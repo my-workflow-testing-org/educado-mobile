@@ -1,21 +1,26 @@
 import { View, Text } from "react-native";
 
+interface FormFieldAlertInterface {
+  label: string;
+  success?: boolean;
+}
+
 /**
  * Component for showing an alert below a form field
  * @param {Object} props should contain the following properties:
  * - label: String
  * - success: Boolean
  */
-const FormFieldAlert = (props: { label: string; success: boolean }) => {
+const FormFieldAlert = ({ label, success }: FormFieldAlertInterface) => {
   return (
     <View className="flex-row items-center">
-      {props.success ? (
+      {success ? (
         <Text className="text-surfaceDefaultGreen text-footnote-regular-caps">
-          {props.label}
+          {label}
         </Text>
       ) : (
         <Text className="text-textLabelRed text-footnote-regular-caps">
-          {props.label}
+          {label}
         </Text>
       )}
     </View>

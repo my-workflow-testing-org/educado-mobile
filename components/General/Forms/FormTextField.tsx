@@ -1,6 +1,13 @@
-import { View, TextInput, KeyboardTypeOptions, Text } from "react-native";
+import {
+  View,
+  TextInput,
+  KeyboardTypeOptions,
+  Text,
+} from "react-native";
+import PasswordEye from "@/components/General/Forms/PasswordEye";
+import { useState } from "react";
 
-interface PropTypes {
+interface FormTextFieldProp {
   autoComplete?:
     | "off"
     | "username"
@@ -38,36 +45,60 @@ interface PropTypes {
   keyboardType?: KeyboardTypeOptions | undefined;
   label?: string;
   onChangeText?: (text: string) => void;
-  passwordGuidelines?: boolean;
   placeholder?: string;
   required?: boolean;
-  secureTextEntry?: boolean;
   value?: string;
+  showPasswordEye?: boolean;
 }
 
-const FormTextField = (props: PropTypes) => {
+const FormTextField = ({
+  autoComplete,
+  bordered,
+  error,
+  keyboardType,
+  label,
+  onChangeText,
+  placeholder,
+  value,
+  required,
+  showPasswordEye
+}: FormTextFieldProp) => {
+  const [showPassword, setShowPassword] = useState(showPasswordEye ?? false);
+
   return (
     <View>
-      <View className="flex flex-row">
+      <View className="relative flex flex-row flex-wrap">
         {/* Text size above input fields on login and registration */}
-        <Text className={"ml-2 text-body-regular"}>{props.label ?? ""}</Text>
-        <Text className={"ml-1 text-surfaceDefaultRed text-body-regular"}>
-          {props.required ? "*" : ""}
+        <Text className="ml-2 text-body-regular">{label ?? ""}</Text>
+        <Text className="ml-1 text-surfaceDefaultRed text-body-regular">
+          {required ? "*" : ""}
         </Text>
-      </View>
-      <View className="">
-        {/* Various properties for text input fields */}
-        <TextInput
-          className={`w-full rounded-lg bg-surfaceSubtleGrayscale py-4 pl-[10px] text-subtitle-regular ${
-            props.bordered && !props.error ? "border border-projectGray" : ""
-          } ${props.error ? "border border-b-borderDefaultRed bg-surfaceSubtleRed" : ""}`}
-          placeholder={props.placeholder ?? ""} // Placeholder text to be displayed
-          keyboardType={props.keyboardType} // Keyboard type (e.g. numeric, email-address, etc.)
-          autoComplete={props.autoComplete} // Whether to enable auto-completion
-          secureTextEntry={props.secureTextEntry ?? false} // Whether to mask the input (for passwords, etc.)
-          onChangeText={(value) => props.onChangeText?.(value)} // Callback function to be called when the text changes
-          value={props.value} // Value of the input
-        />
+        {(showPasswordEye ?? false) ? (
+          <View
+            className={
+              "absolute top-12 right-[15] z-10 ml-auto"
+            }
+          >
+            <PasswordEye
+              showPasswordIcon={showPassword}
+              toggleShowPassword={() => {
+                setShowPassword(!showPassword);
+              }}
+            />
+          </View>
+        ) : null}
+      {/* Various properties for text input fields */}
+      <TextInput
+        className={`w-full rounded-lg bg-surfaceSubtleGrayscale py-4 pl-[10px] text-subtitle-regular ${
+          bordered && !error ? "border border-projectGray" : ""
+        } ${error ? "border border-b-borderDefaultRed bg-surfaceSubtleRed" : ""}`}
+        placeholder={placeholder ?? ""} // Placeholder text to be displayed
+        keyboardType={keyboardType} // Keyboard type (e.g. numeric, email-address, etc.)
+        autoComplete={autoComplete} // Whether to enable auto-completion
+        secureTextEntry={showPassword} // Whether to mask the input (for passwords, etc.)
+        onChangeText={(value) => onChangeText?.(value)} // Callback function to be called when the text changes
+        value={value} // Value of the input
+      />
       </View>
     </View>
   );

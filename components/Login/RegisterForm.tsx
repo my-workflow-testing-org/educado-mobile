@@ -3,7 +3,6 @@ import { View, Text } from "react-native";
 import { loginUser, registerUser } from "@/api/user-api";
 import FormTextField from "@/components/General/Forms/FormTextField";
 import FormButton from "@/components/General/Forms/FormButton";
-import PasswordEye from "@/components/General/Forms/PasswordEye";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import ShowAlert from "@/components/General/ShowAlert";
 import FormFieldAlert from "@/components/General/Forms/FormFieldAlert";
@@ -21,11 +20,17 @@ import { AlertNotificationRoot } from "react-native-alert-notification";
 import { colors } from "@/theme/colors";
 import { setUserInfo, setJWT } from "@/services/storage-service";
 import { UserInfo } from "@/types/user";
+import { isAxiosError } from "axios";
+
+interface BaseUserType {
+  _id: string;
+  user: UserInfo;
+}
 
 /**
  * Component for registering a new account in the system, used in the register screen
  */
-const RegisterForm = () => {
+export const RegisterForm = () => {
   const navigation = useNavigation();
 
   const [name, setName] = useState<string>("");
@@ -37,11 +42,6 @@ const RegisterForm = () => {
   const [nameAlert, setNameAlert] = useState("");
   const [isAllInputValid, setIsAllInputValid] = useState<boolean>(false);
   const [confirmPasswordAlert, setConfirmPasswordAlert] = useState<string>("");
-
-  // State variable to track password visibility
-  const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [showConfirmPassword, setShowConfirmPassword] =
-    useState<boolean>(false);
 
   // Password Constraint variables
   const [passwordContainsLetter, setPasswordContainsLetter] =
@@ -95,14 +95,14 @@ const RegisterForm = () => {
    * useEffect runs with every new input and checks for validation.
    */
   useEffect(() => {
-    const validationPassed =
-      nameAlert === "" &&
-      emailAlert === "" &&
-      name !== "" &&
-      email !== "" &&
+    const validationPassed: boolean =
+      !nameAlert &&
+      !emailAlert &&
+      !name &&
+      !email &&
       passwordLengthValid &&
       passwordContainsLetter &&
-      confirmPasswordAlert === "";
+      !confirmPasswordAlert;
 
     setIsAllInputValid(validationPassed);
   }, [
@@ -114,15 +114,6 @@ const RegisterForm = () => {
     name,
     email,
   ]);
-
-  // Functions to toggle password visibility states
-  const toggleShowPassword = (): void => {
-    setShowPassword(!showPassword);
-  };
-
-  const toggleShowConfirmPassword = (): void => {
-    setShowConfirmPassword(!showConfirmPassword);
-  };
 
   const checkIfPasswordsMatch = (
     password: string,
@@ -138,7 +129,7 @@ const RegisterForm = () => {
   /**
    * Function for registering a new user in the database
    */
-  const register = (name: string, email: string, password: string): void => {
+  const register = async (name: string, email: string, password: string): Promise<void> => {
     if (!isAllInputValid) {
       return;
     }
@@ -152,29 +143,27 @@ const RegisterForm = () => {
     };
 
     try {
-      registerUser(obj)
-        .then(
-          async (response: { baseUser: { _id: string; user: UserInfo } }) => {
-            // Save user info in storage
-            // TODO: Refactor backend to get the same response as on login
-            const userInfo: UserInfo = {
-              id: response.baseUser._id,
-              firstName: response.baseUser.user.firstName,
-              lastName: response.baseUser.user.lastName,
-              email: response.baseUser.user.email,
-            };
-            await setUserInfo(userInfo);
-          },
-        )
-        .then(async () => {
-          // logs in the user, if no errors occur, navigates to home screen and sets token
-          await loginFromRegister(obj);
-        })
-        .catch((error: unknown) => {
-          ShowAlert(errorSwitch(error));
-        });
-    } catch (e) {
-      console.log(e);
+      // TODO: the function registerUser needs to be typed for this to work.
+      // I am also unsure of its returned type, hence the weird type it now has.
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const { baseUser }: { baseUser: BaseUserType } = await registerUser(obj);
+      const userInfo: UserInfo = {
+        id: baseUser._id,
+        firstName: baseUser.user.firstName,
+        lastName: baseUser.user.lastName,
+        email: baseUser.user.email,
+      };
+
+      await setUserInfo(userInfo);
+
+    } catch(error: unknown) {
+      if (isAxiosError(error)) {
+        throw error.response?.data;
+      }
+
+      ShowAlert(errorSwitch(error));
+    } finally {
+      await loginFromRegister(obj);
     }
   };
 
@@ -250,7 +239,6 @@ const RegisterForm = () => {
               label="Senha" //Password
               value={password}
               placeholder="********"
-              secureTextEntry={!showPassword}
               required={true}
               bordered={true}
               onChangeText={(inputPassword: string) => {
@@ -260,10 +248,7 @@ const RegisterForm = () => {
                 password !== "" &&
                 !(passwordContainsLetter && passwordLengthValid)
               }
-            />
-            <PasswordEye
-              showPasswordIcon={!showPassword}
-              toggleShowPassword={toggleShowPassword}
+              showPasswordEye={true}
             />
           </View>
 
@@ -324,14 +309,10 @@ const RegisterForm = () => {
                 setConfirmPassword(removeEmojis(inputConfirmPassword));
               }}
               placeholder="********" // Confirm your password
-              secureTextEntry={!showConfirmPassword}
               required={true}
               bordered={true}
               error={confirmPasswordAlert !== ""}
-            />
-            <PasswordEye
-              showPasswordIcon={!showConfirmPassword}
-              toggleShowPassword={toggleShowConfirmPassword}
+              showPasswordEye={true}
             />
           </View>
           <FormFieldAlert
@@ -343,7 +324,12 @@ const RegisterForm = () => {
         <View className="mt-auto flex-none">
           <FormButton
             onPress={() => {
-              register(name, email, password);
+              register(name, email, password).catch((error: unknown) => {
+                if (isAxiosError(error)) {
+                  throw error.response?.data;
+                }
+                ShowAlert(errorSwitch(error));
+              });
             }}
             disabled={!isAllInputValid}
           >
@@ -354,5 +340,3 @@ const RegisterForm = () => {
     </View>
   );
 };
-
-export default RegisterForm;
