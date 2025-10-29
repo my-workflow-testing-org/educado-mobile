@@ -33,21 +33,19 @@ interface BaseUserType {
 export const RegisterForm = () => {
   const navigation = useNavigation();
 
-  const [name, setName] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
-  const [emailAlert, setEmailAlert] = useState<string>("");
+  const [emailAlert, setEmailAlert] = useState("");
   const [nameAlert, setNameAlert] = useState("");
-  const [isAllInputValid, setIsAllInputValid] = useState<boolean>(false);
-  const [confirmPasswordAlert, setConfirmPasswordAlert] = useState<string>("");
+  const [isAllInputValid, setIsAllInputValid] = useState(false);
+  const [confirmPasswordAlert, setConfirmPasswordAlert] = useState("");
 
   // Password Constraint variables
-  const [passwordContainsLetter, setPasswordContainsLetter] =
-    useState<boolean>(false);
-  const [passwordLengthValid, setPasswordLengthValid] =
-    useState<boolean>(false);
+  const [passwordContainsLetter, setPasswordContainsLetter] = useState(false);
+  const [passwordLengthValid, setPasswordLengthValid] = useState(false);
 
   useEffect(() => {
     // Clear input and alerts on first render
@@ -170,12 +168,6 @@ export const RegisterForm = () => {
     }
   };
 
-  /**
-   * function to log in the user and set the login token, meant to be called after registering
-   * @param {Object} obj the object containing the following fields:
-   *  email: String
-   *  password: String
-   */
   const loginFromRegister = async (obj: {
     email: string;
     password: string;
