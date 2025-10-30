@@ -7,6 +7,7 @@ import {
 } from "@tanstack/react-query";
 import NetInfo from "@react-native-community/netinfo";
 import { AppState, AppStateStatus } from "react-native";
+import configureApiClient from "@/api/config/api-config";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -32,6 +33,8 @@ onlineManager.setEventListener((setOnline) =>
 const onAppStateChange = (status: AppStateStatus) => {
   focusManager.setFocused(status === "active");
 };
+
+configureApiClient();
 
 export const QueryProvider = ({ children }: PropsWithChildren) => {
   useEffect(() => {
