@@ -1,40 +1,31 @@
 import { useState } from "react";
-import { View } from "react-native";
+import { View, Text } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { loginUser } from "../../api/user-api";
-import FormTextField from "../General/Forms/FormTextField";
-import FormButton from "../General/Forms/FormButton";
-import PasswordEye from "../General/Forms/PasswordEye";
-import ResetPassword from "./ResetPassword";
-import FormFieldAlert from "../General/Forms/FormFieldAlert";
-import { removeEmojis } from "../General/validation";
-import Text from "../General/Text";
-import ShowAlert from "../General/ShowAlert";
-
-// Services
-import { setUserInfo, setJWT } from "../../services/storage-service";
+import { loginUser } from "@/api/user-api";
+import { FormTextField } from "@/components/General/Forms/FormTextField";
+import { FormButton } from "@/components/General/Forms/FormButton";
+import { ResetPassword } from "@/components/Login/ResetPassword";
+import { FormFieldAlert } from "@/components/General/Forms/FormFieldAlert";
+import { removeEmojis } from "@/components/General/validation";
+import ShowAlert from "@/components/General/ShowAlert";
+import { UserInfo } from "@/types/user";
+import { setUserInfo, setJWT } from "@/services/storage-service";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { isAxiosError } from "axios";
+import { ApiError } from "@/api/legacy-api";
 
 /**
- * Login form component for login screen containing email and password input fields and a login button.
- * @returns {React.Element} Component for logging in (login screen)
+ * Login form component for the login screen containing email and password input fields and a login button.
  */
-export default function LoginForm() {
+const LoginForm = () => {
   const navigation = useNavigation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
   const [passwordAlert, setPasswordAlert] = useState("");
   const [emailAlert, setEmailAlert] = useState("");
-  // State variable to track password visibility
-  const [showPassword, setShowPassword] = useState(false);
 
-  /**
-   * Logs user in with the entered credentials
-   * @param {String} email Email user tries to login with
-   * @param {String} password Password user tries to login with
-   */
-  async function login(email, password) {
+  const login = async (email: string, password: string): Promise<void> => {
     //Reset alerts
     setEmailAlert("");
     setPasswordAlert("");
@@ -48,23 +39,29 @@ export default function LoginForm() {
 
     // Await the response from the backend API for login
     await loginUser(obj)
-      .then(async (response) => {
+      .then(async (response: { accessToken: string; userInfo: UserInfo }) => {
         // Set login token in AsyncStorage and navigate to home screen
         await setJWT(response.accessToken);
         await setUserInfo({ ...response.userInfo });
         await AsyncStorage.setItem("loggedIn", "true");
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
         navigation.navigate("HomeStack");
       })
-      .catch((error) => {
-        switch (error?.error?.code) {
-          case "E0004":
+      .catch((error: unknown) => {
+        if (isAxiosError(error)) {
+          throw error.response?.data;
+        }
+        const apiError = error as ApiError;
+        switch (apiError.error.code) {
+          case "E0004": //E0004
             // No user exists with this email!
-            setEmailAlert("Não existe nenhum usuário com este email!");
+            setEmailAlert("Insira um E-mail válido");
             break;
 
-          case "E0105":
+          case "E0105": //E0105
             // Password is incorrect!
-            setPasswordAlert("Senha incorreta!");
+            setPasswordAlert("Senha incorreta. Por favor, tente novamente");
             break;
 
           case "E0003":
@@ -77,57 +74,54 @@ export default function LoginForm() {
             ShowAlert("Erro desconhecido!");
         }
       });
-  }
+  };
 
   // Function to close the reset password modal
   const closeModal = () => {
     setModalVisible(false);
   };
 
-  // Function to toggle the password visibility state
-  const toggleShowPassword = () => {
-    setShowPassword(!showPassword);
-  };
-
   return (
     <View>
-      <View className="mb-6">
+      <View className="mb-1">
         <FormTextField
-          testId="emailInput"
           placeholder="Insira sua e-mail"
-          onChangeText={(email) => setEmail(email)}
+          onChangeText={(email: string) => {
+            setEmail(email);
+          }}
           label="E-mail"
-          required={true}
+          required={false}
           keyboardType="email-address"
+          bordered={true}
+          error={emailAlert !== ""}
         />
-        <FormFieldAlert testId="emailAlert" label={emailAlert} />
+        <FormFieldAlert success={emailAlert === ""} label={emailAlert} />
       </View>
 
-      <View className="relative mb-6">
+      <View className="relative mb-5">
         <FormTextField
-          testId="passwordInput"
           placeholder="Insira sua senha" // Type your password
           value={password}
           onChangeText={(inputPassword) => {
-            setPassword(removeEmojis(inputPassword, password));
+            setPassword(removeEmojis(inputPassword));
           }}
           label="Senha" // Password
-          required={true}
-          secureTextEntry={!showPassword}
+          required={false}
+          bordered={true}
+          error={passwordAlert !== ""}
+          showPasswordEye={true}
         />
-        <PasswordEye
-          testId="passwordEye"
-          showPasswordIcon={showPassword}
-          toggleShowPassword={toggleShowPassword}
-        />
-        <FormFieldAlert testId="passwordAlert" label={passwordAlert} />
+        <FormFieldAlert success={passwordAlert === ""} label={passwordAlert} />
       </View>
 
       <View>
-        {/* TODO: tilføj onPress til nedenstående; reset password */}
         <Text
-          className={"mb-15 text-right text-lg text-projectBlack underline"}
-          onPress={() => setModalVisible(true)}
+          className={
+            "mb-20 text-right text-textSubtitleGrayscale underline text-h4-sm-regular"
+          }
+          onPress={() => {
+            setModalVisible(true);
+          }}
         >
           {/* reset your password? */}
           Esqueceu a senha?
@@ -135,23 +129,18 @@ export default function LoginForm() {
       </View>
       {/* Enter */}
       <FormButton
-        testId="loginButton"
-        onPress={() => login(email, password)}
+        onPress={() => {
+          void login(email, password);
+        }}
         disabled={!(password.length > 0 && email.length > 0)}
-        className="mt-4"
       >
         Entrar
       </FormButton>
-      <View className="pt-10">
-        <ResetPassword
-          className={!modalVisible ? "hidden" : ""}
-          modalVisible={modalVisible}
-          onModalClose={closeModal}
-          testId="resetPasswordModal"
-          // Reset password
-          title="Redefinir senha"
-        />
+      <View className="">
+        <ResetPassword modalVisible={modalVisible} onModalClose={closeModal} />
       </View>
     </View>
   );
-}
+};
+
+export default LoginForm;

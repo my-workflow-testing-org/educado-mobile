@@ -1,68 +1,60 @@
-import { View, TextInput } from "react-native";
-import Text from "../Text";
-import PropTypes from "prop-types";
+import { View, TextInput, Text, TextInputProps } from "react-native";
+import { PasswordEye } from "@/components/General/Forms/PasswordEye";
+import { useState } from "react";
 
-/**
- * Text field component for forms (e.g. login, register, etc.).
- * @param {Obj} props Possible props:
- * - label: Label to be displayed
- * - required: Whether the field is required
- * - placeholder: Placeholder text to be displayed
- * - keyboardType: Keyboard type (e.g. numeric, email-address, etc.)
- * - autoComplete: Whether to enable auto-completion
- * - secureTextEntry: Whether to mask the input (for passwords, etc.)
- * - passwordGuidelines: Whether to display password guidelines
- * - onChangeText: Callback function to be called when the text changes
- * - value: Value of the input
- * - bordered: Whether to display a border
- * - error: Whether to display an error border
- * @returns {React.Element} Text component for entering data
- */
-export default function FormTextField(props) {
+interface FormTextFieldProp extends TextInputProps {
+  bordered?: boolean;
+  error?: boolean;
+  label?: string;
+  required?: boolean;
+  showPasswordEye?: boolean;
+}
+
+export const FormTextField = ({
+  autoComplete,
+  bordered,
+  error,
+  keyboardType,
+  label,
+  onChangeText,
+  placeholder,
+  value,
+  required,
+  showPasswordEye,
+}: FormTextFieldProp) => {
+  const [showPassword, setShowPassword] = useState(showPasswordEye ?? false);
+
   return (
     <View>
-      <View className="flex flex-row">
-        {/* Text size above input fields on login and registration */}
-        <Text className={"ml-2 text-lg"}>{props.label ?? ""}</Text>
-
-        {/* Text size for red asterisks (fields required) */}
-        <Text className={"ml-1 text-lg text-error"}>
-          {props.required ? "*" : ""}
+      <View className="relative flex flex-row flex-wrap">
+        <Text className="ml-2 text-body-regular">{label ?? ""}</Text>
+        <Text className="ml-1 text-surfaceDefaultRed text-body-regular">
+          {required ? "*" : ""}
         </Text>
-      </View>
-      <View className="">
-        {/* Various properties for text input fields */}
+        {(showPasswordEye ?? false) ? (
+          <View className={"absolute right-[15] top-12 z-10 ml-auto"}>
+            <PasswordEye
+              showPasswordIcon={showPassword}
+              toggleShowPassword={() => {
+                setShowPassword(!showPassword);
+              }}
+            />
+          </View>
+        ) : null}
         <TextInput
-          className={
-            "h-50 br-25 rounded-lg bg-projectWhite py-1 pl-[10px] text-base" +
-            (props.bordered ? " border-2 border-projectGray" : "") +
-            (props.error ? " border-2 border-error" : "")
-          }
-          placeholder={props.placeholder ?? ""} // Placeholder text to be displayed
-          keyboardType={props.keyboardType ?? "default"} // Keyboard type (e.g. numeric, email-address, etc.)
-          autoComplete={props.autoComplete ?? "off"} // Whether to enable auto-completion
-          secureTextEntry={props.secureTextEntry ?? false} // Whether to mask the input (for passwords, etc.)
-          passwordGuidelines={props.passwordGuidelines ?? false} // Whether to display password guidelines
-          onChangeText={
-            props.onChangeText ? (value) => props.onChangeText(value) : null
-          } // Callback function to be called when the text changes
-          value={props.value} // Value of the input
+          className={`w-full rounded-lg bg-surfaceSubtleGrayscale py-4 pl-[10px] text-subtitle-regular ${
+            bordered && !error ? "border border-projectGray" : ""
+          } ${error ? "border border-b-borderDefaultRed bg-surfaceSubtleRed" : ""}`}
+          placeholder={placeholder ?? ""}
+          keyboardType={keyboardType}
+          autoComplete={autoComplete}
+          secureTextEntry={showPassword}
+          onChangeText={(value) => onChangeText?.(value)}
+          value={value}
         />
       </View>
     </View>
   );
-}
-
-FormTextField.propTypes = {
-  autoComplete: PropTypes.string,
-  bordered: PropTypes.bool,
-  error: PropTypes.bool,
-  keyboardType: PropTypes.string,
-  label: PropTypes.string,
-  onChangeText: PropTypes.func,
-  passwordGuidelines: PropTypes.bool,
-  placeholder: PropTypes.string,
-  required: PropTypes.bool,
-  secureTextEntry: PropTypes.bool,
-  value: PropTypes.string,
 };
+
+export default FormTextField;

@@ -1,35 +1,38 @@
 import { useEffect } from "react";
-import { View, TouchableWithoutFeedback, Keyboard } from "react-native";
-import { useNavigation, useRoute } from "@react-navigation/native";
-import RegisterForm from "../../components/Login/RegisterForm";
+import { View, TouchableWithoutFeedback, Keyboard, Text } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { RegisterForm } from "@/components/Login/RegisterForm";
 import { SafeAreaView } from "react-native-safe-area-context";
-import LogoBackButton from "../../components/Login/LogoBackButton";
-import Text from "../../components/General/Text";
+import LogoBackButton from "@/components/Login/LogoBackButton";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import * as StorageService from "../../services/storage-service";
+import * as StorageService from "@/services/storage-service";
 
-export default function RegistrationScreen() {
+const RegistrationScreen = () => {
   const navigation = useNavigation();
-  const route = useRoute();
-  const previousScreen = route.params?.previousScreen || "WelcomeStack";
 
   const checkLoginToken = async () => {
     try {
       const isValid = await StorageService.isLoginTokenValid();
       if (isValid) {
-        navigation.navigate("HomeStack");
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
+        navigation.navigate("Login");
       }
-    } catch (error) {
-      console.log("Failed to fetch the login token from storage");
+    } catch (error: unknown) {
+      const tokenError: string = error as string;
+      console.log(
+        "Failed to fetch the login token from storage\n" + tokenError,
+      );
     }
   };
 
   useEffect(() => {
-    checkLoginToken();
+    void checkLoginToken();
+    // eslint-disable-next-line
   }, []);
 
   return (
-    <SafeAreaView className="flex-1 justify-start bg-secondary">
+    <SafeAreaView className="flex-1 justify-start bg-surfaceSubtleCyan">
       <KeyboardAwareScrollView
         className="flex-1"
         resetScrollToCoords={{ x: 0, y: 0 }}
@@ -38,25 +41,28 @@ export default function RegistrationScreen() {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View>
             <View className="mt-10">
-              <LogoBackButton navigationPlace={previousScreen} />
+              <LogoBackButton navigationPlace={"Login"} />
             </View>
             <View className="mx-6">
               <View className="mt-8">
                 <RegisterForm />
               </View>
               <View className="flex-row items-end justify-center">
-                <Text className="text-lg leading-5 text-projectBlack">
+                <Text className="text-textBodyGrayscale text-h4-sm-regular">
                   {/* Already have an account? */}
                   Já possui conta?
                 </Text>
                 <Text
-                  testId={"loginNav"}
                   className={
-                    "left-1 text-lg leading-5 text-profileCircle underline"
+                    "left-1 text-textCaptionGrayscale underline text-h4-sm-regular"
                   }
-                  onPress={() =>
-                    navigation.navigate("Login", { previousScreen: "Register" })
-                  }
+                  onPress={() => {
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-expect-error
+                    navigation.navigate("Login", {
+                      previousScreen: "Register",
+                    });
+                  }}
                 >
                   {/* Log in now */}
                   Entre agora
@@ -68,4 +74,6 @@ export default function RegistrationScreen() {
       </KeyboardAwareScrollView>
     </SafeAreaView>
   );
-}
+};
+
+export default RegistrationScreen;

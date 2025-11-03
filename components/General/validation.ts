@@ -3,10 +3,8 @@ import patterns from "@/assets/validation/patterns";
 /**
  * Function for validating the password input. It checks if the password contains any emojis and if so it does not change the password state variable.
  * @param passwordInput input in password field
- * @param currentPasword current password state variable
  * @returns either the password state variable or the confirm password state variable depending on the confirm parameter
  */
-
 export const removeEmojis = (passwordInput: string) => {
   return passwordInput.replace(patterns.emoji, "");
 };
@@ -40,7 +38,7 @@ export const validateEmail = (email: string) => {
   const emailPattern = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
 
   if (!emailPattern.test(email)) {
-    return "E-mail inválido"; // Email invalid
+    return "EMAIL INVÁLIDO"; // Email invalid
   }
 
   // Passed all checks, email is valid
@@ -54,7 +52,7 @@ export const validateEmail = (email: string) => {
  * @param wordForName (e.g. 'Nome' or 'Sobrenome')
  * @returns error message if name is invalid, empty string otherwise
  */
-export const validateName = (name: string, wordForName: string = "Nome") => {
+export const validateName = (name: string, wordForName = "Nome") => {
   if (name.length > 50) {
     // Check this number
     return `${wordForName} muito longo`; // Name too long
