@@ -74,7 +74,7 @@ export const ResetPassword = ({
         throw error.response?.data;
       }
       const apiError = error as ApiError;
-      switch (apiError.error.code) {
+      switch (apiError.code) {
         case "E0401":
           // No user exists with this email!
           displayErrorAlert(emailAlertMessage, false);
@@ -126,7 +126,7 @@ export const ResetPassword = ({
       }
 
       const apiError = error as ApiError;
-      switch (apiError.error.code) {
+      switch (apiError.code) {
         case "E0401":
           // No user exists with this email!
           displayErrorAlert(emailAlertMessage, false);

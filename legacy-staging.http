@@ -1,0 +1,93 @@
+### Log in user
+POST {{base-url}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "joe@doe.com",
+  "password": "password"
+}
+
+### Get student
+< {%
+  request.variables.set("studentId", "68d6537ca107d000279116be")
+%}
+GET {{base-url}}/students/{{studentId}}/info
+
+### Get all courses
+GET {{base-url}}/courses
+
+### Get all components for a section
+< {%
+  request.variables.set("sectionId", "672b77f8d51069fc04ceb92a")
+%}
+GET {{base-url}}/courses/sections/{{sectionId}}/components
+
+### Get all courses a user is subscribed to
+< {%
+  request.variables.set("userId", "68d6537ca107d000279116be")
+%}
+GET {{base-url}}/students/{{userId}}/subscriptions
+
+### Complete a component
+< {%
+  request.variables.set("userId", "68d6537ca107d000279116be")
+%}
+PATCH {{base-url}}/students/{{userId}}/complete
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDY1MzdjYTEwN2QwMDAyNzkxMTZiZSIsImZpcnN0TmFtZSI6Ik1hcnRpbiIsImxhc3ROYW1lIjoiS2VkbWVuZWMiLCJlbWFpbCI6ImpvZUBkb2UuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzYyMDk2NDAwLCJleHAiOjE3NjI3MDEyMDB9.lqvMBpb4pjo-qQ4xn01FdYMJV6TpA8i71ilC6do7sFM
+Content-Type: application/json
+
+{
+  "isComplete": true,
+  "comp": {
+    "_id": "672b786dd51069fc04ceb933",
+    "content": "",
+    "contentType": "video",
+    "description": "This is a 7.2MB video for testing purposes",
+    "id": "672b786dd51069fc04ceb933",
+    "parentSection": "672b77f8d51069fc04ceb92a",
+    "title": "Test Video"
+  },
+  "points": 0
+}
+
+### Subscribe user to course
+< {%
+  request.variables.set("userId", "68d6537ca107d000279116be")
+  request.variables.set("courseId", "673236ba7b28500027326e91")
+%}
+POST {{base-url}}/courses/{{courseId}}/subscribe
+Content-Type: application/json
+
+{
+  "user_id": "{{userId}}"
+}
+
+### Enroll user in course
+< {%
+  request.variables.set("userId", "68d6537ca107d000279116be")
+  request.variables.set("courseId", "673236ba7b28500027326e91")
+%}
+PATCH {{base-url}}/students/{{userId}}/courses/{{courseId}}/enroll
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDY1MzdjYTEwN2QwMDAyNzkxMTZiZSIsImZpcnN0TmFtZSI6Ik1hcnRpbiIsImxhc3ROYW1lIjoiS2VkbWVuZWMiLCJlbWFpbCI6ImpvZUBkb2UuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzYyMDk2NDAwLCJleHAiOjE3NjI3MDEyMDB9.lqvMBpb4pjo-qQ4xn01FdYMJV6TpA8i71ilC6do7sFM
+
+### Unsubscribe from course
+< {%
+  request.variables.set("userId", "68d6537ca107d000279116be")
+  request.variables.set("courseId", "")
+%}
+POST {{base-url}}/courses/{{courseId}}/unsubscribe
+Content-Type: application/json
+
+{
+  "user_id": "{{userId}}"
+}
+
+### Get all courses
+GET {{base-url}}/courses
+
+
+### Update student's study streak
+< {%
+  request.variables.set("studentId", "68d6537ca107d000279116c0")
+%}
+PATCH {{base-url}}/students/{{studentId}}/updateStudyStreak
