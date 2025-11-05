@@ -32,6 +32,7 @@ import {
 } from "@/types/domain";
 import { isComponentCompleted, isFirstAttemptExercise } from "@/services/utils";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getAllComponentsBySectionIdStrapi, getAllCoursesStrapi } from "@/api/strapi-api";
 
 export const queryKeys = {
   courses: ["courses"] as const,
@@ -50,7 +51,7 @@ export const queryKeys = {
 export const useCourses = () =>
   useQuery({
     queryKey: queryKeys.courses,
-    queryFn: () => getAllCourses(),
+    queryFn: () => getAllCoursesStrapi(),
   });
 
 /**
@@ -71,7 +72,7 @@ export const useCourse = (id: string) =>
 export const useSectionComponents = (id: string) =>
   useQuery({
     queryKey: queryKeys.sectionComponents(id),
-    queryFn: () => getAllComponentsBySectionId(id),
+    queryFn: () => getAllComponentsBySectionIdStrapi(id),
   });
 
 export const useSubscribeToCourse = () => {

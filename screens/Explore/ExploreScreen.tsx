@@ -26,6 +26,7 @@ const ExploreScreen = () => {
 
   const userId = loginStudentQuery.data.userInfo.id;
   const courseQuery = useCourses();
+  console.log("courseQuery");
   const subscriptionsQuery = useSubscribedCourses(userId);
 
   const subscriptions = subscriptionsQuery.data ?? [];
