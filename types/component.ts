@@ -1,1 +1,1 @@
-export { SectionComponent as Component } from "@/types/domain";
+export { SectionComponent as Component } from "@/types/index";

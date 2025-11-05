@@ -1,1 +1,1 @@
-export { ChatMessage, AudioResponse } from "@/types/domain";
+export { ChatMessage, AudioResponse } from "@/types/index";

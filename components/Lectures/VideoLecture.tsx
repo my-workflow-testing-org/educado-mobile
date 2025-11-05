@@ -9,7 +9,7 @@ import {
   Lecture,
   SectionComponent,
   SectionComponentLecture,
-} from "@/types/domain";
+} from "@/types";
 import axios from "axios";
 import { t } from "@/i18n";
 import { useQuery } from "@tanstack/react-query";

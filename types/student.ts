@@ -1,1 +1,1 @@
-export { Student as StudentInfo } from "@/types/domain";
+export { Student as StudentInfo } from "@/types/index";

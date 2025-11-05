@@ -1,2 +1,2 @@
 export { SectionDto as ApiSection } from "@/types/legacy-api-dto";
-export { Section } from "@/types/domain";
+export { Section } from "@/types/index";

@@ -12,7 +12,7 @@ import {
   useSubscribedCourses,
 } from "@/hooks/query";
 import LoadingScreen from "@/components/Loading/LoadingScreen";
-import { Course } from "@/types/domain";
+import { Course } from "@/types";
 
 /**
  * Explore screen displays all courses and allows the user to filter them by category or search text.

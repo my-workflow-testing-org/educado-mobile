@@ -27,10 +27,11 @@ import {
 } from "@/types/legacy-api-dto";
 import {
   Course,
+  LoginStudent,
   SectionComponentExercise,
   SectionComponentLecture,
   User,
-} from "@/types/domain";
+} from "@/types";
 import * as FileSystem from "expo-file-system";
 import {
   courseModelSchema,
@@ -42,14 +43,27 @@ import {
   studentSubscribedCourseModelSchema,
   studyStreakModelSchema,
 } from "@/types/legacy-api-model";
+import { getJWT } from "@/services/storage-service";
+
+const backEndClient = axios.create({
+  baseURL: `${process.env.EXPO_PUBLIC_BACK_END_HOST}/api`,
+  timeout: 15000,
+});
+
+backEndClient.interceptors.request.use(async (config) => {
+  const token = await getJWT();
+
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+
+  return config;
+});
 
 export interface ApiError {
   code: string;
   message: string;
 }
-
-const token =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDY1MzdjYTEwN2QwMDAyNzkxMTZiZSIsImZpcnN0TmFtZSI6Ik1hcnRpbiIsImxhc3ROYW1lIjoiS2VkbWVuZWMiLCJlbWFpbCI6ImpvZUBkb2UuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzYyMDk2NDAwLCJleHAiOjE3NjI3MDEyMDB9.lqvMBpb4pjo-qQ4xn01FdYMJV6TpA8i71ilC6do7sFM";
 
 export const toApiError = (error: AxiosError) => {
   const response = error.response;
@@ -61,14 +75,6 @@ export const toApiError = (error: AxiosError) => {
     message: data.error.message,
   } as ApiError;
 };
-
-const backEndClient = axios.create({
-  baseURL: `${process.env.EXPO_PUBLIC_BACK_END_HOST}/api`,
-  timeout: 15000,
-  headers: {
-    Authorization: `Bearer ${token}`,
-  },
-});
 
 /**
  *
@@ -504,7 +510,7 @@ export const updateUserPassword = async (
 /**
  * Marks all courses, sections, and components as completed for a user.
  *
- * @param studentId - The student ID.
+ * @param userId - The user ID.
  * @param component - The component to mark as complete.
  * @param isComplete - The completion status.
  * @param points - The points earned.
@@ -512,13 +518,13 @@ export const updateUserPassword = async (
  * @throws {@link AxiosError}
  */
 export const completeComponent = async (
-  studentId: string,
+  userId: string,
   component: SectionComponentLecture | SectionComponentExercise,
   isComplete: boolean,
   points: number,
 ) => {
   const response = await patchRequest<StudentDto>(
-    `/students/${studentId}/complete`,
+    `/students/${userId}/complete`,
     {
       comp: component,
       isComplete: isComplete,
@@ -714,13 +720,32 @@ export const getCertificatesByStudentId = async (id: string) => {
   return response.data;
 };
 
-export const createCertificate = async (student: User, course: Course) => {
+export const createCertificate = async (
+  user: User | LoginStudent,
+  course: Course,
+) => {
+  let id;
+  let firstName;
+  let lastName;
+
+  if ("firstName" in user) {
+    id = user.id;
+    firstName = user.firstName;
+    lastName = user.lastName;
+  }
+
+  if ("userInfo" in user) {
+    id = user.userInfo.id;
+    firstName = user.userInfo.firstName;
+    lastName = user.userInfo.lastName;
+  }
+
   const body = {
     courseName: course.title,
     courseId: course.courseId,
-    studentId: student.id,
-    studentFirstName: student.firstName,
-    studentLastName: student.lastName,
+    studentId: id,
+    studentFirstName: firstName,
+    studentLastName: lastName,
     courseCreator: course.creatorId,
     estimatedCourseDuration: course.estimatedHours || 0,
     dateOfCompletion: new Date().toISOString().split("T")[0],

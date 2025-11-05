@@ -6,7 +6,7 @@ import { CustomRating } from "@/components/Explore/CustomRating";
 import * as Utility from "@/services/utils";
 import { colors } from "@/theme/colors";
 import { BottomDrawer } from "@/components/Explore/BottomDrawer";
-import type { Course } from "@/types/domain";
+import type { Course } from "@/types";
 import { t } from "@/i18n";
 
 export interface ExploreCardProps {

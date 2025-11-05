@@ -12,7 +12,7 @@ import {
   SectionComponent,
   SectionComponentLecture,
   SectionComponentExercise,
-} from "@/types/domain";
+} from "@/types";
 import {
   useCompleteComponent,
   useLoginStudent,
@@ -56,7 +56,9 @@ const ComponentSwipeScreen = ({ route }: ComponentSwipeScreenProps) => {
 
   const studentId = loginStudent.userInfo.id;
 
-  const { data: student, isLoading: isStudentLoading } = useStudent(studentId);
+  const studentQuery = useStudent(studentId);
+  const student = studentQuery.data;
+
   const {
     data: fetchedSectionComponents = [],
     isLoading: areSectionComponentsLoading,
@@ -66,7 +68,7 @@ const ComponentSwipeScreen = ({ route }: ComponentSwipeScreenProps) => {
   const updateStudyStreakQuery = useUpdateStudyStreak();
 
   const studentLastStudyDate = student?.lastStudyDate ?? new Date();
-  const isLoading = isStudentLoading || areSectionComponentsLoading;
+  const isLoading = studentQuery.isLoading || areSectionComponentsLoading;
 
   const safeScrollBy = (offset: number, animated: true) => {
     swiperRef.current?.scrollBy(offset, animated);
@@ -77,16 +79,13 @@ const ComponentSwipeScreen = ({ route }: ComponentSwipeScreenProps) => {
    * difference is greater than 0, it updates `studyStreak` and `lastStudyDate` both in the database, local storage and
    * this local state.
    */
-  const handleStudyStreak = () => {
+  const handleStudyStreak = async () => {
     if (!student) {
       return;
     }
 
     const today = new Date();
-    const dayDifference = differenceInDays(
-      new Date(studentLastStudyDate),
-      today,
-    );
+    const dayDifference = differenceInDays(studentLastStudyDate, today);
 
     if (dayDifference === 0) {
       return;
@@ -96,7 +95,7 @@ const ComponentSwipeScreen = ({ route }: ComponentSwipeScreenProps) => {
       studentId: student.id,
     });
 
-    // setLastStudyDate(today);
+    await studentQuery.refetch();
   };
 
   const handleExerciseContinue = (isCorrect: boolean) => {
@@ -127,7 +126,7 @@ const ComponentSwipeScreen = ({ route }: ComponentSwipeScreenProps) => {
       return;
     }
 
-    handleStudyStreak();
+    await handleStudyStreak();
 
     const currentSlide = sectionComponents[index];
 
@@ -231,16 +230,15 @@ const ComponentSwipeScreen = ({ route }: ComponentSwipeScreenProps) => {
             component.type === "lecture" ? (
               <Lecture
                 key={component.component.id || index}
-                // TODO: Confirm that the following two props don't exist in LectureScreen. Remove them if necessary.
-                // currentIndex={index}
-                // indexCount={combinedLecturesAndExercises.length}
                 lecture={component.component as SectionComponentLecture}
                 course={parsedCourse}
                 isLastSlide={index === sectionComponents.length - 1}
                 onContinue={() => {
                   safeScrollBy(1, true);
                 }}
-                handleStudyStreak={handleStudyStreak}
+                handleStudyStreak={() => {
+                  void handleStudyStreak();
+                }}
               />
             ) : (
               <ExerciseScreen
@@ -254,7 +252,9 @@ const ComponentSwipeScreen = ({ route }: ComponentSwipeScreenProps) => {
                 onContinue={(isCorrect: boolean) =>
                   handleExerciseContinue(isCorrect)
                 }
-                handleStudyStreak={handleStudyStreak}
+                handleStudyStreak={() => {
+                  void handleStudyStreak();
+                }}
               />
             ),
           )}

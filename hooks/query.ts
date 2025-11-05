@@ -3,8 +3,6 @@ import {
   addCourseToStudent,
   completeComponent,
   deleteUser,
-  getAllComponentsBySectionId,
-  getAllCourses,
   getAllFeedbackOptions,
   getAllSections,
   getAllStudentSubscriptions,
@@ -29,7 +27,7 @@ import {
   SectionComponentExercise,
   SectionComponentLecture,
   Student,
-} from "@/types/domain";
+} from "@/types";
 import { isComponentCompleted, isFirstAttemptExercise } from "@/services/utils";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getAllComponentsBySectionIdStrapi, getAllCoursesStrapi } from "@/api/strapi-api";
@@ -42,6 +40,7 @@ export const queryKeys = {
   student: (id: string) => ["student", id] as const,
   section: (id: string) => ["section", id] as const,
   sections: (id: string) => ["sections", id] as const,
+  studyStreak: ["studyStreak"] as const,
   user: (id: string) => ["user", id] as const,
   lectureVideos: (filename: string) => ["lectureVideos", filename] as const,
   sectionComponents: (id: string) => ["sectionComponents", id] as const,
@@ -93,6 +92,9 @@ export const useSubscribeToCourse = () => {
   });
 };
 
+/**
+ * Unsubscribe a user from a course.
+ */
 export const useUnsubscribeFromCourse = () => {
   const queryClient = useQueryClient();
 
@@ -110,7 +112,7 @@ export const useUnsubscribeFromCourse = () => {
 };
 
 /**
- * Get all subscriptions for a student.
+ * Get all subscribed courses for a user.
  *
  * @param id - The user ID.
  */
@@ -173,6 +175,7 @@ export const useSection = (id: string) =>
   });
 
 /**
+ * Get all sections for a course.
  *
  * @param id - The course ID.
  */
@@ -208,6 +211,7 @@ export const useLectureVideo = (filename: string) =>
   });
 
 /**
+ * Delete a user.
  *
  * @param id - The user ID.
  */
@@ -224,7 +228,7 @@ export const useDeleteUser = (id: string) => {
 };
 
 /**
- *
+ * Get all feedback options.
  */
 export const useFeedbackOptions = () =>
   useQuery({
@@ -233,19 +237,22 @@ export const useFeedbackOptions = () =>
   });
 
 /**
- *
+ * Update a student's study streak.
  */
 export const useUpdateStudyStreak = () => {
   const queryClient = useQueryClient();
 
   return useMutation<{ message: string }, unknown, { studentId: string }>({
     mutationFn: (variables) => updateStudyStreak(variables.studentId),
-    onSuccess: (data) => {
-      queryClient.setQueryData(["studyStreak"], data);
+    onSuccess: () => {
+      queryClient.setQueryData(queryKeys.studyStreak, new Date());
     },
   });
 };
 
+/**
+ * Log in a user by username and password.
+ */
 export const useLogin = () => {
   const queryClient = useQueryClient();
 
@@ -256,18 +263,25 @@ export const useLogin = () => {
   >({
     mutationFn: (variables) => loginUser(variables.email, variables.password),
     onSuccess: async (data) => {
-      // TODO: Remove storage-service legacy fallback
+      // TODO: Remove storage-service.ts and AsyncStorage legacy fallback after full migration to TanStack Query
       await setJWT(data.accessToken);
       await setUserInfo({ ...data.userInfo });
       await AsyncStorage.setItem("loggedIn", "true");
 
       queryClient.setQueryData(queryKeys.loginStudent, data);
 
+      await queryClient.invalidateQueries({
+        queryKey: [...queryKeys.student(data.userInfo.id)],
+      });
+
       return data;
     },
   });
 };
 
+/**
+ * Complete a component.
+ */
 export const useCompleteComponent = () => {
   return useMutation<
     Student,

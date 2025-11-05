@@ -1,7 +1,7 @@
 import { View } from "react-native";
 import { VideoLecture } from "@/components/Lectures/VideoLecture";
 import TextImageLectureScreen from "@/screens/Lectures/TextImageLectureScreen";
-import { Course, SectionComponentLecture } from "@/types/domain";
+import { Course, SectionComponentLecture } from "@/types";
 
 interface LectureScreenProps {
   lecture: SectionComponentLecture;

@@ -8,7 +8,7 @@ import * as Utility from "@/services/utils";
 import { ScrollView } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
 import { InfoBox } from "@/components/Explore/InfoBox";
-import { Course } from "@/types/domain";
+import { Course } from "@/types";
 import { t } from "@/i18n";
 import { useLoginStudent, useSubscribeToCourse } from "@/hooks/query";
 

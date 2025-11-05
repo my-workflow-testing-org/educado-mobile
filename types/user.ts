@@ -1,1 +1,1 @@
-export { User as UserInfo } from "@/types/domain";
+export { User as UserInfo } from "@/types/index";

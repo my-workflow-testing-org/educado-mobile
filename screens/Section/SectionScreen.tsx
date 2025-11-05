@@ -13,7 +13,7 @@ import {
   Icon,
   SectionComponentLecture,
   SectionComponentExercise,
-} from "@/types/domain";
+} from "@/types";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSectionComponents } from "@/hooks/query";
 

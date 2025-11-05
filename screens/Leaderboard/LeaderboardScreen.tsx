@@ -1,23 +1,20 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
-  View,
-  Text,
-  ScrollView,
-  Image,
   ActivityIndicator,
   Alert,
-  NativeSyntheticEvent,
+  Image,
   NativeScrollEvent,
+  NativeSyntheticEvent,
+  ScrollView,
+  Text,
+  View,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getLeaderboardDataAndUserRank } from "@/api/legacy-api";
 import { getUserInfo } from "@/services/storage-service";
 import LeaveButton from "@/components/Exercise/LeaveButton";
-import { LeaderboardUser } from "@/types/domain";
-import type { ClassValue } from "clsx";
-import { clsx } from "clsx";
-
-const cn = (...inputs: ClassValue[]): string => clsx(...inputs);
+import { LeaderboardUser } from "@/types";
+import { cn } from "@/services/utils";
 
 const capitalize = (str: string) =>
   str ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() : "";

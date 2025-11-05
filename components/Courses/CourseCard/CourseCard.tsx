@@ -12,7 +12,7 @@ import {
 import { colors } from "@/theme/colors";
 import { CustomProgressBar } from "@/components/Exercise/CustomProgressBar";
 import { t } from "@/i18n";
-import { Course } from "@/types/domain";
+import { Course } from "@/types";
 import courseTitleIcon from "@/assets/images/course-title-icon.png";
 import { CourseService } from "@/api/backend";
 
@@ -102,7 +102,6 @@ const CourseCard = ({ course, isOnline }: CourseCardProps) => {
     >
       <View>
         <View className="relative">
-          {/*<View className="absolute bottom-0 left-0 right-0 top-0 bg-yellow opacity-95" />*/}
           <View className="p-[5%]">
             <View className="flex flex-col">
               <View className="flex-row items-center gap-x-2 px-[1%] py-[1%]">
@@ -112,7 +111,6 @@ const CourseCard = ({ course, isOnline }: CourseCardProps) => {
                 </Text>
               </View>
             </View>
-            {/*<View className="m-[2%] h-[1] bg-disable" />*/}
             <View className="flex-col items-start justify-start">
               <View className="flex-row items-center">
                 <MaterialCommunityIcons

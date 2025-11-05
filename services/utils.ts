@@ -1,18 +1,22 @@
 import * as StorageService from "@/services/storage-service";
-import * as userApi from "@/api/user-api";
-import * as api from "@/api/api";
+import {
+  completeComponent as apiCompleteComponent,
+  getCourseById,
+  createCertificate,
+} from "@/api/legacy-api";
 import "intl";
 import "intl/locale-data/jsonp/en-GB";
-import { generateCertificate } from "@/services/certificate-service";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { t } from "@/i18n";
 import {
-  Student,
+  Course,
   Icon,
   SectionComponent,
-  SectionComponentLecture,
   SectionComponentExercise,
-} from "@/types/domain";
+  SectionComponentLecture,
+  Student,
+} from "@/types";
+import { ClassValue, clsx } from "clsx";
 
 /**
  * Converts a numeric difficulty level to a human-readable label.
@@ -235,7 +239,6 @@ export const completeComponent = async (
 
   // Retrieve the user info object and parse it from JSON
   const userInfo = await StorageService.getUserInfo();
-  const loginToken = await StorageService.getLoginToken();
 
   const isFirstAttempt = isFirstAttemptExercise(studentInfo, comp.component.id);
   const isCompComplete = isComponentCompleted(studentInfo, comp.component.id);
@@ -248,13 +251,12 @@ export const completeComponent = async (
         ? 5
         : 0;
 
-  const updatedStudent = (await userApi.completeComponent(
+  const updatedStudent = await apiCompleteComponent(
     userInfo.id,
-    comp,
+    comp.component,
     isComplete,
     points,
-    loginToken,
-  )) as Student; //TODO: Remove "as Student" when function returns Student type
+  );
 
   await StorageService.updateStudentInfo(updatedStudent);
 
@@ -423,7 +425,7 @@ export const findIndexOfUncompletedComp = (
 
 export const handleLastComponent = async (
   comp: SectionComponent<SectionComponentLecture | SectionComponentExercise>,
-  course: { courseId: string },
+  course: Course,
   navigation: {
     reset: (opts: {
       index: number;
@@ -432,12 +434,11 @@ export const handleLastComponent = async (
   },
 ) => {
   // Generate certificate
-  const courseId = course.courseId;
-  const userId = await StorageService.getUserId();
-  await generateCertificate(courseId, userId);
+  const loginStudent = await StorageService.getUserInfo();
+  await createCertificate(loginStudent, course);
 
   // get the full course from DB, to check what section we are in
-  const getCurrentCourse = await api.getCourse(course.courseId);
+  const getCurrentCourse = await getCourseById(course.courseId);
 
   // If the section is the last one, the course is completed
   const courseWithSections = getCurrentCourse as unknown as {
@@ -489,3 +490,5 @@ export const resetOnboarding = async (uniqueKeys: string[]) => {
     console.error("Error removing keys:", error);
   }
 };
+
+export const cn = (...inputs: ClassValue[]): string => clsx(...inputs);

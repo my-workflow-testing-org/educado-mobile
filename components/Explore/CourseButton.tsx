@@ -1,5 +1,5 @@
 import { View, Pressable } from "react-native";
-import type { Course } from "@/types/domain";
+import type { Course } from "@/types";
 import { ReactElement } from "react";
 
 export interface CourseButtonProps {

@@ -14,7 +14,7 @@ import Tooltip from "@/components/Onboarding/Tooltip";
 import ImageNotFound from "@/assets/images/imageNotFound.png";
 import DownloadCourseButton from "@/components/Courses/CourseCard/DownloadCourseButton";
 import { getBucketImageByFilename } from "@/api/legacy-api";
-import type { Section, Course } from "@/types/domain";
+import type { Section, Course } from "@/types";
 import { Shadow } from "react-native-shadow-2";
 import { t } from "@/i18n";
 import { SafeAreaView } from "react-native-safe-area-context";

@@ -12,7 +12,7 @@ import {
   StudentCourse,
   SectionComponentExercise,
   SectionComponentLecture,
-} from "@/types/domain";
+} from "@/types";
 import {
   CourseDto,
   FeedbackOptionDto,
@@ -172,7 +172,7 @@ export const mapToLoginStudent = (
   accessToken: loginResponseDto.accessToken,
   userInfo: {
     id: loginResponseDto.userInfo.id,
-    firstName: loginResponseDto.userInfo.id,
+    firstName: loginResponseDto.userInfo.firstName,
     lastName: loginResponseDto.userInfo.lastName,
     email: loginResponseDto.userInfo.email,
     courses: loginResponseDto.userInfo.courses.map(mapToStudentCourse),

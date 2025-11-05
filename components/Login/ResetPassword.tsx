@@ -10,7 +10,7 @@ import {
 } from "@/api/user-api";
 import { FormFieldAlert } from "@/components/General/Forms/FormFieldAlert";
 import { validateEmail } from "@/components/General/validation";
-import ToastNotification from "@/components/General/ToastNotification";
+import { ToastNotification } from "@/components/General/ToastNotification";
 import ShowAlert from "@/components/General/ShowAlert";
 import { isAxiosError } from "axios";
 import { ApiError } from "@/api/legacy-api";
