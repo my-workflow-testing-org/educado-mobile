@@ -36,6 +36,15 @@ const CourseCard = ({ course, isOnline }: CourseCardProps) => {
     0, 0, 0,
   ]);
 
+
+  useEffect(() => {
+    const run = async () => {
+      const test = await CourseService.courseGetCourses()
+      console.log("test", test);
+    };
+    void run();
+  }, []);
+
   // Check if the course is downloaded (only when courseId changes)
   useEffect(() => {
     let isMounted = true;
