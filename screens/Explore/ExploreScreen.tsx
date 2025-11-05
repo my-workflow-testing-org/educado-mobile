@@ -26,7 +26,7 @@ const ExploreScreen = () => {
 
   const userId = loginStudentQuery.data.userInfo.id;
   const courseQuery = useCourses();
-  console.log(courseQuery.data);
+  console.log("gamer", courseQuery.data);
   const subscriptionsQuery = useSubscribedCourses(userId);
 
   const subscriptions = subscriptionsQuery.data ?? [];

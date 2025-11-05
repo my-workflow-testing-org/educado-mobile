@@ -1,30 +1,34 @@
-import { Course as CourseStrapi } from "@/api/backend/models/Course";
-import { Course } from "@/types/domain";
+import type { Course } from "@/types";
+import type { PopulatedCourse } from "@/types/strapi-populated";
 
-export const mapToCourse = (
-    courseStrapi: CourseStrapi
-): Course => {
-
-    const courseId = courseStrapi.id
+export const mapToCourse = (courseStrapi: PopulatedCourse): Course => {
+    const categories = courseStrapi.course_categories ?? [];
+    const contentCreators = courseStrapi.content_creators ?? [];
 
     return {
-        courseId: courseId?.toString() ?? '',
+        courseId: courseStrapi.id?.toString() ?? '',
         title: courseStrapi.title,
         description: courseStrapi.description ?? '',
-        // TODO: Change new type to save category as array
-        category: 'kaka',
-        // TODO: Does not exist on strapi
+        category: categories.length > 0 ? categories[0].name : '',
+        // TODO: Add to Strapi model
         estimatedHours: 0,
         dateUpdated: courseStrapi.updatedAt,
-        // TODO: gamer
-        creatorId: courseStrapi.content_creators?.[0]?.id?.toString() ?? '',
+        // TODO: Add ability to have multiple content creators
+        creatorId: contentCreators.length > 0 ? contentCreators[0].id?.toString() ?? '' : '',
         difficulty: courseStrapi.difficulty,
-        published: undefined,
-        status: 'draft',
-        rating: 0,
-        feedbackOptions: [],
-        topFeedbackOptions: undefined,
-        dateOfDownload: undefined,
-        sections: [],
-    }
-}
+        published: !!courseStrapi.publishedAt,
+        // TODO: Remove from course type or add to Strapi model
+        status: 'published',
+
+        rating: courseStrapi.feedbacks && courseStrapi.feedbacks.length > 0
+            ? courseStrapi.feedbacks.reduce((acc, feedback) => acc + feedback.rating, 0) / courseStrapi.feedbacks.length
+            : 0,
+        feedbackOptions: courseStrapi.feedbacks?.map((feedback) => ({
+            id: feedback.id?.toString() ?? '',
+            count: feedback.rating,
+        })) ?? [],
+        topFeedbackOptions: courseStrapi.feedbacks?.sort((a, b) => b.rating - a.rating)[0]?.feedbackText ?? '',
+        dateOfDownload: courseStrapi.createdAt,
+        sections: courseStrapi.course_sections?.map((section) => section.title) ?? [],
+    };
+};

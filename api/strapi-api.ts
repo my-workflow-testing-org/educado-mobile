@@ -2,6 +2,8 @@ import { CourseService } from "@/api/backend";
 import { mapToSectionComponent } from "@/api/dto-mapper";
 import { mapToCourse } from "@/api/strapi-mapper";
 import { sectionComponentDtoSchema } from "@/types/legacy-api-dto";
+import { PopulatedCourse } from "@/types/strapi-populated";
+import { AxiosResponse } from "axios";
 
 /**
  * Gets all components for a specific section.
@@ -39,9 +41,15 @@ export const getAllCoursesStrapi = async () => {
         undefined, // q
         undefined, // pagination
         undefined, // sort
-        ['course_categories', 'content_creators'], // populate
-        undefined, // status
-    )
+        [
+            'course_categories',
+            'content_creators',
+            'image',
+            'feedbacks',
+            'course_sections',
+            'students',
+        ], // populate
+    ) as AxiosResponse<PopulatedCourse[]>;
 
-    return response.data?.map(mapToCourse)
+    return response.data.map(mapToCourse)
 };

@@ -14,7 +14,6 @@ import { CustomProgressBar } from "@/components/Exercise/CustomProgressBar";
 import { t } from "@/i18n";
 import { Course } from "@/types";
 import courseTitleIcon from "@/assets/images/course-title-icon.png";
-import { CourseService } from "@/api/backend";
 
 type ProgressTuple = [number, number, number];
 
@@ -37,20 +36,10 @@ const CourseCard = ({ course, isOnline }: CourseCardProps) => {
   ]);
 
 
-  useEffect(() => {
-    const run = async () => {
-      const test = await CourseService.courseGetCourses()
-      console.log("test", test);
-    };
-    void run();
-  }, []);
-
   // Check if the course is downloaded (only when courseId changes)
   useEffect(() => {
     let isMounted = true;
     const run = async () => {
-      const test = await CourseService.courseGetCourses()
-      //console.log("test", test);
       const isDownloaded = await checkCourseStoredLocally(course.courseId);
       if (isMounted) setDownloaded(isDownloaded);
     };
