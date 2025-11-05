@@ -27,9 +27,10 @@ export const getAllComponentsBySectionIdStrapi = async (id: string) => {
  */
 export const getAllCoursesStrapi = async () => {
     const response = await CourseService.courseGetCourses()
-    console.log("response", response.data);
 
     const parsed = courseModelSchema.array().parse(response.data);
+
+    console.log("response", response);
 
     return parsed.map(mapToCourse);
 };

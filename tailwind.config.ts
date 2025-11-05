@@ -17,17 +17,17 @@ export default {
   theme: {
     colors,
     extend: {
-      // fontFamily: {
-      //   sans: ["Montserrat_400Regular"],
-      //   "mont-400": ["Montserrat_400Regular"],
-      //   "mont-400-italic": ["Montserrat_400Regular_Italic"],
-      //   "mont-500": ["Montserrat_500Medium"],
-      //   "mont-600": ["Montserrat_600SemiBold"],
-      //   "mont-600-italic": ["Montserrat_600SemiBold_Italic"],
-      //   "mont-700": ["Montserrat_700Bold"],
-      //   "mont-700-italic": ["Montserrat_700Bold_Italic"],
-      //   "mont-800": ["Montserrat_800ExtraBold"],
-      // },
+       fontFamily: {
+         sans: ["Montserrat_400Regular"],
+         "mont-400": ["Montserrat_400Regular"],
+         "mont-400-italic": ["Montserrat_400Regular_Italic"],
+         "mont-500": ["Montserrat_500Medium"],
+         "mont-600": ["Montserrat_600SemiBold"],
+         "mont-600-italic": ["Montserrat_600SemiBold_Italic"],
+         "mont-700": ["Montserrat_700Bold"],
+         "mont-700-italic": ["Montserrat_700Bold_Italic"],
+         "mont-800": ["Montserrat_800ExtraBold"],
+       },
       fontSize: {
         heading: "32px",
         subheading: "24px",

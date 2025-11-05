@@ -50,7 +50,7 @@ const CourseCard = ({ course, isOnline }: CourseCardProps) => {
     let isMounted = true;
     const run = async () => {
       const test = await CourseService.courseGetCourses()
-      console.log("test", test);
+      //console.log("test", test);
       const isDownloaded = await checkCourseStoredLocally(course.courseId);
       if (isMounted) setDownloaded(isDownloaded);
     };
