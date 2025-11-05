@@ -1,49 +1,44 @@
-import { TouchableOpacity } from "react-native";
-import { View } from "react-native";
-import Text from "../Text";
-import PropTypes from "prop-types";
+import { View, Text, TouchableOpacity } from "react-native";
 
-/**
- * Button component for eg. login and register screens.
- * @param {Object} props Should contain the following properties:
- * - label: String
- * - onPress: Function
- * @returns {React.Element} Button component
- */
-export default function FormButton(props) {
-  FormButton.propTypes = {
-    children: PropTypes.string,
-    disabled: PropTypes.bool,
-    onPress: PropTypes.func,
-    style: PropTypes.array,
-    type: PropTypes.string,
-  };
+interface FormButtonProps {
+  children: string;
+  disabled?: boolean;
+  onPress?: () => void;
+  style?: object[];
+}
 
-  // Put this here for possible custom styling
-  const typeStyles = {
-    primary_custom: "bg-primary_custom",
-    error: "bg-error",
-    warning: "bg-yellow",
-  };
-
+export const FormButton = ({
+  children,
+  disabled,
+  onPress,
+  style,
+}: FormButtonProps) => {
   return (
     <>
       <View>
         <TouchableOpacity
           className={
-            "rounded-medium px-4 py-4 " +
-            (typeStyles[props.type] ?? typeStyles.primary_custom) +
-            (props.disabled ? " opacity-50" : "")
+            "rounded-xl px-4 py-3 " +
+            (disabled ? "bg-surfaceDisabledGrayscale" : "bg-surfaceDefaultCyan")
           }
-          style={props.style ?? null}
-          onPress={props.onPress}
-          disabled={props.disabled}
+          style={style ?? null}
+          onPress={onPress}
+          disabled={disabled}
         >
-          <Text className="font-sans-bold text-center text-body text-projectWhite">
-            {props.children}
+          <Text
+            className={
+              "text-center text-body-bold " +
+              (disabled
+                ? "text-greyscaleTexticonDisabled"
+                : "text-textNegativeGrayscale")
+            }
+          >
+            {children}
           </Text>
         </TouchableOpacity>
       </View>
     </>
   );
-}
+};
+
+export default FormButton;

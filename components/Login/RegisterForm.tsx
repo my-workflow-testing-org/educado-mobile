@@ -1,38 +1,39 @@
 import { useEffect, useState } from "react";
-import { View } from "react-native";
-import { loginUser, registerUser } from "../../api/user-api";
-import FormTextField from "../General/Forms/FormTextField";
-import FormButton from "../General/Forms/FormButton";
-import PasswordEye from "../General/Forms/PasswordEye";
+import { View, Text } from "react-native";
+import { loginUser, registerUser } from "@/api/user-api";
+import { FormTextField } from "@/components/General/Forms/FormTextField";
+import { FormButton } from "@/components/General/Forms/FormButton";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import ShowAlert from "../General/ShowAlert";
-import FormFieldAlert from "../General/Forms/FormFieldAlert";
+import ShowAlert from "@/components/General/ShowAlert";
+import { FormFieldAlert } from "@/components/General/Forms/FormFieldAlert";
 import {
   removeEmojis,
   validatePasswordContainsLetter,
   validatePasswordLength,
   validateEmail,
   validateName,
-} from "../General/validation";
-import Text from "../General/Text";
-import errorSwitch from "../General/error-switch";
+} from "@/components/General/validation";
+import errorSwitch from "@/components/General/error-switch";
 import { useNavigation } from "@react-navigation/native";
-import DialogNotification from "../General/DialogNotification";
+import DialogNotification from "@/components/General/DialogNotification";
 import { AlertNotificationRoot } from "react-native-alert-notification";
-import tailwindConfig from "@/tailwind.config";
-import { setUserInfo, setJWT } from "../../services/storage-service";
+import { colors } from "@/theme/colors";
+import { setUserInfo, setJWT } from "@/services/storage-service";
+import { UserInfo } from "@/types/user";
+import { isAxiosError } from "axios";
+
+interface BaseUserType {
+  _id: string;
+  user: UserInfo;
+}
 
 /**
  * Component for registering a new account in the system, used in the register screen
- * @returns {React.Element} Component containing the form for registering a new user
  */
-
-export default function RegisterForm() {
-  const tailwindColors = tailwindConfig.theme.colors;
-
+export const RegisterForm = () => {
   const navigation = useNavigation();
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -42,18 +43,13 @@ export default function RegisterForm() {
   const [isAllInputValid, setIsAllInputValid] = useState(false);
   const [confirmPasswordAlert, setConfirmPasswordAlert] = useState("");
 
-  // State variable to track password visibility
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
   // Password Constraint variables
   const [passwordContainsLetter, setPasswordContainsLetter] = useState(false);
   const [passwordLengthValid, setPasswordLengthValid] = useState(false);
 
   useEffect(() => {
     // Clear input and alerts on first render
-    setFirstName("");
-    setLastName("");
+    setName("");
     setEmail("");
     setPassword("");
     setConfirmPassword("");
@@ -70,257 +66,222 @@ export default function RegisterForm() {
     const lengthValid = validatePasswordLength(password);
     setPasswordLengthValid(lengthValid);
     checkIfPasswordsMatch(password, confirmPassword);
-  }, [password]);
+  }, [confirmPassword, password]);
 
   useEffect(() => {
     checkIfPasswordsMatch(password, confirmPassword);
-  }, [confirmPassword]);
+  }, [confirmPassword, password]);
 
+  // validating name
   useEffect(() => {
-    let validationError = "";
-    if (firstName !== "") {
-      validationError = validateName(firstName, "Nome"); // First name
+    if (name !== "") {
+      setNameAlert(validateName(name));
     }
-    if (validationError === "" && lastName !== "") {
-      validationError = validateName(lastName, "Sobrenome"); // Last name
-    }
+  }, [name]);
 
-    setNameAlert(validationError);
-  }, [firstName, lastName]);
-
+  // validate email
   useEffect(() => {
     if (email === "") {
       setEmailAlert("");
       return;
     }
 
-    const validationError = validateEmail(email);
-    setEmailAlert(validationError);
+    setEmailAlert(validateEmail(email));
   }, [email]);
 
+  /**
+   * useEffect runs with every new input and checks for validation.
+   */
   useEffect(() => {
-    validateInput();
+    const validationPassed: boolean =
+      !nameAlert &&
+      !emailAlert &&
+      !name &&
+      !email &&
+      passwordLengthValid &&
+      passwordContainsLetter &&
+      !confirmPasswordAlert;
+
+    setIsAllInputValid(validationPassed);
   }, [
     nameAlert,
     emailAlert,
     passwordLengthValid,
     passwordContainsLetter,
     confirmPasswordAlert,
+    name,
+    email,
   ]);
 
-  // Functions to toggle password visibility states
-  const toggleShowPassword = () => {
-    setShowPassword(!showPassword);
-  };
-
-  const toggleShowConfirmPassword = () => {
-    setShowConfirmPassword(!showConfirmPassword);
-  };
-
-  const checkIfPasswordsMatch = (password, confirmPassword) => {
+  const checkIfPasswordsMatch = (
+    password: string,
+    confirmPassword: string,
+  ): void => {
     if (password === confirmPassword) {
       setConfirmPasswordAlert("");
     } else {
-      // The passwords do not match
       setConfirmPasswordAlert("Os campos de senha precisam ser iguais");
     }
   };
 
-  // TODO: This function should take into consideration
-  // that alerts might be empty when input is yet to be given
-  /**
-   * Function for validating all input fields' content
-   */
-  function validateInput() {
-    const validationPassed =
-      nameAlert === "" &&
-      emailAlert === "" &&
-      firstName != "" &&
-      lastName != "" &&
-      email != "" &&
-      passwordLengthValid &&
-      passwordContainsLetter &&
-      confirmPasswordAlert === "";
-
-    setIsAllInputValid(validationPassed);
-  }
-
   /**
    * Function for registering a new user in the database
-   * @param {String} firstName
-   * @param {String} lastName
-   * @param {String} email
-   * @param {String} password
    */
-  async function register() {
-    validateInput(firstName, email, password);
-
+  const register = async (
+    name: string,
+    email: string,
+    password: string,
+  ): Promise<void> => {
     if (!isAllInputValid) {
       return;
     }
 
-    //Sanitize names to removes spaces infront and after
-    const sanitizedFirstName = firstName.trim();
-    const sanitizedLastName = lastName.trim();
-    const lowerCaseEmail = email.toLowerCase();
-
     const obj = {
-      firstName: sanitizedFirstName,
-      lastName: sanitizedLastName,
-      email: lowerCaseEmail,
+      firstName: name.trim(),
+      // TODO: once backend is setup and api call are handled properly, the last name should be removed
+      lastName: "TODOFIX",
+      email: email.toLowerCase(),
       password: password,
     };
 
     try {
-      await registerUser(obj)
-        .then(async function (response) {
-          // Save user info in storage
-          // TODO: Refactor backend to get the same response as on login
-          const userInfo = {
-            id: response.baseUser._id,
-            ...response.baseUser,
-          };
-          await setUserInfo(userInfo);
-        })
-        .then(async function () {
-          // logs in the user, if no errors occur, navigates to home screen and sets token
-          await loginFromRegister(obj);
-        })
-        .catch((error) => {
-          ShowAlert(errorSwitch(error));
-        });
-    } catch (e) {
-      console.log(e);
-    }
-  }
+      // TODO: the function registerUser needs to be typed for this to work.
+      // I am also unsure of its returned type, hence the weird type it now has.
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const { baseUser }: { baseUser: BaseUserType } = await registerUser(obj);
+      const userInfo: UserInfo = {
+        id: baseUser._id,
+        firstName: baseUser.user.firstName,
+        lastName: baseUser.user.lastName,
+        email: baseUser.user.email,
+      };
 
-  /**
-   * function to log in the user and set the login token, meant to be called after registering
-   * @param {Object} obj the object containing the following fields:
-   *  firstName: String
-   *  lastName: String
-   *  email: String
-   */
-  async function loginFromRegister(obj) {
+      await setUserInfo(userInfo);
+    } catch (error: unknown) {
+      if (isAxiosError(error)) {
+        throw error.response?.data;
+      }
+
+      ShowAlert(errorSwitch(error));
+    } finally {
+      await loginFromRegister(obj);
+    }
+  };
+
+  const loginFromRegister = async (obj: {
+    email: string;
+    password: string;
+  }) => {
     try {
       await loginUser(obj)
-        .then((response) => {
-          setJWT(response.accessToken);
+        .then(async (response: { accessToken: string }) => {
+          await setJWT(response.accessToken);
           DialogNotification("success", "Usuário cadastrado! Cantando em...");
           setTimeout(() => {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
             navigation.navigate("HomeStack");
           }, 2500);
         })
-        .catch((error) => {
+        .catch((error: unknown) => {
           console.log(error);
         });
     } catch (e) {
       console.log(e);
     }
-  }
+  };
 
   return (
-    <View>
+    <View className="mb-2 mt-8 flex h-[70vh] flex-col">
       <AlertNotificationRoot>
-        <View className="mb-6">
+        <View className="mb-6 flex-none">
           <FormTextField
-            label="Nome" // first name
-            name={"Nome"}
-            value={firstName}
-            testId="firstNameInput"
-            placeholder="Nome"
+            label="Nome" // name
+            value={name}
+            placeholder="Nome Sobrenome"
             required={true}
+            bordered={true}
             onChangeText={(firstName) => {
-              setFirstName(firstName);
+              setName(firstName);
             }}
+            error={nameAlert !== ""}
           />
         </View>
-        <View className="mb-6">
+        <View className="mb-6 flex-none">
           <FormTextField
-            label="Sobrenome" // Last name
-            name={"Sobrenome"}
-            value={lastName}
-            testId="lastNameInput"
-            placeholder="Sobrenome"
-            required={true}
-            onChangeText={(lastName) => {
-              setLastName(lastName);
-            }}
-          />
-          <FormFieldAlert label={nameAlert} />
-        </View>
-        <View className="mb-6">
-          <FormTextField
-            className="mb-6"
-            label="E-mail"
-            name={"E-mail"}
-            testId="emailInput"
+            label="Email"
             value={email}
-            placeholder="Insira sua e-mail"
+            placeholder="useremail@gmail.com"
             keyboardType="email-address"
             required={true}
-            onChangeText={async (email) => {
+            bordered={true}
+            onChangeText={(email: string): void => {
               setEmail(email);
               validateEmail(email);
             }}
+            error={emailAlert !== ""}
           />
-          <FormFieldAlert label={emailAlert} testId="emailAlert" />
+          {/*Only render if there is error, otherwise there will be an empty area for nothing.*/}
+          {emailAlert ? (
+            <FormFieldAlert label={emailAlert} success={emailAlert === ""} />
+          ) : (
+            <></>
+          )}
         </View>
-        <View className="mb-6">
-          <View className="relative">
+        <View className="flex-none">
+          <View>
             <FormTextField
               label="Senha" //Password
-              name={"Senha"}
-              testId="passwordInput"
               value={password}
-              placeholder="Insira sua senha" // Enter your password
-              placeholderTextColor={tailwindColors.projectGray}
-              secureTextEntry={!showPassword}
+              placeholder="********"
               required={true}
-              onChangeText={(inputPassword) => {
-                setPassword(removeEmojis(inputPassword, password));
+              bordered={true}
+              onChangeText={(inputPassword: string) => {
+                setPassword(removeEmojis(inputPassword));
               }}
-            />
-            <PasswordEye
-              testId="passwordEye"
-              showPasswordIcon={showPassword}
-              toggleShowPassword={toggleShowPassword}
+              error={
+                password !== "" &&
+                !(passwordContainsLetter && passwordLengthValid)
+              }
+              showPasswordEye={true}
             />
           </View>
 
           <View className="mt-1 h-6 flex-row justify-start">
             <Text
-              testId="passwordLengthAlert"
               className={
-                "text-xs" +
-                (passwordLengthValid || !password
-                  ? " text-projectBlack"
-                  : " text-error")
+                "text-sm" +
+                (password === ""
+                  ? " text-projectGray"
+                  : passwordLengthValid
+                    ? " text-success"
+                    : " text-error")
               }
             >
-              {/* Minimum 8 characters */}• Mínimo 8 caracteres
+              {/* Minimum 8 characters */}Mínimo 8 caracteres
             </Text>
             <View className="-translate-y-1 flex-row items-center">
               {passwordLengthValid ? (
                 <MaterialCommunityIcons
                   name="check"
                   size={20}
-                  color={tailwindColors.success}
+                  color={colors.surfaceDefaultGreen}
                 />
               ) : null}
             </View>
           </View>
-          <View className="h-6 flex-row justify-start">
+          <View className="mb-6 h-6 flex-row justify-start">
             <Text
-              testId="passwordLetterAlert"
               className={
-                "font-sans text-xs" +
-                (passwordContainsLetter || !password
-                  ? " text-projectBlack"
-                  : " text-error")
+                "text-sm" +
+                (password === ""
+                  ? " text-projectGray"
+                  : passwordContainsLetter
+                    ? " text-success"
+                    : " text-error")
               }
             >
-              {/* Must contain at least one letter */}• Conter pelo menos uma
+              {/* Must contain at least one letter */}Conter pelo menos uma
               letra
             </Text>
             <View className="-translate-y-1 flex-row items-center">
@@ -328,46 +289,49 @@ export default function RegisterForm() {
                 <MaterialCommunityIcons
                   name="check"
                   size={20}
-                  color={tailwindColors.success}
+                  color={colors.surfaceDefaultGreen}
                 />
               ) : null}
             </View>
           </View>
         </View>
-        <View className="mb-2">
+        <View className="mb-2 flex-none">
           <View className="relative">
             <FormTextField
               label="Confirmar senha" // Confirm password
               value={confirmPassword}
-              testId="confirmPasswordInput"
-              onChangeText={(inputConfirmPassword) => {
-                setConfirmPassword(
-                  removeEmojis(inputConfirmPassword, confirmPassword),
-                );
+              onChangeText={(inputConfirmPassword: string) => {
+                setConfirmPassword(removeEmojis(inputConfirmPassword));
               }}
-              placeholder="Confirme sua senha" // Confirm your password
-              secureTextEntry={!showConfirmPassword}
+              placeholder="********" // Confirm your password
               required={true}
-            />
-            <PasswordEye
-              testId="confirmPasswordEye"
-              showPasswordIcon={showConfirmPassword}
-              toggleShowPassword={toggleShowConfirmPassword}
+              bordered={true}
+              error={confirmPasswordAlert !== ""}
+              showPasswordEye={true}
             />
           </View>
-          <FormFieldAlert label={confirmPasswordAlert} />
+          <FormFieldAlert
+            label={confirmPasswordAlert}
+            success={confirmPasswordAlert === ""}
+          />
         </View>
         {/* Register */}
-        <View className="bg-primary my-2">
+        <View className="mt-auto flex-none">
           <FormButton
-            onPress={() => register(firstName, lastName, email, password)}
-            testId="registerButton"
+            onPress={() => {
+              register(name, email, password).catch((error: unknown) => {
+                if (isAxiosError(error)) {
+                  throw error.response?.data;
+                }
+                ShowAlert(errorSwitch(error));
+              });
+            }}
             disabled={!isAllInputValid}
           >
-            Cadastrar
+            Entrar
           </FormButton>
         </View>
       </AlertNotificationRoot>
     </View>
   );
-}
+};

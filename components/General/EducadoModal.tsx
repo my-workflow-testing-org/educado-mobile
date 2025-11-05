@@ -4,60 +4,55 @@ import {
   Pressable,
   TouchableWithoutFeedback,
   Keyboard,
+  Text,
 } from "react-native";
 import { Entypo } from "@expo/vector-icons";
-import EducadoLogo from "../Images/EducadoLogo";
-import Text from "./Text";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { AlertNotificationRoot } from "react-native-alert-notification";
-import PropTypes from "prop-types";
+import { ReactNode } from "react";
 
-/**
- *
- * @param {Object} props Possible properties:
- * - modalVisible: Boolean declaring if modal is visible
- * - closeModal: Function for closing modal
- * - title: String for modal title
- * @returns
- */
-export default function EducadoModal(props) {
-  return (
-    <Modal
-      visible={props.modalVisible}
-      animationType="slide"
-      className="border-black border-8"
-    >
-      <AlertNotificationRoot>
-        <KeyboardAwareScrollView className="bg-secondary">
-          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <View>
-              <View className="flex justify-center pt-[10%]">
-                <View className="flex flex-row justify-end px-[10%]">
-                  <Pressable onPress={props.closeModal}>
-                    <Entypo name="chevron-down" size={24} />
-                  </Pressable>
-                </View>
-                <View className="my-[10%] flex flex-row justify-center">
-                  <EducadoLogo fill="fill-black" />
-                </View>
-                <View className="flex flex-row justify-start px-[10%]">
-                  <Text className="text-center text-[24px]">
-                    {props.title ? props.title : ""}
-                  </Text>
-                </View>
-              </View>
-              {props.children}
-            </View>
-          </TouchableWithoutFeedback>
-        </KeyboardAwareScrollView>
-      </AlertNotificationRoot>
-    </Modal>
-  );
+interface EducadoModalProps {
+  children: ReactNode;
+  modalVisible: boolean;
+  closeModal: () => void;
+  title: string;
 }
 
-EducadoModal.propTypes = {
-  children: PropTypes.object,
-  closeModal: PropTypes.func,
-  modalVisible: PropTypes.bool,
-  title: PropTypes.string,
+/**
+ * The Educado modal component.
+ *
+ * @param children - Components rendered as children.
+ * @param modalVisible - Boolean declaring if modal is visible.
+ * @param closeModal - Function for closing modal.
+ * @param title - String for modal title.
+ */
+export const EducadoModal = ({
+  children,
+  modalVisible,
+  closeModal,
+  title,
+}: EducadoModalProps) => {
+  return (
+    <Modal visible={modalVisible} animationType="slide" transparent={true}>
+      <TouchableWithoutFeedback onPress={closeModal}>
+        <View className="flex-1 justify-end bg-modalOpacityBlue">
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View className="h-[90%] rounded-t-3xl bg-surfaceSubtleCyan pt-10">
+              <AlertNotificationRoot>
+                <KeyboardAwareScrollView>
+                  <View className="mb-4 flex flex-row items-center justify-between px-[10%]">
+                    <Text className="text-h2-sm-regular">{title}</Text>
+                    <Pressable onPress={closeModal}>
+                      <Entypo name="chevron-down" size={24} />
+                    </Pressable>
+                  </View>
+                  {children}
+                </KeyboardAwareScrollView>
+              </AlertNotificationRoot>
+            </View>
+          </TouchableWithoutFeedback>
+        </View>
+      </TouchableWithoutFeedback>
+    </Modal>
+  );
 };

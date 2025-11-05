@@ -1,13 +1,15 @@
 import { PropsWithChildren, useEffect } from "react";
 import {
   QueryClient,
-  QueryClientProvider,
   onlineManager,
   focusManager,
 } from "@tanstack/react-query";
 import NetInfo from "@react-native-community/netinfo";
 import { AppState, AppStateStatus } from "react-native";
 import configureApiClient from "@/api/config/api-config";
+import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -35,17 +37,29 @@ const onAppStateChange = (status: AppStateStatus) => {
 };
 
 configureApiClient();
+const persister = createAsyncStoragePersister({
+  storage: AsyncStorage,
+  throttleTime: 1000,
+});
 
 export const QueryProvider = ({ children }: PropsWithChildren) => {
   useEffect(() => {
-    const sub = AppState.addEventListener("change", onAppStateChange);
+    const nativeEventSubscription = AppState.addEventListener(
+      "change",
+      onAppStateChange,
+    );
 
     return () => {
-      sub.remove();
+      nativeEventSubscription.remove();
     };
   }, []);
 
   return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    <PersistQueryClientProvider
+      client={queryClient}
+      persistOptions={{ persister }}
+    >
+      {children}
+    </PersistQueryClientProvider>
   );
 };
