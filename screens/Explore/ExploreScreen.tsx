@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { RefreshControl, ScrollView, View } from "react-native";
+import { RefreshControl, ScrollView, View, Button, Alert } from "react-native";
 import { FilterNavigationBar } from "@/components/Explore/FilterNavigationBar";
 import { ExploreCard } from "@/components/Explore/ExploreCard";
 import IconHeader from "@/components/General/IconHeader";
@@ -8,12 +8,13 @@ import { BaseScreen } from "@/components/General/BaseScreen";
 import { t } from "@/i18n";
 import {
   useCourses,
-  useFeedbackOptions,
   useLoginStudent,
   useSubscribedCourses,
+  useGiveFeedback,
 } from "@/hooks/query";
 import LoadingScreen from "@/components/Loading/LoadingScreen";
 import { Course } from "@/types";
+import { postFeedback } from "@/api/strapi-api";
 
 /**
  * Explore screen displays all courses and allows the user to filter them by category or search text.
@@ -26,10 +27,8 @@ const ExploreScreen = () => {
   const loginStudentQuery = useLoginStudent();
 
   const userId = loginStudentQuery.data.userInfo.id;
-  const feedbackQuery = useFeedbackOptions();
   const courseQuery = useCourses();
 
-  console.log("yuyuyuyuyuy", feedbackQuery.data);
   const subscriptionsQuery = useSubscribedCourses(userId);
 
   const subscriptions = subscriptionsQuery.data ?? [];
@@ -51,6 +50,37 @@ const ExploreScreen = () => {
       setSelectedCategory(category);
     }
   };
+
+  const handleTestFeedback = async () => {
+    try {
+      console.log("Starting feedback test...");
+      console.log("User ID:", userId);
+      console.log("Course ID: 1");
+      
+      // Test with courseId = 1 (change as needed)
+      // NOTE: `userId` can be a string (UUID/hex). Do not parseInt() which yields NaN.
+      const result = await postFeedback(1, {
+        rating: 5,
+        feedbackText: "Test feedback from Explore screen!",
+        studentId: userId,
+      });
+      
+      Alert.alert("Success", `Feedback posted: ${JSON.stringify(result)}`);
+      console.log("Feedback result:", result);
+    } catch (error: any) {
+      // The generated client throws `ApiError` instances (see api/backend/core/ApiError.ts)
+      // which expose `body` and `status` instead of `response` like axios errors.
+      console.error("Full error object:", error);
+      console.error("Error body:", error?.body ?? error?.response?.data);
+      console.error("Error status:", error?.status ?? error?.response?.status);
+
+      const body = error?.body ?? error?.response?.data;
+      const errorMessage = body?.error?.message || body?.message || error?.message || String(error);
+
+      Alert.alert("Error", `Failed to post feedback: ${errorMessage}`);
+    }
+  };
+
 
   useEffect(() => {
     const courses = courseQuery.data ?? [];
@@ -82,6 +112,16 @@ const ExploreScreen = () => {
     <BaseScreen>
       <View className="overflow-visible px-8 pt-28">
         <IconHeader title={t("course.explore-courses")} />
+        
+        {/* Test Feedback Button */}
+        <View className="my-4">
+          <Button 
+            title="🧪 Test Post Feedback" 
+            onPress={handleTestFeedback}
+            color="#FF6B6B"
+          />
+        </View>
+
         <View className="mt-8">
           <FilterNavigationBar
             onChangeText={(text) => {
