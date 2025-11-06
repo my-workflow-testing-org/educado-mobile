@@ -30,7 +30,7 @@ import {
 } from "@/types";
 import { isComponentCompleted, isFirstAttemptExercise } from "@/services/utils";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { getAllComponentsBySectionIdStrapi, getAllCoursesStrapi, getAllFeedbackOptionsStrapi } from "@/api/strapi-api";
+import { getAllComponentsBySectionIdStrapi, getAllCoursesStrapi, getAllFeedbackOptionsStrapi, postFeedback } from "@/api/strapi-api";
 
 export const queryKeys = {
   courses: ["courses"] as const,
@@ -230,17 +230,35 @@ export const useDeleteUser = (id: string) => {
 /**
  * Get all feedback options.
  */
-export const useFeedbackOptions = () =>
-  useQuery({
-    queryKey: queryKeys.feedbackOptions,
-    queryFn: () => getAllFeedbackOptionsStrapi(),
+export const useGiveFeedback = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ courseId, feedbackData }: { 
+      courseId: number; 
+      feedbackData: { 
+        rating: number; 
+        feedbackText?: string; 
+        studentId?: number 
+      } 
+    }) => postFeedback(courseId, feedbackData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.feedbackOptions,
+      });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.courses,
+      });
+    },
   });
+};
+
 
 /**
  * Update a student's study streak.
  */
 export const useUpdateStudyStreak = () => {
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient(); 
 
   return useMutation<{ message: string }, unknown, { studentId: string }>({
     mutationFn: (variables) => updateStudyStreak(variables.studentId),
