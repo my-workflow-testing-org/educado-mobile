@@ -2,9 +2,9 @@ import {
   addCourseToStudent,
   completeComponent,
   deleteUser,
+  getAllComponentsBySectionId,
   getAllFeedbackOptions,
   getAllSections,
-  getAllStudentSubscriptions,
   getBucketImageByFilename,
   getBucketVideoByFilename,
   getSectionById,
@@ -14,7 +14,7 @@ import {
   unsubscribeCourse,
   updateStudyStreak
 } from "@/api/legacy-api";
-import { getAllComponentsBySectionIdStrapi, getAllCoursesStrapi, getCourseByIdStrapi } from "@/api/strapi-api";
+import { getAllCoursesStrapi, getAllStudentSubscriptionsStrapi, getCourseByIdStrapi } from "@/api/strapi-api";
 import { setJWT, setUserInfo } from "@/services/storage-service";
 import { isComponentCompleted, isFirstAttemptExercise } from "@/services/utils";
 import {
@@ -70,7 +70,7 @@ export const useCourse = (id: string) =>
 export const useSectionComponents = (id: string) =>
   useQuery({
     queryKey: queryKeys.sectionComponents(id),
-    queryFn: () => getAllComponentsBySectionIdStrapi(id),
+    queryFn: () => getAllComponentsBySectionId(id),
   });
 
 export const useSubscribeToCourse = () => {
@@ -118,7 +118,7 @@ export const useUnsubscribeFromCourse = () => {
 export const useSubscribedCourses = (id: string) =>
   useQuery({
     queryKey: queryKeys.subscriptions(id),
-    queryFn: () => getAllStudentSubscriptions(id),
+    queryFn: () => getAllStudentSubscriptionsStrapi(id),
   });
 
 /**

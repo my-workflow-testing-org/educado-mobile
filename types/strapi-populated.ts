@@ -1,11 +1,14 @@
-import type { Course as CourseStrapi } from "@/api/backend/models/Course";
-import type { CourseCategory as CourseCategoryStrapi } from "@/api/backend/models/CourseCategory";
-import type { ContentCreator as ContentCreatorStrapi } from "@/api/backend/models/ContentCreator";
-// TODO: Looks like the naming of the CourseSection is incorrect in the Strapi model.
-import type { CourseSelection as CourseSectionStrapi } from "@/api/backend/models/CourseSelection";
-import type { Feedback as FeedbackStrapi } from "@/api/backend/models/Feedback";
-import type { Student as StudentStrapi } from "@/api/backend/models/Student";
-import { Exercise, Lecture } from "@/api/backend";
+import type {
+    ContentCreator as ContentCreatorStrapi,
+    CourseCategory as CourseCategoryStrapi,
+    Course as CourseStrapi,
+    Exercise as ExerciseStrapi,
+    Feedback as FeedbackStrapi,
+    Lecture as LectureStrapi,
+    Student as StudentStrapi,
+    // TODO: Looks like the naming of the CourseSection is incorrect in the Strapi model.
+    CourseSelection as CourseSectionStrapi
+} from "@/api/backend/types.gen";
 
 export type PopulatedCourse = Omit<CourseStrapi,
     'course_categories' |
@@ -23,11 +26,17 @@ export type PopulatedCourse = Omit<CourseStrapi,
 
 
 export type PopulatedSection = Omit<CourseSectionStrapi,
-    'exercises'|
+    'exercises' |
     'lectures' |
-    'course'   
+    'course'
 > & {
-    exercises?: Exercise[];
-    lectures?: Lecture[];
+    exercises?: ExerciseStrapi[];
+    lectures?: LectureStrapi[];
     course?: PopulatedCourse;
+}
+
+export type PopulatedStudent = Omit<StudentStrapi,
+    'courses'
+> & {
+    courses?: PopulatedCourse[];
 }
