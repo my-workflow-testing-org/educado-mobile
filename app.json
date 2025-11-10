@@ -68,7 +68,10 @@
         "expo-localization",
         {
           "supportedLocales": {
-            "android": ["en-US", "pt-BR"]
+            "android": [
+              "en-US",
+              "pt-BR"
+            ]
           }
         }
       ],
