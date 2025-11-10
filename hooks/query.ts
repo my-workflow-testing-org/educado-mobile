@@ -16,7 +16,6 @@ import {
 } from "@/api/legacy-api";
 import { getAllCoursesStrapi, getAllStudentSubscriptionsStrapi, getCourseByIdStrapi } from "@/api/strapi-api";
 import { setJWT, setUserInfo } from "@/services/storage-service";
-import { isComponentCompleted, isFirstAttemptExercise } from "@/services/utils";
 import {
   LoginStudent,
   SectionComponentExercise,
@@ -30,6 +29,7 @@ import {
   EncodingType,
   writeAsStringAsync,
 } from "expo-file-system";
+import { isComponentCompleted, isFirstAttemptExercise } from "@/services/utils";
 
 export const queryKeys = {
   courses: ["courses"] as const,
@@ -64,6 +64,7 @@ export const useCourse = (id: string) =>
   });
 
 /**
+ * Get all components for a section by section ID.
  *
  * @param id - The section ID.
  */
@@ -73,6 +74,9 @@ export const useSectionComponents = (id: string) =>
     queryFn: () => getAllComponentsBySectionId(id),
   });
 
+/**
+ * Subscribe a user to a course.
+ */
 export const useSubscribeToCourse = () => {
   const queryClient = useQueryClient();
 
