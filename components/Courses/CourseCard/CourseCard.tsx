@@ -15,6 +15,7 @@ import { t } from "@/i18n";
 import { Course, ProgressTuple } from "@/types";
 import courseTitleIcon from "@/assets/images/course-title-icon.png";
 import { useLoginStudent, useSections } from "@/hooks/query";
+import { courseGetCourses } from "@/api/backend/sdk.gen";
 
 interface CourseCardProps {
   course: Course;
@@ -36,6 +37,20 @@ const CourseCard = ({ course, isOnline }: CourseCardProps) => {
 
   const loginStudentQuery = useLoginStudent();
   const sectionQuery = useSections(course.courseId);
+
+  useEffect(() => {
+    const testStrapiCourses = async () => {
+      try {
+      const courses = await courseGetCourses();
+      console.log("courses", courses);
+      } catch (error) {
+        console.error("Error fetching courses", error);
+      }
+
+    };
+
+    void testStrapiCourses();
+  }, []);
 
   useEffect(() => {
     const checkIsCourseDownloaded = async () => {

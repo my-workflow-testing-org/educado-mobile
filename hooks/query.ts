@@ -1,4 +1,5 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { client } from "@/api/backend/client.gen";
+import { UsersPermissionsUserRegistration } from "@/api/backend/types.gen";
 import {
   addCourseToStudent,
   completeComponent,
@@ -18,20 +19,22 @@ import {
   unsubscribeCourse,
   updateStudyStreak,
 } from "@/api/legacy-api";
-import {
-  documentDirectory,
-  EncodingType,
-  writeAsStringAsync,
-} from "expo-file-system";
+import { loginUserStrapi } from "@/api/strapi-api";
 import { setJWT, setUserInfo } from "@/services/storage-service";
+import { isComponentCompleted, isFirstAttemptExercise } from "@/services/utils";
 import {
   LoginStudent,
   SectionComponentExercise,
   SectionComponentLecture,
   Student,
 } from "@/types";
-import { isComponentCompleted, isFirstAttemptExercise } from "@/services/utils";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  documentDirectory,
+  EncodingType,
+  writeAsStringAsync,
+} from "expo-file-system";
 
 export const queryKeys = {
   courses: ["courses"] as const,
@@ -289,6 +292,31 @@ export const useLogin = () => {
     },
   });
 };
+
+/**
+ * Log in a user by email and password in strapi.
+ * 
+ */
+export const useLoginStrapi = () => {
+  return useMutation<
+    UsersPermissionsUserRegistration,
+    unknown,
+    { email: string; password: string }
+  >({
+    mutationFn: (variables) => loginUserStrapi(variables.email, variables.password),
+    onSuccess: (data) => {
+      client.setConfig(
+        {
+          ...client.getConfig(),
+          headers: {
+            Authorization: `Bearer ${data.jwt ?? ""}`,
+          },
+        }
+      )
+    },
+  });
+};
+
 
 /**
  * Complete a component.
