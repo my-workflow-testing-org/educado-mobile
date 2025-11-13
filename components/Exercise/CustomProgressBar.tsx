@@ -1,5 +1,4 @@
 import { View, Text, Dimensions } from "react-native";
-//import * as Progress from "react-native-progress";
 import { ProgressBar } from "react-native-paper";
 import { colors } from "@/theme/colors";
 
