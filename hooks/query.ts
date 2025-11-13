@@ -1,5 +1,5 @@
 import { client } from "@/api/backend/client.gen";
-import { UsersPermissionsUserRegistration } from "@/api/backend/types.gen";
+import { JwtResponse } from "@/api/backend/types.gen";
 import {
   addCourseToStudent,
   completeComponent,
@@ -299,17 +299,18 @@ export const useLogin = () => {
  */
 export const useLoginStrapi = () => {
   return useMutation<
-    UsersPermissionsUserRegistration,
+    JwtResponse | undefined,
     unknown,
     { email: string; password: string }
   >({
     mutationFn: (variables) => loginUserStrapi(variables.email, variables.password),
     onSuccess: (data) => {
+      console.log(data);
       client.setConfig(
         {
           ...client.getConfig(),
           headers: {
-            Authorization: `Bearer ${data.jwt ?? ""}`,
+            Authorization: `Bearer ${data?.accessToken ?? ""}`,
           },
         }
       )
