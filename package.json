@@ -76,7 +76,6 @@
     "nativewind": "~4.1.23",
     "prop-types": "^15.8.1",
     "react": "18.3.1",
-    "react-dom": "18.3.1",
     "react-native": "0.76.9",
     "react-native-alert-notification": "^0.3.5",
     "react-native-circular-progress": "^1.3.9",
@@ -121,7 +120,6 @@
     "node": ">=18 <19"
   },
   "expo": {
-    "newArchEnabled": true,
     "doctor": {
       "reactNativeDirectoryCheck": {
         "exclude": [
@@ -130,8 +128,7 @@
           "@ui-kitten/components",
           "react-native-event-listeners",
           "react-native-keyboard-aware-scroll-view",
-          "react-native-progress",
-          "react-native-swiper"
+          "react-native-progress"
         ]
       }
     }
