@@ -346,7 +346,7 @@ export const useSignUpStrapi = () => {
  */
 export const useLogoutStrapi = () => {
   return useMutation({
-    mutationFn: logoutStudentStrapi
+    mutationFn: logoutStudentStrapi,
   });
 };
 
