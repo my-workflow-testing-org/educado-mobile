@@ -1,5 +1,6 @@
 {
   "expo": {
+    "userInterfaceStyle": "automatic",
     "name": "Educado",
     "slug": "educado-mobile",
     "scheme": "educado-mobile",
@@ -14,9 +15,7 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.blackchakers.eml"
@@ -69,10 +68,7 @@
         "expo-localization",
         {
           "supportedLocales": {
-            "android": [
-              "en-US",
-              "pt-BR"
-            ]
+            "android": ["en-US", "pt-BR"]
           }
         }
       ],
