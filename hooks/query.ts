@@ -340,6 +340,10 @@ export const useSignUpStrapi = () => {
   });
 };
 
+/**
+ * Log out a user by clearing the authorization header.
+ * Even thought the logout function is not async we do it this way to stay consistent
+ */
 export const useLogoutStrapi = () => {
   return useMutation({
     mutationFn: logoutStudentStrapi
