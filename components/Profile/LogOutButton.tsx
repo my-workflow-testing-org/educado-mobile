@@ -36,7 +36,7 @@ export default function LogOutButton(props: { testID: string }) {
         },
         style: "cancel",
       },
-      { text: "Sim", onPress: void logOut() },
+      { text: "Sim", onPress: () => void logOut() },
     ]);
   };
 
