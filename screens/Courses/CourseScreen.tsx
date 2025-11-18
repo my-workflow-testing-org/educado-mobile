@@ -13,14 +13,15 @@ import LoadingScreen from "@/components/Loading/LoadingScreen";
 import Tooltip from "@/components/Onboarding/Tooltip";
 import ProfileStatsBox from "@/components/Profile/ProfileStatsBox";
 import { t } from "@/i18n";
+import { BaseScreen } from "@/components/General/BaseScreen";
 import {
   useLoginStudent,
   useStudent,
   useSubscribedCourses,
 } from "@/hooks/query";
-import { SafeAreaView } from "react-native-safe-area-context";
 import logo from "@/assets/images/logo.png";
 import noCourses from "@/assets/images/no-courses.png";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const CourseScreen = () => {
   const navigation = useNavigation();
@@ -75,51 +76,60 @@ const CourseScreen = () => {
       </ScrollView>
     </SafeAreaView>
   ) : (
-    <SafeAreaView className="items-center justify-center bg-surfaceSubtleGrayscale">
-      <Tooltip
-        position={{
-          top: -150,
-          left: 95,
-          right: 5,
-          bottom: 24,
-        }}
-        text="Bem-vindo ao Educado! Nesta página central, você encontrará todos os cursos em que está inscrito."
-        tailSide="right"
-        tailPosition="20%"
-        uniqueKey="Courses"
-        uniCodeChar="📚"
-      />
-      <View className="pb-16 pt-24 shadow-md">
-        <Image source={logo} className="items-center justify-center" />
-      </View>
-
-      <View className="items-center justify-center gap-10 py-10">
-        <View className="h-auto w-full items-center justify-center px-10">
-          <Image source={noCourses} />
-          <Text className="pb-4 pt-4 text-textTitleGrayscale text-h2-sm-regular">
-            {t("course.get-started")}
+    <BaseScreen>
+      <View className="justify-center px-1 pt-6">
+        <Tooltip
+          position={{
+            top: 190,
+            left: 100,
+          }}
+          tailSide="right"
+          tailPosition={12}
+          tooltipKey="Courses"
+          uniCodeIcon="📚"
+        >
+          <Text className="text-body-bold">
+            {t("welcome-page.tutorial-heading")}
           </Text>
-          <Text className="text-center text-textTitleGrayscale text-body-regular">
-            {t("course.no-courses-message")}
+          <Text className="text-body-regular">
+            {t("welcome-page.tutorial-body")}
           </Text>
+          <Text className="text-body-bold">
+            {t("welcome-page.tutorial-body-bold")}
+          </Text>
+          <Text className="text-body-regular">.</Text>
+        </Tooltip>
+        <View className="mb-20 mt-20 self-center pt-16">
+          <Image source={logo} className="h-[25.54] w-[175.88]" />
         </View>
-        <View>
-          <Pressable
-            testID="exploreButton"
-            className="rounded-r-8 h-auto w-full items-center justify-center rounded-md bg-surfaceDefaultCyan px-20 py-4"
-            onPress={() => {
-              // @ts-expect-error Will be refactored when we move to Expo Router
-              navigation.navigate("Explorar");
-            }}
-          >
-            <Text className="text-center text-textNegativeGrayscale text-body-bold">
-              {t("course.explore-courses")}
+        <View className="justify-center">
+          <View className="items-center pt-16">
+            <Image source={noCourses} />
+            <Text className="pt-4 text-center text-h2-sm-regular">
+              {t("welcome-page.header")}
             </Text>
-          </Pressable>
+            <Text className="px-6 pt-4 text-center text-body-regular">
+              {t("welcome-page.description")}
+            </Text>
+          </View>
+          <View className="items-center px-6 pt-8">
+            <Pressable
+              testID={"noCoursesExploreButton"}
+              className="flex w-full items-center justify-center rounded-2xl bg-surfaceDefaultCyan p-4"
+              onPress={() => {
+                // @ts-expect-error Will be refactored when we move to Expo Router
+                navigation.navigate("Explorar");
+              }}
+            >
+              {/* Click to explore courses */}
+              <Text className="text-center text-surfaceSubtleGrayscale text-body-bold">
+                {t("course.explore-courses")}
+              </Text>
+            </Pressable>
+          </View>
         </View>
       </View>
-    </SafeAreaView>
+    </BaseScreen>
   );
 };
-
 export default CourseScreen;

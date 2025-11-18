@@ -14,6 +14,7 @@
   "general": {
     "yes": "Yes",
     "no": "No",
+    "close": "Close",
     "confirmation": "Are you sure?",
     "hour": "Hour",
     "hours": "Hours",
@@ -78,6 +79,13 @@
     "loading": "Edu is thinking",
     "placeholder": "Pesquise aqui",
     "unknown-error": "Error: Unknown error"
+  },
+  "welcome-page": {
+    "header": "Start Now!",
+    "description": "You haven't signed up for any courses yet. Go to the Explore page and use the search to find courses that interest you.",
+    "tutorial-heading": "Welcome to Educado!\n",
+    "tutorial-body": "Here you will see all the courses you are enrolled in. To discover new courses, access ",
+    "tutorial-body-bold": "“Explore Courses”"
   },
   "profile": {
     "edit-profile": "Edit profile",
