@@ -58,6 +58,8 @@ export default {
           },
         },
       ],
+      ["expo-video"],
+      ["expo-audio"],
     ],
     extra: {
       JWT_SECRET: "test",
