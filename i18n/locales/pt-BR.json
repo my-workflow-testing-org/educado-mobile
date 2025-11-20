@@ -95,5 +95,10 @@
     "leaderboard": "Tabela de classificação",
     "change-password-success": "Senha alterada com sucesso",
     "tooltip": "Você está no seu perfil, onde pode acessar suas informações, visualizar certificados e realizar outras atividades."
+  },
+  "explore-page": {
+    "tutorial-body-first": "Nessa página, você encontra todos os cursos disponíveis. Clique em ",
+    "tutorial-body-bold": "“Saiba mais” ",
+    "tutorial-body-second": "para ver os detalhes e se inscrever."
   }
 }

@@ -95,5 +95,10 @@
     "leaderboard": "Leaderboard",
     "change-password-success": "Password changed successfully",
     "tooltip": "You are on your profile page, where you can access your information, view certificates, and perform other activities."
+  },
+  "explore-page": {
+    "tutorial-body-first": "On this page, you will find all available courses. Click on ",
+    "tutorial-body-bold": "“Find out more” ",
+    "tutorial-body-second": "To see the details and register."
   }
 }
