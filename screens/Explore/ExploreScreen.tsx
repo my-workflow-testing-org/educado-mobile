@@ -133,7 +133,6 @@ const ExploreScreen = () => {
           <Text className="text-body-regular">
             {t("explore-page.tutorial-body-second")}
           </Text>
-          <Text className="text-body-regular"></Text>
         </Tooltip>
         <IconHeader title={t("course.explore-courses")} />
         <View className="mt-8">
