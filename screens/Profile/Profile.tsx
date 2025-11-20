@@ -3,7 +3,7 @@
 import { useCallback } from "react";
 import { ToastNotification } from "@/components/General/ToastNotification";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { View } from "react-native";
+import { Text, View } from "react-native";
 import LogOutButton from "@/components/Profile/LogOutButton";
 import ProfileNavigationButton from "@/components/Profile/ProfileNavigationButton";
 import UserInfo from "@/components/Profile/UserInfo";
@@ -11,15 +11,13 @@ import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import errorSwitch from "@/components/General/error-switch";
 import ShowAlert from "@/components/General/ShowAlert";
 import ProfileStatsBox from "@/components/Profile/ProfileStatsBox";
-import Tooltip from "@/components/Onboarding/Tooltip";
+import { Tooltip } from "@/components/Onboarding/Tooltip";
 import { useLoginStudent, useStudent } from "@/hooks/query";
 import { t } from "@/i18n";
 import { AlertNotificationRoot } from "react-native-alert-notification";
 
 const Profile = () => {
   const navigation = useNavigation();
-
-  // const [isTooltipVisible, setIsTooltipVisible] = useState(false);
 
   const localStudentQuery = useLoginStudent();
   const localStudent = localStudentQuery.data;
@@ -65,21 +63,17 @@ const Profile = () => {
           drawProgressBarOnly={false}
         />
         <Tooltip
-          // TODO: The Tooltip component doesn't have isVisible and setIsVisible props.
-          // isVisible={isTooltipVisible}
-          // setIsVisible={setIsTooltipVisible}
           position={{
-            top: -300,
-            left: 70,
-            right: 30,
-            bottom: 24,
+            top: 223,
+            left: 100,
           }}
-          text={t("profile.tooltip")}
           tailSide="right"
-          tailPosition="20%"
-          uniqueKey="Profile"
-          uniCodeChar="👩‍🏫"
-        />
+          tailPosition={12}
+          tooltipKey="Profile"
+          uniCodeIcon="👩‍🏫"
+        >
+          <Text className="text-body-regular">{t("profile.tooltip")}</Text>
+        </Tooltip>
         <ProfileNavigationButton
           label={t("profile.edit-profile")}
           testId={"editProfileNav"}
