@@ -131,7 +131,7 @@ const CourseOverviewScreen = ({ route }: CourseOverviewScreenProps) => {
           });
 
           // @ts-expect-error The error will disappear when we migrate to Expo Router
-          navigation.navigate("Meus cursos");
+          navigation.navigate("HomeStack", { screen: "Meus cursos" });
         },
       },
     ]);
@@ -149,7 +149,7 @@ const CourseOverviewScreen = ({ route }: CourseOverviewScreenProps) => {
         className="absolute left-5 top-28 z-10 pr-3"
         onPress={() => {
           // @ts-expect-error The error will disappear when we migrate to Expo Router
-          navigation.navigate("Meus cursos");
+          navigation.navigate("HomeStack", { screen: "Meus cursos" });
         }}
       >
         <MaterialCommunityIcons
