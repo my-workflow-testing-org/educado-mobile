@@ -5,7 +5,7 @@ import { CardLabel } from "@/components/Explore/CardLabel";
 import { CustomRating } from "@/components/Explore/CustomRating";
 import { CourseButton } from "@/components/Explore/CourseButton";
 import * as Utility from "@/services/utils";
-import Tooltip from "@/components/Onboarding/Tooltip";
+import { Tooltip } from "@/components/Onboarding/Tooltip";
 import { ScrollView } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
 import { InfoBox } from "@/components/Explore/InfoBox";
