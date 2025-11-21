@@ -237,7 +237,7 @@ const CourseOverviewScreen = ({ route }: CourseOverviewScreenProps) => {
               }}
               tailSide="right"
               tailPosition={12}
-              tooltipKey="Startee"
+              tooltipKey="Startee123"
               uniCodeIcon="🎓"
             >
               <Text className="text-body-regular">{t("course.tooltip")}</Text>
