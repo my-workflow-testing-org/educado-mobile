@@ -5,7 +5,6 @@ import {
   getAllComponentsBySectionId,
   getAllFeedbackOptions,
   getAllSectionsByCourseId,
-  getAllStudentSubscriptions,
   getBucketImageByFilename,
   getBucketVideoByFilename,
   getCourseById,

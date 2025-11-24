@@ -1,6 +1,5 @@
-import { Course as StrapiCourse } from "@/api/backend/types.gen";
-import { JwtResponse } from "@/api/backend/types.gen";
-import { Course, LoginStudent, StudentCourse } from "@/types";
+import { JwtResponse, Course as StrapiCourse } from "@/api/backend/types.gen";
+import { Course, LoginStudent } from "@/types";
 import { PopulatedCourse } from "@/types/strapi-populated";
 
 /**
@@ -12,11 +11,9 @@ import { PopulatedCourse } from "@/types/strapi-populated";
 export const mapToCourse = (
   courseStrapi: StrapiCourse | PopulatedCourse,
 ): Course => {
-  const categories =
-    "course_categories" in courseStrapi &&
-    Array.isArray(courseStrapi.course_categories)
-      ? courseStrapi.course_categories
-      : [];
+  const categories = Array.isArray(courseStrapi.course_categories)
+    ? courseStrapi.course_categories
+    : [];
   const contentCreators =
     "content_creators" in courseStrapi &&
     Array.isArray(courseStrapi.content_creators)
@@ -44,10 +41,7 @@ export const mapToCourse = (
 
   // Get category name
   const categoryName =
-    categories.length > 0 &&
-    typeof categories[0] === "object" &&
-    categories[0] !== null &&
-    "name" in categories[0]
+    categories.length > 0 && "name" in categories[0]
       ? ((categories[0] as { name?: string }).name ?? "")
       : "";
 
@@ -95,7 +89,7 @@ export const mapToLoginStudent = (jwtResponse: JwtResponse): LoginStudent => {
   const { userInfo } = jwtResponse;
   const nameParts = (userInfo.name ?? "").split(" ");
   const firstName = nameParts[0] ?? "";
-  const lastName = nameParts.slice(1).join(" ") ?? "";
+  const lastName = nameParts.slice(1).join(" ");
 
   return {
     accessToken: jwtResponse.accessToken,

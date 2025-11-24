@@ -9,7 +9,6 @@ import {
   CourseGetCoursesResponse,
   JwtResponse,
   StudentGetStudentsByIdResponse,
-  Course as StrapiCourse,
 } from "@/api/backend/types.gen";
 import { mapToCourse, mapToLoginStudent } from "@/api/strapi-mappers";
 import { Course, LoginStudent } from "@/types";
@@ -118,18 +117,18 @@ export const getAllStudentSubscriptionsStrapi = async (
       },
     })) as StudentGetStudentsByIdResponse;
 
-    const courses = response.data?.courses || [];
+    const courses = response.data?.courses ?? [];
 
     if (courses.length === 0) {
       console.log("No courses found for student");
       return [];
     }
 
-    return courses
-      .filter(
-        (course): course is StrapiCourse | PopulatedCourse => course != null,
-      )
-      .map((course) => mapToCourse(course));
+    // Some student subscription entries may be relation objects with only id/documentId;
+    // assert as PopulatedCourse to satisfy the mapper's expected input type.
+    return courses.map((course) =>
+      mapToCourse(course as unknown as PopulatedCourse),
+    );
   } catch (error) {
     console.error("Error fetching student subscriptions:", error);
     throw error;
