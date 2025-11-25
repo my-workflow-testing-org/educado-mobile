@@ -8,11 +8,25 @@ import {
 import {
   CourseGetCoursesResponse,
   JwtResponse,
+<<<<<<< Updated upstream
   CourseSelectionGetCourseSelectionsResponse,
 } from "@/api/backend/types.gen";
 import { mapToCourse, mapToLoginStudent, mapToSection } from "@/api/strapi-mappers";
 import { Course, LoginStudent, Section } from "@/types";
 import { PopulatedSection } from "@/types/strapi-populated";
+=======
+  StudentGetStudentsByIdResponse,
+  CourseSelectionGetCourseSelectionsResponse,
+} from "@/api/backend/types.gen";
+import {
+  mapToCourse,
+  mapToLoginStudent,
+  mapToSection,
+  mapToStudent,
+} from "@/api/strapi-mappers";
+import { Course, LoginStudent, Section, Student } from "@/types";
+import { PopulatedCourse, PopulatedSection } from "@/types/strapi-populated";
+>>>>>>> Stashed changes
 
 export const loginStudentStrapi = async (
   email: string,
@@ -72,7 +86,7 @@ export const logoutStudentStrapi = () => {
  * @throws Error if the request fails
  */
 export const getAllCoursesStrapi = async (): Promise<Course[]> => {
-  const response = await courseGetCourses({
+  const response = (await courseGetCourses({
     query: {
       fields: [
         "title",
@@ -94,7 +108,7 @@ export const getAllCoursesStrapi = async (): Promise<Course[]> => {
       ],
       status: "published", // Only get published courses
     },
-  }) as CourseGetCoursesResponse;
+  })) as CourseGetCoursesResponse;
 
   if (!response.data || response.data.length === 0) {
     return [];
@@ -103,24 +117,82 @@ export const getAllCoursesStrapi = async (): Promise<Course[]> => {
   return response.data.map((course) => mapToCourse(course));
 };
 
-export const getAllSectionsByCourseIdStrapi = async (id: string): Promise<Section[]> => {
-  const response = await courseSelectionGetCourseSelections({
+export const getAllSectionsByCourseIdStrapi = async (
+  id: string,
+): Promise<Section[]> => {
+  const response = (await courseSelectionGetCourseSelections({
     query: {
       filters: {
         "course[id][$eq]": id,
       },
-      populate: [ "exercises", 
-                  "course", 
-                  "lectures" ],
+      populate: ["exercises", "course", "lectures"],
       status: "published",
     },
-  }) as CourseSelectionGetCourseSelectionsResponse;
+  })) as CourseSelectionGetCourseSelectionsResponse;
 
   if (response.data == null) {
-      throw new Error('No sections found');
+    throw new Error("No sections found");
   }
 
-  return response.data.map((section) => mapToSection(section as PopulatedSection));
+  return response.data.map((section) =>
+    mapToSection(section as PopulatedSection),
+  );
 };
 
+<<<<<<< Updated upstream
 
+=======
+/**
+ * Gets the courses a student is subscribed to.
+ */
+export const getAllStudentSubscriptionsStrapi = async (
+  id: string,
+): Promise<Course[]> => {
+  const response = (await studentGetStudentsById({
+    path: { id },
+    query: {
+      populate: ["courses"],
+      status: "published", // Only get published courses
+    },
+  })) as StudentGetStudentsByIdResponse & {
+    data?: { courses?: PopulatedCourse[] };
+  };
+
+  const courses = (response.data?.courses as PopulatedCourse[]);
+
+  if (courses.length === 0) {
+    return [];
+  }
+
+  return courses
+    .filter((course): course is PopulatedCourse => course != null)
+    .map((course) => mapToCourse(course));
+};
+
+/**
+ * Gets the student info for a specific student.
+ */
+export const getStudentByIdStrapi = async (id: string): Promise<Student> => {
+  const response = (await studentGetStudentsById({
+    path: { id },
+    query: {
+      populate: [
+        "courses",
+        /*
+          This is probably not needed right now
+        "feedbacks",
+        "certificates",
+        "user_logs",
+        */
+      ],
+      status: "published", // Only get published students
+    },
+  })) as StudentGetStudentsByIdResponse;
+
+  if (!response.data) {
+    throw new Error("Student not found");
+  }
+
+  return mapToStudent(response.data);
+};
+>>>>>>> Stashed changes

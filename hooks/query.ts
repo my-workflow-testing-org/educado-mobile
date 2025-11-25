@@ -4,13 +4,10 @@ import {
   deleteUser,
   getAllComponentsBySectionId,
   getAllFeedbackOptions,
-  getAllSectionsByCourseId,
-  getAllStudentSubscriptions,
   getBucketImageByFilename,
   getBucketVideoByFilename,
   getCourseById,
   getSectionById,
-  getStudentById,
   loginUser,
   subscribeCourse,
   unsubscribeCourse,
@@ -21,7 +18,8 @@ import {
   loginStudentStrapi,
   logoutStudentStrapi,
   signUpStudentStrapi,
-  getAllSectionsByCourseIdStrapi
+  getAllSectionsByCourseIdStrapi,
+  getStudentByIdStrapi,
 } from "@/api/strapi-api";
 import { setAuthToken } from "@/api/openapi/api-config";
 import { setJWT, setUserInfo } from "@/services/storage-service";
@@ -148,7 +146,7 @@ export const useStudent = (id: string) =>
   useQuery({
     queryKey: queryKeys.student(id),
     queryFn: async () => {
-      const student = await getStudentById(id);
+      const student = await getStudentByIdStrapi(id);
 
       if (student.profilePhoto) {
         try {
@@ -310,10 +308,7 @@ export const useLoginStrapi = () => {
     { email: string; password: string }
   >({
     mutationFn: async (variables) => {
-      return await loginStudentStrapi(
-        variables.email,
-        variables.password,
-      );
+      return await loginStudentStrapi(variables.email, variables.password);
     },
     onSuccess: async (data) => {
       // Store token in AsyncStorage for HTTP interceptor
