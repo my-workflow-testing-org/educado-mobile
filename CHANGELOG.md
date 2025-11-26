@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.3](https://github.com/my-workflow-testing-org/educado-mobile/compare/educado-mobile-v1.0.2...educado-mobile-v1.0.3) (2025-11-26)
+
+
+### Bug Fixes
+
+* Remove STRAPI_TOKEN from app.config ([3f10164](https://github.com/my-workflow-testing-org/educado-mobile/commit/3f10164b36361b3bca0cbad8d0714b53e9af9feb))
+
 ## [1.0.2](https://github.com/my-workflow-testing-org/educado-mobile/compare/educado-mobile-v1.0.1...educado-mobile-v1.0.2) (2025-11-26)
 
 
