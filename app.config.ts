@@ -1,4 +1,3 @@
-const strapiToken = process.env.STRAPI_TOKEN;
 
 export default {
   expo: {
@@ -63,7 +62,6 @@ export default {
     ],
     extra: {
       JWT_SECRET: "test",
-      STRAPI_TOKEN: strapiToken,
       eas: {
         projectId: "33029e48-261a-46db-a3d6-211aa40139f0",
       },
