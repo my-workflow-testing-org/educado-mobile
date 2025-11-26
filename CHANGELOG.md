@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/my-workflow-testing-org/educado-mobile/compare/educado-mobile-v1.0.0...educado-mobile-v1.0.1) (2025-11-26)
+
+
+### Bug Fixes
+
+* Create temp.txt ([98f151c](https://github.com/my-workflow-testing-org/educado-mobile/commit/98f151c1ff264d4b862b6b61bbf18ac357be9791))
+
 ## 1.0.0 (2025-11-26)
 
 
