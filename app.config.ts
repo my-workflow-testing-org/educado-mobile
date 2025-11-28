@@ -1,7 +1,7 @@
 export default {
   expo: {
     name: "Educado",
-    slug: "educado-mobile",
+    slug: "testedu",
     scheme: "educado-mobile",
     version: "2.1.5",
     owner: "my-workflow-org",
