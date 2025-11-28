@@ -78,7 +78,7 @@ jobs:
 
       - name: EAS Build
         run: |
-          eas build --platform all --non-interactive --profile production --local --output="./builds"
+          eas build --platform android --non-interactive --profile production --local --output="./builds"
 
       - name: Upload Release Assets (individual files)
         uses: actions/github-script@v6
