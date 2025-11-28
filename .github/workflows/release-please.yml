@@ -43,8 +43,6 @@ jobs:
     # Remember to change runs-on to self-hosted when moving to production
     runs-on: self-hosted
     needs: release-please
-    env:
-      EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
     steps:
       - name: Generate Token
         id: generate-token
@@ -100,37 +98,20 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: EAS Build
+      - name: Run EAS Build
         run: |
-          eas build --platform android --non-interactive --profile production --local --output="./builds/"
+          eas build \
+            --platform android \
+            --non-interactive \
+            --profile production \
+            --local \
+            --output="./builds/app-release.aab"
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
-      - name: List produced .aab files
-        run: |
-          echo "Searching for .aab files under the workspace..."
-          set -o pipefail
-          found=0
-          # find all .aab files recursively and print path + size
-          while IFS= read -r -d '' file; do
-            found=1
-            echo "---- $file ----"
-            ls -lh "$file" || true
-          done < <(find . -type f -name '*.aab' -print0 2>/dev/null)
-
-          if [ "$found" -eq 0 ]; then
-            echo "No .aab files found."
-          fi
-
-      - name: Upload build artifacts
+      - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: builds
-          path: /home/runner/actions-runner/_work/educado-mobile/educado-mobile/**/*.aab
-          retention-days: 1
-
-      - name: Upload Release Assets
-        uses: softprops/action-gh-release@6da8fa9354ddfdc4aeace5fc48d7f679b5214090
-        with:
-          tag_name: ${{ needs.release-please.outputs.tag_name }}
-          token: ${{ steps.generate-token.outputs.token }}
-          files: |
-            /home/runner/actions-runner/_work/educado-mobile/educado-mobile/**/*.aab
+          name: android-build
+          path: ./builds/
+          retention-days: 5
