@@ -108,7 +108,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: builds
-          path: ./builds/**/*.aab
+          path: /home/runner/actions-runner/_work/educado-mobile/educado-mobile/**/*.aab
           retention-days: 1
 
       - name: Upload Release Assets
@@ -117,4 +117,4 @@ jobs:
           tag_name: ${{ needs.release-please.outputs.tag_name }}
           token: ${{ steps.generate-token.outputs.token }}
           files: |
-            ./builds/**/*.aab
+            /home/runner/actions-runner/_work/educado-mobile/educado-mobile/**/*.aab
