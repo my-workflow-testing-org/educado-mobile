@@ -1,0 +1,106 @@
+name: Inspect EAS Build Workspace
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_build:
+        description: "If true, run a local EAS build (can be slow). Default: false"
+        required: false
+        default: "false"
+
+permissions:
+  contents: read
+  actions: write
+
+jobs:
+  inspect:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: Install dependencies (fast)
+        run: |
+          # Install only production deps quickly — adjust if you need full install
+          npm ci --omit=dev || npm install
+
+      - name: Optionally run local EAS build
+        if: ${{ github.event.inputs.run_build == 'true' }}
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: |
+          echo "RUNNING local EAS build. This can take a long time."
+          npm install -g eas-cli || true
+          # Install local EAS plugin if you use it
+          npm install -g eas-cli-local-build-plugin || true
+          # Run a local Android build and put outputs into ./builds
+          mkdir -p ./builds
+          eas build --platform android --non-interactive --profile production --local --output="./builds"
+
+      - name: Install tooling for inspection
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y tree file || true
+
+      - name: Show workspace summary
+        run: |
+          echo "\n==== GITHUB_WORKSPACE: $GITHUB_WORKSPACE ===="
+          echo "Top-level directories and sizes:"
+          du -sh ./* 2>/dev/null || true
+          echo "\nFull tree (limited depth 3) of workspace (skipping node_modules and .git):"
+          if command -v tree >/dev/null 2>&1; then
+            tree -a -h -I 'node_modules|.git' -L 3 || ls -laR | sed -n '1,200p'
+          else
+            find . -maxdepth 3 -not -path './node_modules*' -not -path './.git*' -printf '%P\n' | sed 's/^/  /'
+          fi
+
+      - name: List builds directory (if present) with details
+        run: |
+          if [ -d ./builds ]; then
+            echo "\n==== builds/ directory found: ===="
+            # show tree for builds
+            if command -v tree >/dev/null 2>&1; then
+              tree -a -h ./builds || true
+            else
+              find ./builds -type f -print0 | xargs -0 -n1 -I{} sh -c 'ls -lh "{}"'
+            fi
+
+            echo "\nPer-file metadata and preview (first 200 bytes for binaries, first 50 lines for text files):"
+            find ./builds -type f -print0 | while IFS= read -r -d '' file; do
+              printf "\n--- %s ---\n" "$file"
+              ls -lh "$file"
+              mime=$(file --mime-type -b "$file" 2>/dev/null || echo "unknown")
+              echo "MIME: $mime"
+              case "$mime" in
+                text/*)
+                  echo "---- First 50 lines ----"
+                  sed -n '1,50p' "$file" || true
+                  ;;
+                */*)
+                  echo "---- First 200 bytes (hex) ----"
+                  hexdump -n 200 -C "$file" || true
+                  ;;
+                *)
+                  echo "---- Unknown type, showing head ----"
+                  head -c 200 "$file" | hexdump -C || true
+                  ;;
+              esac
+            done
+          else
+            echo "No builds/ directory present — nothing to inspect there."
+          fi
+
+      - name: Show runner temp and /home directories (short)
+        run: |
+          echo "\n==== /home/runner contents (top-level) ===="
+          ls -la /home/runner || true
+          echo "\n==== /tmp contents (top-level) ===="
+          ls -la /tmp | sed -n '1,200p' || true
+
+      - name: Finish
+        run: echo "Inspection complete."

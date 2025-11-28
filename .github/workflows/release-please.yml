@@ -111,51 +111,11 @@ jobs:
           path: ./builds
           retention-days: 1
 
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
+      - name: Upload Release Assets
+        uses: softprops/action-gh-release@6da8fa9354ddfdc4aeace5fc48d7f679b5214090
         with:
-          name: builds
-          path: ./builds
-
-      - name: Upload Release Assets to existing release
-        uses: actions/github-script@v6
-        with:
-          github-token: ${{ steps.generate-token.outputs.token }}
-          script: |
-            const fs = require('fs');
-            const path = require('path');
-
-            const uploadUrl = `${{ needs.release-please.outputs.upload_url }}`;
-            const dir = './builds';
-
-            if (!fs.existsSync(dir)) {
-              console.log('No builds directory found, skipping upload.');
-              return;
-            }
-
-            const files = fs.readdirSync(dir).filter(f => fs.statSync(path.join(dir, f)).isFile());
-            if (files.length === 0) {
-              console.log('No files to upload in builds directory.');
-              return;
-            }
-
-            for (const file of files) {
-              const filePath = path.join(dir, file);
-              const buffer = fs.readFileSync(filePath);
-              let contentType = 'application/octet-stream';
-              if (file.endsWith('.apk')) contentType = 'application/vnd.android.package-archive';
-              if (file.endsWith('.aab')) contentType = 'application/octet-stream';
-
-
-              await github.rest.repos.uploadReleaseAsset({
-                url: uploadUrl,
-                headers: {
-                  'content-type': contentType,
-                  'content-length': buffer.length
-                },
-                name: file,
-                data: buffer
-              });
-
-              console.log(`Uploaded ${file}`);
-            }
+          tag_name: ${{ needs.release-please.outputs.tag_name }}
+          token: ${{ steps.generate-token.outputs.token }}
+          files: |
+            android/app/build/outputs/apk/release/app-release.apk
+            android/app/build/outputs/bundle/release/app-release.aab
