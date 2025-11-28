@@ -108,6 +108,12 @@ jobs:
             --output="./builds/app-release.aab"
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+      - name: Generate Token
+        id: generate-toke
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ vars.EDUCADO_BOT_CLIENT_ID }}
+          private-key: ${{ secrets.EDUCADO_BOT_PEM }}
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
@@ -120,6 +126,6 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ needs.release-please.outputs.tag_name }}
-          token: ${{ steps.generate-token.outputs.token }}
+          token: ${{ steps.generate-toke.outputs.token }}
           files: |
             ./builds/app-release.aab
