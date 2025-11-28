@@ -1,10 +1,10 @@
-
 export default {
   expo: {
     name: "Educado",
     slug: "educado-mobile",
     scheme: "educado-mobile",
     version: "2.1.5",
+    owner: "edutest",
     orientation: "portrait",
     icon: "./assets/images/icon.png",
     splash: {
@@ -63,7 +63,7 @@ export default {
     extra: {
       JWT_SECRET: "test",
       eas: {
-        projectId: "33029e48-261a-46db-a3d6-211aa40139f0",
+        projectId: "43a799e8-ffa3-41d8-b925-a0770fbb14b5",
       },
     },
     experiments: {
