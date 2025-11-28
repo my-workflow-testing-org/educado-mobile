@@ -4,7 +4,7 @@ export default {
     slug: "educado-mobile",
     scheme: "educado-mobile",
     version: "2.1.5",
-    owner: "edutest",
+    owner: "my-workflow-org",
     orientation: "portrait",
     icon: "./assets/images/icon.png",
     splash: {
