@@ -115,3 +115,11 @@ jobs:
           name: android-build
           path: ./builds/
           retention-days: 5
+
+      - name: Upload Release Assets
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ needs.release-please.outputs.tag_name }}
+          token: ${{ steps.generate-token.outputs.token }}
+          files: |
+            ./builds/app-release.aab
