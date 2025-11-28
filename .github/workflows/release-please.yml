@@ -57,24 +57,11 @@ jobs:
           node-version-file: .nvmrc
           cache: "npm"
 
-      - name: Set Expo version from package.json
-        id: set-expo-version
-        run: |
-          expo_version=$(
-            node -e '
-              const pkg = require("./package.json");
-            const v = (pkg.dependencies?.expo || pkg.devDependencies?.expo || "latest");
-            console.log(v.replace(/^[~^]/, ""));'
-            )
-
-          echo "expo_version=$expo_version" >> $GITHUB_OUTPUT
-            echo "Detected expo version: $expo_version"
-
       - name: Setup for EAS Build
         uses: expo/expo-github-action@v7
         with:
           eas-version: latest
-          expo-version: ${{ steps.set-expo-version.outputs.expo_version }}
+          expo-version: latest
 
       - name: Setup EAS local builds
         run: yarn global add eas-cli-local-build-plugin
