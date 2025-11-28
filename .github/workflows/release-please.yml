@@ -76,18 +76,9 @@ jobs:
         # Bypass test failures to ensure builds are created for now
         continue-on-error: true
 
-      # - name: EAS Build
-      #   run: |
-      #     eas build --platform android --non-interactive --profile production --local --output="./builds"
-
-      - name: Create dummy builds (for testing)
+      - name: EAS Build
         run: |
-          echo "Creating ./builds and dummy artifacts for testing"
-          mkdir -p ./builds
-          # create a small random binary to act as a placeholder APK
-          dd if=/dev/urandom of=./builds/app-release.apk bs=1024 count=1 || truncate -s 1024 ./builds/app-release.apk
-          # create a small random binary to act as a placeholder AAB
-          dd if=/dev/urandom of=./builds/app-release.aab bs=1024 count=1 || truncate -s 1024 ./builds/app-release.aab
+          eas build --platform android --non-interactive --profile production --local --output="./builds"
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
