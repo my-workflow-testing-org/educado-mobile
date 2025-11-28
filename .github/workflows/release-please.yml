@@ -60,14 +60,14 @@ jobs:
       - name: Set Expo version from package.json
         id: set-expo-version
         run: |
-          node -e "
-                  const fs=require('fs');
-                  const pkg=JSON.parse(fs.readFileSync('package.json'));
+          expo_version=$(
+            node -e '
+              const pkg = require("./package.json");
+              const v = (pkg.dependencies?.expo || pkg.devDependencies?.expo || "latest");
+              console.log(v.replace(/^[~^]/, ""));'
+          )
 
-                  const v=(pkg.dependencies?.expo||pkg.devDependencies?.expo||'latest');
-                  const clean=v.replace(/^[~^]/,'');
-
-                  require('fs').appendFileSync(process.env.GITHUB_OUTPUT, `expo_version=${clean}\n`);"
+          echo "expo_version=$expo_version" >> $GITHUB_OUTPUT
 
       - name: Setup for EAS Build
         uses: expo/expo-github-action@v7
