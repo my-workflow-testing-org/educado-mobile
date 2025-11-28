@@ -104,6 +104,22 @@ jobs:
         run: |
           eas build --platform android --non-interactive --profile production --local --output="./builds/"
 
+      - name: List produced .aab files
+        run: |
+          echo "Searching for .aab files under the workspace..."
+          set -o pipefail
+          found=0
+          # find all .aab files recursively and print path + size
+          while IFS= read -r -d '' file; do
+            found=1
+            echo "---- $file ----"
+            ls -lh "$file" || true
+          done < <(find . -type f -name '*.aab' -print0 2>/dev/null)
+
+          if [ "$found" -eq 0 ]; then
+            echo "No .aab files found."
+          fi
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
