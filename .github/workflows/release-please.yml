@@ -64,8 +64,8 @@ jobs:
             node -e '
               const pkg = require("./package.json");
               const v = (pkg.dependencies?.expo || pkg.devDependencies?.expo || "latest");
-              console.log(v.replace(/^[~^]/, ""));'
-          )
+              console.log(v.replace(/^[~^]/, "").split(".")[0]);'
+            )
 
           echo "expo_version=$expo_version" >> $GITHUB_OUTPUT
 
