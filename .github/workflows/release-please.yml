@@ -131,7 +131,8 @@ jobs:
               if (file.endsWith('.apk')) contentType = 'application/vnd.android.package-archive';
               if (file.endsWith('.aab')) contentType = 'application/octet-stream';
 
-              await github.repos.uploadReleaseAsset({
+
+              await github.rest.repos.uploadReleaseAsset({
                 url: uploadUrl,
                 headers: {
                   'content-type': contentType,
