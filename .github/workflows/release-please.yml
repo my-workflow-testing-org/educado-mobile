@@ -76,42 +76,70 @@ jobs:
         # Bypass test failures to ensure builds are created for now
         continue-on-error: true
 
-      - name: EAS Build
-        run: |
-          eas build --platform android --non-interactive --profile production --local --output="./builds"
+      # - name: EAS Build
+      #   run: |
+      #     eas build --platform android --non-interactive --profile production --local --output="./builds"
 
-      - name: Upload Release Assets (individual files)
+      - name: Create dummy builds (for testing)
+        run: |
+          echo "Creating ./builds and dummy artifacts for testing"
+          mkdir -p ./builds
+          # create a small random binary to act as a placeholder APK
+          dd if=/dev/urandom of=./builds/app-release.apk bs=1024 count=1 || truncate -s 1024 ./builds/app-release.apk
+          # create a small random binary to act as a placeholder AAB
+          dd if=/dev/urandom of=./builds/app-release.aab bs=1024 count=1 || truncate -s 1024 ./builds/app-release.aab
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: builds
+          path: ./builds
+          retention-days: 1
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: builds
+          path: ./builds
+
+      - name: Upload Release Assets to existing release
         uses: actions/github-script@v6
         with:
+          github-token: ${{ steps.generate-token.outputs.token }}
           script: |
             const fs = require('fs');
             const path = require('path');
+
             const uploadUrl = `${{ needs.release-please.outputs.upload_url }}`;
             const dir = './builds';
+
             if (!fs.existsSync(dir)) {
-              core.info('No builds directory found, skipping upload.');
+              console.log('No builds directory found, skipping upload.');
               return;
             }
-            const files = fs.readdirSync(dir);
+
+            const files = fs.readdirSync(dir).filter(f => fs.statSync(path.join(dir, f)).isFile());
             if (files.length === 0) {
-              core.info('No files to upload in builds directory.');
+              console.log('No files to upload in builds directory.');
               return;
             }
+
             for (const file of files) {
               const filePath = path.join(dir, file);
-              const stat = fs.statSync(filePath);
-              if (!stat.isFile()) continue;
-              const name = file;
-              const contentType = 'application/octet-stream';
-              const data = fs.readFileSync(filePath);
+              const buffer = fs.readFileSync(filePath);
+              let contentType = 'application/octet-stream';
+              if (file.endsWith('.apk')) contentType = 'application/vnd.android.package-archive';
+              if (file.endsWith('.aab')) contentType = 'application/octet-stream';
+
               await github.repos.uploadReleaseAsset({
                 url: uploadUrl,
                 headers: {
                   'content-type': contentType,
-                  'content-length': stat.size
+                  'content-length': buffer.length
                 },
-                name,
-                data
+                name: file,
+                data: buffer
               });
-              core.info(`Uploaded ${name}`);
+
+              console.log(`Uploaded ${file}`);
             }
