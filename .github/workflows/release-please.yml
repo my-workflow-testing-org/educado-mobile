@@ -1,4 +1,5 @@
 name: Release Please
+
 on:
   push:
     branches:
@@ -12,7 +13,8 @@ permissions:
 
 jobs:
   release-please:
-    runs-on: ubuntu-latest
+    # Remember to change runs-on to self-hosted when moving to production
+    runs-on: self-hosted
     outputs:
       upload_url: ${{ steps.release-please.outputs.upload_url }}
       releases_created: ${{ steps.release-please.outputs.releases_created }}
@@ -38,7 +40,8 @@ jobs:
 
   build-and-upload:
     if: needs.release-please.outputs.releases_created == 'true'
-    runs-on: ubuntu-latest
+    # Remember to change runs-on to self-hosted when moving to production
+    runs-on: self-hosted
     needs: release-please
     env:
       EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
