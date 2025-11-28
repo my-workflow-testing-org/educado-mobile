@@ -59,6 +59,16 @@ jobs:
           node-version-file: .nvmrc
           cache: "npm"
 
+      - name: Cache npm
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.npm
+            ~/.cache
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json','**/yarn.lock','**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+
       - name: Setup for EAS Build
         uses: expo/expo-github-action@v7
         with:
@@ -75,6 +85,17 @@ jobs:
         run: npm test
         # Bypass test failures to ensure builds are created for now
         continue-on-error: true
+
+      - name: Cache Gradle
+        if: runner.os == 'Linux'
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*','**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
 
       - name: EAS Build
         run: |
