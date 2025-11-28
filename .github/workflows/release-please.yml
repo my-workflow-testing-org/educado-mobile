@@ -102,13 +102,13 @@ jobs:
 
       - name: EAS Build
         run: |
-          eas build --platform android --non-interactive --profile production --local --output="./builds"
+          eas build --platform android --non-interactive --profile production --local --output="./builds/"
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: builds
-          path: ./builds
+          path: ./builds/**/*.aab
           retention-days: 1
 
       - name: Upload Release Assets
@@ -117,5 +117,4 @@ jobs:
           tag_name: ${{ needs.release-please.outputs.tag_name }}
           token: ${{ steps.generate-token.outputs.token }}
           files: |
-            android/app/build/outputs/apk/release/app-release.apk
-            android/app/build/outputs/bundle/release/app-release.aab
+            ./builds/**/*.aab
