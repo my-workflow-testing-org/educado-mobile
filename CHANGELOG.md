@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.5](https://github.com/my-workflow-testing-org/educado-mobile/compare/educado-mobile-v1.0.4...educado-mobile-v1.0.5) (2025-11-28)
+
+
+### Bug Fixes
+
+* lo2 ([555c65a](https://github.com/my-workflow-testing-org/educado-mobile/commit/555c65ad1df972accd7966191a94c4de6d116ab1))
+
 ## [1.0.4](https://github.com/my-workflow-testing-org/educado-mobile/compare/educado-mobile-v1.0.3...educado-mobile-v1.0.4) (2025-11-28)
 
 
