@@ -63,11 +63,12 @@ jobs:
           expo_version=$(
             node -e '
               const pkg = require("./package.json");
-              const v = (pkg.dependencies?.expo || pkg.devDependencies?.expo || "latest");
-              console.log(v.replace(/^[~^]/, "").split(".")[0]);'
+            const v = (pkg.dependencies?.expo || pkg.devDependencies?.expo || "latest");
+            console.log(v.replace(/^[~^]/, ""));'
             )
 
           echo "expo_version=$expo_version" >> $GITHUB_OUTPUT
+            echo "Detected expo version: $expo_version"
 
       - name: Setup for EAS Build
         uses: expo/expo-github-action@v7
