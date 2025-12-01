@@ -14,7 +14,7 @@ permissions:
 jobs:
   release-please:
     # Remember to change runs-on to self-hosted when moving to production
-    runs-on: self-hosted
+    runs-on: macos-latest
     outputs:
       upload_url: ${{ steps.release-please.outputs.upload_url }}
       releases_created: ${{ steps.release-please.outputs.releases_created }}
@@ -41,7 +41,7 @@ jobs:
   build-and-upload:
     if: needs.release-please.outputs.releases_created == 'true'
     # Remember to change runs-on to self-hosted when moving to production
-    runs-on: self-hosted
+    runs-on: macos-latest
     needs: release-please
     steps:
       - name: Generate Token
