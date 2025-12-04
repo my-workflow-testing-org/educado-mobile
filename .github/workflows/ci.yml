@@ -331,7 +331,6 @@ jobs:
         continue-on-error: true
 
       - name: Set Up Expo
-        if: ${{ steps.build_gate.outputs.need == 'true' }}
         uses: expo/expo-github-action@v8
         with:
           token: ${{ env.EXPO_TOKEN }}
