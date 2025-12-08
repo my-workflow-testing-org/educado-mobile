@@ -1,6 +1,48 @@
 {
   "welcome": {
-    "title": "Welcome"
+    "title": "Welcome",
+    "slide-1-title": "WELCOME!",
+    "slide-1-description": "Here, we make learning accessible and fun for everyone. Explore our content and begin your journey.",
+    "slide-2-title": "DOWNLOAD AND ACCESS OFFLINE",
+    "slide-2-description": "This is your space to learn in an interactive and engaging way. Download the content and access it offline whenever you want!",
+    "slide-3-title": "REGISTER AND EXPLORE",
+    "slide-3-description": "Join our community and discover a world of learning at your fingertips, regardless of your academic background."
+  },
+  "login": {
+    "no-match": "Passwords do not match",
+    "no-match-2": "The password fields must be the same",
+    "password-changed": "The password has been changed",
+    "no-user": "There is no user with this email address!",
+    "email-not-found": "Email not found",
+    "user-not-found": "User not found!",
+    "email-sending": "Sending email...",
+    "email-sent": "Email sent",
+    "code-sent": "We've sent a password reset code to your email address. Please enter it below.",
+    "code-validating": "Validating code...",
+    "code-check": "Check Code",
+    "code-not-received": "The code hasn't arrived?",
+    "code-resend": "Resend code",
+    "code-expired": "Code expired!",
+    "code-incorrect": "Incorrect code!",
+    "code-invalid": "Invalid code",
+    "confirm-password": "Confirm password",
+    "new-password": "New password",
+    "confirm-new-password": "Confirm new password",
+    "requirement-length": "Minimum 8 characters",
+    "requirement-letter": "Contain at least one letter",
+    "user-registered": "Registered user! Singing in...",
+    "existing-account": "Already have an account?",
+    "no-existing-account": "Don't have an account yet?",
+    "login-now": "Log in now",
+    "signup-now": "Sign up now",
+    "register-now": "Register now",
+    "enter-valid-email": "Enter a valid email address",
+    "incorrect-password": "Incorrect password. Please try again",
+    "enter-email": "Enter your email",
+    "enter-password": "Enter your password",
+    "forgot-password": "Forgot your password?",
+    "reset-password": "Reset password",
+    "many-attempts": "Many attempts to resend! Please wait 5 minutes...."
   },
   "courses": "Courses",
   "explore": "Explore",
@@ -14,6 +56,8 @@
   "general": {
     "yes": "Yes",
     "no": "No",
+    "enter": "Enter",
+    "register": "Register",
     "close": "Close",
     "confirmation": "Are you sure?",
     "hour": "Hour",
@@ -21,9 +65,17 @@
     "error": "Error",
     "success": "Success",
     "notice": "Notice",
-    "notification": "Notification"
+    "notification": "Notification",
+    "error-server": "Erro de conexão com o servidor!",
+    "error-unknown": "Unknown error!",
+    "name": "Name",
+    "full-name": "Name Lastname",
+    "email": "Email",
+    "placeholder-email": "useremail@gmail.com",
+    "password": "Password"
   },
   "course": {
+    "name": "Course name",
     "start": "Start course",
     "course-title": "Course Title",
     "completed-up": "Completed",
@@ -42,9 +94,12 @@
     "no-courses-message": "You haven't enrolled in any courses yet. Go to the Explore page and use the search to find courses of your interest.",
     "explore-courses": "Explore courses",
     "continue": "Continue Course",
+    "continue-button-text": "Continue",
     "signup": "Sign up now",
     "fail": "Failed to complete the course. Please try again later.",
-    "tooltip": "This is your course page. This is where you will access the lessons and track your progress."
+    "tooltip": "This is your course page. This is where you will access the lessons and track your progress.",
+    "congratulations": "Congratulations!",
+    "begin-journey": "Shall we start your journey?"
   },
   "search-course": "Search for a course",
   "learn-more": "learn more",
@@ -87,6 +142,10 @@
     "tutorial-body": "Here you will see all the courses you are enrolled in. To discover new courses, access ",
     "tutorial-body-bold": "“Explore Courses”"
   },
+  "explore-drawer": {
+    "tooltip": "Here you will find all the information about the course, such as its duration. To begin, simply click on register now ",
+    "tooltip-bold": "“Register Now”"
+  },
   "profile": {
     "edit-profile": "Edit profile",
     "change-password": "Change password",
@@ -100,5 +159,10 @@
     "position": "position",
     "points": "points",
     "day_streak": "day streak"
+  },
+  "explore-page": {
+    "tutorial-body-first": "On this page, you will find all available courses. Click on ",
+    "tutorial-body-bold": "“Find out more” ",
+    "tutorial-body-second": "To see the details and register."
   }
 }

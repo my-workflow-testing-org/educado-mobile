@@ -1,61 +1,82 @@
 import { useRef } from "react";
-import { View } from "react-native";
-import Svg, { Path } from "react-native-svg";
-import Sections from "../../constants/preview-sections";
-import Slick from "react-native-slick";
-import Text from "../General/Text";
-import tailwindConfig from "@/tailwind.config";
+import { Dimensions, Pressable, Text, View } from "react-native";
+import { useSharedValue } from "react-native-reanimated";
+import Carousel, {
+  ICarouselInstance,
+  Pagination,
+} from "react-native-reanimated-carousel";
+import { sections } from "@/constants/preview-sections";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { colors } from "@/theme/colors";
 
-export default function WelcomeSlider() {
-  const slick = useRef(null);
-  const projectColors = tailwindConfig.theme.colors;
+const width = Dimensions.get("window").width;
+
+const styles = {
+  container: { gap: 5, marginTop: 10 },
+  dot: { backgroundColor: colors.surfaceSubtleGrayscale, borderRadius: 50 },
+  activeDot: { backgroundColor: colors.textLabelCyan, borderRadius: 50 },
+};
+
+export const WelcomeSlider = () => {
+  const ref = useRef<ICarouselInstance>(null);
+  const progress = useSharedValue<number>(0);
+
+  const onPressPagination = (index: number) => {
+    ref.current?.scrollTo({
+      count: index - progress.value,
+      animated: true,
+    });
+  };
 
   return (
-    <Slick
-      ref={slick}
-      scrollEnabled={true}
-      loop={false}
-      index={0}
-      dotColor={projectColors.projectWhite}
-      dotStyle={{ width: 10, height: 10 }}
-      activeDotColor={projectColors.primary_custom}
-      activeDotStyle={{ width: 10, height: 10 }}
-      height={265}
-      showsButtons={true}
-      autoplayTimeout={10}
-      autoplay={true}
-      nextButton={
-        <Svg className="mr-4 h-[25px] w-[25px]">
-          <Path
-            d="M8.59003 17.1239L13.17 12.5439L8.59003 7.95385L10 6.54385L16 12.5439L10 18.5439L8.59003 17.1239Z"
-            fill={projectColors.projectBlack}
-          />
-        </Svg>
-      }
-      prevButton={
-        <Svg className="ml-4 h-[25px] w-[25px]">
-          <Path
-            d="M15.41 17.1239L10.83 12.5439L15.41 7.95385L14 6.54385L8 12.5439L14 18.5439L15.41 17.1239Z"
-            fill={projectColors.projectBlack}
-          />
-        </Svg>
-      }
-    >
-      {Sections.map((sections, index) => (
-        <View key={index} className="relative h-full items-center px-10">
-          <View className="top-0 px-4">
-            <Text className="font-sans-bold text-center text-subheading">
-              {sections.title}
-            </Text>
+    <View className="flex">
+      <Carousel
+        ref={ref}
+        width={width}
+        height={width / 2}
+        data={sections}
+        onProgressChange={progress}
+        loop
+        autoPlay
+        autoPlayInterval={10000}
+        renderItem={({ item }) => (
+          <View className="h-full flex-row items-center justify-center px-10">
+            <Pressable
+              onPress={() => {
+                ref.current?.prev();
+              }}
+            >
+              <MaterialCommunityIcons name="chevron-left" size={24} />
+            </Pressable>
+            <View className="flex-col">
+              <Text className="px-8 text-center text-h2-sm-regular">
+                {item.title}
+              </Text>
+              <Text className="px-12 pt-8 text-center text-body-regular">
+                {item.description}
+              </Text>
+            </View>
+            <Pressable
+              onPress={() => {
+                ref.current?.next();
+              }}
+            >
+              <MaterialCommunityIcons name="chevron-right" size={24} />
+            </Pressable>
           </View>
+        )}
+      />
 
-          <View className="absolute bottom-0 px-6 pb-[27.5%]">
-            <Text className="text-center text-body">
-              {sections.description}
-            </Text>
-          </View>
-        </View>
-      ))}
-    </Slick>
+      <View className="mt-8 flex">
+        <Pagination.Basic
+          progress={progress}
+          data={sections}
+          activeDotStyle={styles.activeDot}
+          dotStyle={styles.dot}
+          containerStyle={styles.container}
+          onPress={onPressPagination}
+        />
+      </View>
+    </View>
   );
-}
+};

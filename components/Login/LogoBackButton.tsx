@@ -1,34 +1,44 @@
-import { View } from "react-native";
-import LeaveButton from "../Exercise/LeaveButton";
-import EducadoLogo from "../Images/EducadoLogo";
-import PropTypes from "prop-types";
+import { Pressable, View } from "react-native";
+import EducadoLogo from "@/components/Images/EducadoLogo";
+import { useNavigation } from "@react-navigation/native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { colors } from "@/theme/colors";
 
 /**
  * Component that includes, logo, title and backbutton, used in login and register screens
- * @param {Object} props Should contain the following properties:
- * - navigationPlace: String
  * @returns {React.Element} Header/logo/back button component
-
+ * @param navigationPlace - string
  */
-export default function LogoBackButton(props) {
+
+export const LogoBackButton = ({
+  navigationPlace,
+}: {
+  navigationPlace?: string;
+}) => {
+  const navigation = useNavigation();
   return (
-    <View className="mt-4 w-full flex-row items-center justify-center">
-      {/* TODO: Implement with general back button instead */}
-      <View className="absolute left-0 z-50">
-        <LeaveButton
-          navigationPlace={
-            props.navigationPlace ? props.navigationPlace : "Home"
-          }
+    <Pressable
+      className="mt-4 w-full flex-row items-center justify-center pl-4"
+      onPress={() => {
+        if (navigationPlace) {
+          // @ts-expect-error incorrect type 'never'
+          navigation.navigate(navigationPlace);
+        } else {
+          // @ts-expect-error incorrect type 'never'
+          navigation.navigate("Home");
+        }
+      }}
+    >
+      <View className="absolute left-4">
+        <MaterialCommunityIcons
+          name="chevron-left"
+          size={24}
+          color={colors.textTitleGrayscale}
         />
       </View>
-      {/* Educado logo */}
-      <View className="w-full items-center justify-center">
+      <View className="w-full items-center">
         <EducadoLogo />
       </View>
-    </View>
+    </Pressable>
   );
-}
-
-LogoBackButton.propTypes = {
-  navigationPlace: PropTypes.string,
 };
