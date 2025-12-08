@@ -1,18 +1,14 @@
-const version = process.env.APP_VERSION ?? "0.0.0";
-
-const strapiToken = process.env.STRAPI_TOKEN;
-
 export default {
   expo: {
     name: "Educado",
-    slug: "educado-mobile",
+    slug: "testedu",
     scheme: "educado-mobile",
-    version: version,
-    owner: "educado-mobile-25",
+    version: "2.1.5",
+    owner: "my-workflow-org",
     orientation: "portrait",
-    icon: "./assets/images/logo_black240.png",
+    icon: "./assets/images/icon.png",
     splash: {
-      image: "./assets/images/logo_black240.png",
+      image: "./assets/images/icon.png",
       resizeMode: "contain",
       backgroundColor: "#ffffff",
     },
@@ -26,7 +22,7 @@ export default {
     },
     android: {
       adaptiveIcon: {
-        foregroundImage: "./assets/images/logo_black240.png",
+        foregroundImage: "./assets/images/icon.png",
         backgroundColor: "#FFFFFF",
       },
       package: "com.blackchakers.eml",
@@ -40,9 +36,9 @@ export default {
         "expo-build-properties",
         {
           android: {
-            compileSdkVersion: 36,
-            targetSdkVersion: 36,
-            buildToolsVersion: "36.0.0",
+            compileSdkVersion: 35,
+            targetSdkVersion: 35,
+            buildToolsVersion: "35.0.0",
           },
         },
       ],
@@ -57,7 +53,7 @@ export default {
         "expo-localization",
         {
           supportedLocales: {
-            android: ["en_US", "pt_BR"],
+            android: ["en-rUS", "pt-rBR"],
           },
         },
       ],
@@ -66,9 +62,8 @@ export default {
     ],
     extra: {
       JWT_SECRET: "test",
-      STRAPI_TOKEN: strapiToken,
       eas: {
-        projectId: "eb5fcd66-c59f-46fb-8d8c-b5955fb36861",
+        projectId: "43a799e8-ffa3-41d8-b925-a0770fbb14b5",
       },
     },
     experiments: {
