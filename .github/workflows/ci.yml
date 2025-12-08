@@ -404,9 +404,17 @@ jobs:
       - name: Run EAS Build
         run: |
           eas build \
-            --platform android \
-            --non-interactive \
-            --profile preview \
-            --local
+          --platform android \
+          --non-interactive \
+          --profile preview \
+          --local \
+          --output="./builds/preview.apk"
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-apk
+          path: "./builds/preview.apk"
+          if-no-files-found: warn
