@@ -391,7 +391,6 @@ jobs:
         continue-on-error: true
 
       - name: Set Up Expo
-        if: ${{ steps.build_gate.outputs.need == 'true' }}
         uses: expo/expo-github-action@v8
         with:
           token: ${{ env.EXPO_TOKEN }}
@@ -400,11 +399,9 @@ jobs:
           eas-version: latest
 
       - name: Setup EAS local builds
-        if: ${{ steps.build_gate.outputs.need == 'true' }}
         run: npm install -g eas-cli-local-build-plugin
 
       - name: Run EAS Build
-        if: ${{ steps.build_gate.outputs.need == 'true' }}
         run: |
           eas build \
             --platform android \
