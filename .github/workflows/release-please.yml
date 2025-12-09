@@ -108,6 +108,7 @@ jobs:
             --output="./builds/app-release.aab"
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          EXPO_PUBLIC_STRAPI_BACKEND: ${{ env.EXPO_PUBLIC_STRAPI_BACKEND_PROD }}
       - name: Generate Token
         id: generate-toke
         uses: actions/create-github-app-token@v2
