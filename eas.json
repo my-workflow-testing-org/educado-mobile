@@ -4,11 +4,17 @@
       "android": {
         "buildType": "apk"
       }
+      "env": {
+        "EXPO_PUBLIC_STRAPI_BACKEND": "https://strapi.ollioddi.dev/api/"
+      }
     },
     "production": {
       "node": "18.20.8",
       "android": {
         "buildType": "app-bundle"
+      }
+      "env": {
+        "EXPO_PUBLIC_STRAPI_BACKEND": "https://strapi.ollioddi.dev/api/"
       }
     },
     "dev": {
