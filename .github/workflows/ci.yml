@@ -410,6 +410,7 @@ jobs:
           --local \
           --output="./builds/preview.apk"
         env:
+          EXPO_PUBLIC_STRAPI_BACKEND: ${{ env.EXPO_PUBLIC_STRAPI_BACKEND_DEV }}
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
       - name: Upload APK Artifact
