@@ -3,7 +3,7 @@
     "preview": {
       "android": {
         "buildType": "apk"
-      }
+      },
       "env": {
         "EXPO_PUBLIC_STRAPI_BACKEND": "https://strapi.ollioddi.dev/api/"
       }
