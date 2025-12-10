@@ -392,8 +392,8 @@ jobs:
 
       - name: 🔧 Inject env variables into eas.json
         env:
-          PROD_URL: ${{ secrets.STRAPI_BACKEND_URL_PROD }}
-          DEV_URL: ${{ secrets.STRAPI_BACKEND_URL_DEV }}
+          PROD_URL: ${{ vars.STRAPI_BACKEND_URL_PROD }}
+          DEV_URL: ${{ vars.STRAPI_BACKEND_URL_DEV }}
         run: |
           node -e "
             const fs = require('fs');
