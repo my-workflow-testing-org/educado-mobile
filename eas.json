@@ -5,7 +5,7 @@
         "buildType": "apk"
       },
       "env": {
-        "EXPO_PUBLIC_STRAPI_BACKEND": "https://strapi.ollioddi.dev/api/"
+        "EXPO_PUBLIC_STRAPI_BACKEND": "www.example.com/api/"
       }
     },
     "production": {
@@ -14,7 +14,7 @@
         "buildType": "app-bundle"
       },
       "env": {
-        "EXPO_PUBLIC_STRAPI_BACKEND": "https://strapi.ollioddi.dk/api/"
+        "EXPO_PUBLIC_STRAPI_BACKEND": "www.prodExample.com/api/"
       }
     },
     "dev": {
