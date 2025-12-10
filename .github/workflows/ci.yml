@@ -426,6 +426,7 @@ jobs:
           --local \
           --output="./builds/preview.apk"
         env:
+          GRADLE_OPTS: "-Xmx4g -XX:MaxMetaspaceSize=1g -Dorg.gradle.daemon=false"
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
       - name: Upload APK Artifact
